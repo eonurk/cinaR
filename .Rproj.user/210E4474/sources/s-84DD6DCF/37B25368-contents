@@ -1,0 +1,2464 @@
+---
+title: "Differential Analyses"
+author: "E Onur Karakaslar"
+date: "2/27/2020"
+output: html_document
+---
+
+# Why do we do it again?
+We are starting over from stracth so that we will see any disambiguities that caused differences between two analyses we have conducted so far.
+
+```{r setup, include=FALSE}
+require(knitr)
+knitr::opts_chunk$set(echo = TRUE)
+opts_knit$set(root.dir = "/Users/karako/Dropbox (JAX)/Prevnar Project/") #set root dir!
+```
+
+```{r message=FALSE}
+library(dplyr)
+library(edgeR)
+library(limma)
+library(tidyr)
+library(fgsea)
+library(limma)
+library(purrr)
+library(DESeq2)
+library(readxl)
+# library(apeglm)
+# library(qusage)
+library(ggpubr)
+library(ggrepel)
+library(ggplot2)
+library(Biobase)
+library(reshape2)
+library(pheatmap)
+# library(GEOquery)
+library(paletteer)
+library('biomaRt')
+library(VennDiagram)
+library(RColorBrewer)
+source("shap.R")
+```
+
+```{r Preprocess Count Matrix}
+# Raw count matrix [(1+Genes) x Samples] | 1 : Ensembl Gene IDs
+# Column names are sample names
+count.matrix <- read.csv("Data/rna_count_matrix_with_second_batch.csv", stringsAsFactors = F)
+
+# Remove sample 7 baseline, since it has low read counts!
+count.matrix <- count.matrix[,-which(colnames(count.matrix) %in% c("PV07_d.7"))]
+
+# Remove "." from Ensembl IDs
+count.matrix [,1] <- 
+    count.matrix [,1] %>% 
+    strsplit(".", fixed = T) %>% 
+    sapply(function(x){x[1]})
+
+# Remove spike-ins for now (may not exists in your data)
+count.matrix <- count.matrix [!grepl("^ERCC", count.matrix[,1]),]
+  
+# Order genes according to their standard deviation in decreasing order
+count.matrix <- count.matrix [rev(order(apply(count.matrix[,-1], 1, sd))),]
+
+# Remove duplicated genes
+count.matrix <- count.matrix [!duplicated(count.matrix[,1]),]
+
+# Make the row names Ensembl Gene IDs
+rownames(count.matrix) <- count.matrix[,1]
+
+# Filter Ensembl Gene IDs
+count.matrix <- count.matrix[,-1]
+
+# Enforce all counts to be integers
+count.matrix <- round(count.matrix, 0)
+
+# Filter low-expressed genes
+# Keep the genes that have Count-Per-Million more than k = 0.5 in n = 1 samples
+# It is pretty similar to filterByExpr(y, min.count = 0.5) but its choice of n is different.
+count.matrix <- count.matrix [rowSums(cpm(count.matrix) >= 0.5) >= 1,]
+
+# Create meta data (Patient, Day, Response, Vaccine)
+# This part changes from project to project since what you look for differs,
+# here we keep all information regarding meta data in column names of
+# the samples but remember this is not always the case
+meta.data <- 
+    colnames(count.matrix) %>% 
+    strsplit("_", fixed = T) %>% 
+    as.data.frame() %>% t %>% data.frame()
+
+# get the patient names and days
+meta.data <-meta.data[,1:2]
+
+# Add batch information of these batches
+# You can find this information looking at the sample names as well.
+meta.data$batch <- c(rep("Second", 52), rep("First",nrow(meta.data)-52))
+
+# Load samples data, this part is for incorparating ages of the patients to the analyses.
+meta.data.excel <- read_excel("Data/JAX_Prev_Datashare.xlsx")
+
+patient.ID <- meta.data.excel$StudyID %>% strsplit("-", fixed = T)
+patient.ID <- sapply(patient.ID, function(x){paste0("PV", x[3] %>% substr(2,3))})
+meta.data.excel$Patient <- patient.ID
+
+rownames(meta.data) <- colnames(count.matrix)
+colnames(meta.data) <- c("Patient", "Day", "Batch")
+
+meta.data$order <- 1:nrow(meta.data)
+meta.data <- merge(meta.data, meta.data.excel[,c("Patient", "Date Enrolled","Vaccine received", "Race", "Age", "Gender", "Height_inch", "Weight_lbs")], by = "Patient")
+
+meta.data$Vaccine_Year <- sapply(meta.data[,"Date Enrolled"], 
+       function(x){strsplit(x %>% as.character, "-", fixed = T)}) %>% 
+  sapply( function(x){x[1]})
+
+colnames(meta.data)[colnames(meta.data) == "Vaccine received"] <- "Vaccine"
+
+# Change vaccine name convention for the rest of the pipeline.
+meta.data$Vaccine[meta.data$Vaccine == "Pneumovax-23"] <- "PPSV23"
+meta.data$Vaccine[meta.data$Vaccine == "Prevnar-13"] <- "PCV13"
+
+# Re-order to original positions
+meta.data <- meta.data[order(meta.data$order), ]
+
+# Remove unnecessary column 
+meta.data <- meta.data %>% dplyr::select(-c(order))
+  
+# Add BMI
+# BMI = (	Weight in Pounds / (Height in inches) x (Height in inches)) x 703
+meta.data$BMI <- (meta.data$Weight_lbs/(meta.data$Height_inch)^2) * 703
+
+# Create your desired groups
+group <- paste(meta.data$Vaccine,meta.data$Response, meta.data$Day ,sep="_")
+
+# Assign each sample to its group
+colData <- cbind(colnames(count.matrix), group)
+colnames(colData)  = c("sample", "groups")
+
+# Create DEseq Object and estimate factors to be used in normalization.
+dds <- DESeqDataSetFromMatrix(countData = count.matrix, colData = colData, design = ~ groups)
+dds <- estimateSizeFactors(dds)
+
+# Normalize the counts using log2(cpm + c)
+# c term is added in order to avoid log(0)
+count.matrix.normalized <- log2(counts(dds, normalized=TRUE) + 4)
+
+# Load Biomart DB 
+# Notice that this database is for human, to see different DBs:
+# mart = useMart("ensembl"); listDatasets(mart)
+load("Cache/mart.RData")
+# mart <- useMart("ensembl", 
+#                 host = "uswest.ensembl.org",
+#                 dataset = "hsapiens_gene_ensembl")
+
+
+mapping <- getBM(mart = mart, 
+                 useCache = T,
+                 uniqueRows = F,
+                 filters = "ensembl_gene_id",
+                 values = rownames(count.matrix),
+                 attributes = c("ensembl_gene_id","chromosome_name","hgnc_symbol"))
+
+convert_Ensembl_to_GeneID <- function (mapping, count.matrix) {
+    # Map Ensembl Gene IDs to Gene IDs
+    count.matrix <- merge(mapping, count.matrix, 
+                          by.x = "ensembl_gene_id", by.y = "row.names", all.y = T)
+    
+    # Use original Ensembl GeneIDs for non-converted genes
+    ix <- which(count.matrix[,"hgnc_symbol"] %in% "" | is.na(count.matrix[,"hgnc_symbol"]))
+    count.matrix[ix,"hgnc_symbol"] <- count.matrix[ix,"ensembl_gene_id"]
+    
+    # Order genes according to their standard deviation in decreasing order
+    count.matrix <- count.matrix [rev(order(apply(count.matrix[,c(-1,-2,-3)], 1, sd))),]
+    
+    # Remove duplicated Gene IDs
+    count.matrix <- count.matrix [!duplicated(count.matrix[,"hgnc_symbol"]),]
+    
+    # Remove sex-chromosomes/ mitocondrial genes/ genes without any chromosome
+    count.matrix <- count.matrix [count.matrix[,"chromosome_name"] %in% c(1:22),]
+    
+    # Re-order genes according to their standard deviation in decreasing order
+    count.matrix <- count.matrix [rev(order(apply(count.matrix[,c(-1,-2,-3)], 1, sd))),]
+    
+    # Make row names Gene IDs
+    rownames(count.matrix) <- count.matrix[,"hgnc_symbol"] 
+    
+    # Filter Ensembl & Gene IDs and Return
+    return(count.matrix[,c(-1,-2,-3)])
+}
+
+# Convert row names to Gene IDs
+count.matrix <- convert_Ensembl_to_GeneID(mapping, count.matrix)
+count.matrix.normalized <- convert_Ensembl_to_GeneID(mapping, count.matrix.normalized)
+
+save(file = "Cache/count_matrices.Rdata", count.matrix, count.matrix.normalized, meta.data)
+
+load("Cache/count_matrices.Rdata")
+```
+
+```{r Color pallette}
+# Create color pallette for cool figures
+color.palette <- paletteer_d("ggsci::nrc_npg")
+```
+
+
+```{r Quality Control}
+#### Plots for Quality Control ####
+# 1) Non-normalized library sizes
+# 2) Normalized expression level distributions
+# 3) Density plot of normalize data
+
+
+# 1) Non-normalized library sizes
+pdf("Results/Library_sizes.pdf")
+barplot(colSums(count.matrix)/1e6, 
+        las = 3, 
+        col = sample(color.palette, size = 1), 
+        main="Total read counts (millions)")  
+dev.off() %>% invisible
+
+# 2) Normalized expression level distributions
+pdf("Results/Normalized_counts_distribution.pdf")
+boxplot(count.matrix.normalized, 
+        las = 2, 
+        col = sample(color.palette, size = 1),
+        ylab = 'Normalized expression levels',
+        main = 'Distribution of transformed data') 
+dev.off() %>% invisible
+
+# 3) Distribution of normalized expression levels
+pdf("Results/Density_plot_of_normalized_counts.pdf")
+plot(density(count.matrix.normalized[,1]), 
+     lwd = 2,
+     col = sample(color.palette, size = 1),
+     xlab ="Expression values", ylab="Density", 
+     main = "Distribution of transformed data")
+for (i in seq(2,ncol(count.matrix.normalized))){
+    lines(density(count.matrix.normalized[,i]), 
+          lwd = 2, 
+          col = sample(color.palette, size = 1))
+}
+dev.off() %>% invisible
+
+#### Quality Control Ends ####
+```
+
+
+```{r PVCA Analyses, message=F, warning=F, results="hidden"}
+source("Utils/PVCA_wf.r")
+
+meta.data.pca <- meta.data[,c("Patient","Day","Response","Vaccine","Race","Age","Gender","BMI")]
+PVCA.results <- PVCA(count.matrix, meta.data.pca, threshold = 1)
+
+df.PVCA <- data.frame(value = PVCA.results)
+df.PVCA$Factors <- rownames(df.PVCA)
+df.PVCA[df.PVCA == "resid"] <- "Unexplained"
+df.PVCA$Factors <- factor(df.PVCA$Factors, levels = df.PVCA$Factors)
+
+PVCA.plot <- ggplot(df.PVCA, aes(x = "Factors", y = (value * 100), fill = Factors)) +
+    theme_minimal() +
+    geom_bar(position="stack",stat = "identity", width = 0.3) + xlab("") + ylab("Percentage") + 
+    scale_fill_manual(values = c(paletteer_d("ggthemes::Tableau 10")[1:8], "#d4d4d4")) + 
+    ggtitle("Proportion of variance explained by each factor") +
+    scale_y_continuous(expand = c(0, 0),
+                       breaks = (c(0, 20, 40, 60, 80, 100)))
+
+ggsave("Results/PVCA_plot.pdf", plot = PVCA.plot, width = 5, height = 5)
+```
+
+
+```{r Load Titers}
+basal.pcv13 <- read_excel(path = "Data/Pneumococcal Vaccine Titers.xlsx", sheet = "PCV13 Basal OPA") %>% 
+    as.data.frame
+final.pcv13 <- read_excel(path = "Data/Pneumococcal Vaccine Titers.xlsx", sheet = "PCV13 Final OPA") %>% 
+    as.data.frame
+
+basal.ppsv23 <- read_excel(path = "Data/Pneumococcal Vaccine Titers.xlsx", sheet = "PPSV23 Basal OPA") %>%
+    as.data.frame
+final.ppsv23 <- read_excel(path = "Data/Pneumococcal Vaccine Titers.xlsx", sheet = "PPSV23 Final OPA") %>% 
+    as.data.frame
+
+fc.pcv13  <- cbind(final.pcv13[,1:3],
+                   final.pcv13[,4:ncol(final.pcv13)]/basal.pcv13[,4:ncol(basal.pcv13)])
+fc.ppsv23 <- cbind(final.ppsv23[,1:3],
+                   final.ppsv23[,4:ncol(final.ppsv23)]/basal.ppsv23[,4:ncol(basal.ppsv23)])
+
+serotypes.sorted <- c("1", "3", "4", "5", "6A", "6B", "7F", "9V", "14", "18C", "19A", "19F", "23F")
+
+
+# Titers only
+basal.pcv13.titers  <- basal.pcv13 [,serotypes.sorted]
+final.pcv13.titers  <- final.pcv13 [,serotypes.sorted]
+basal.ppsv23.titers <- basal.ppsv23[,serotypes.sorted]
+final.ppsv23.titers <- final.ppsv23[,serotypes.sorted]
+fc.pcv13.titers  <- final.pcv13.titers  / basal.pcv13.titers
+fc.ppsv23.titers <- final.ppsv23.titers / basal.ppsv23.titers
+
+rownames(fc.pcv13.titers)  <- basal.pcv13$`Donor ID`
+rownames(fc.ppsv23.titers) <- basal.ppsv23$`Donor ID`
+rownames(basal.pcv13.titers) <- basal.pcv13$`Donor ID`
+rownames(final.pcv13.titers) <- final.pcv13$`Donor ID`
+rownames(basal.ppsv23.titers) <- basal.ppsv23$`Donor ID`
+rownames(final.ppsv23.titers) <- final.ppsv23$`Donor ID`
+
+rownames(basal.ppsv23) <- basal.ppsv23$`Donor ID`
+rownames(basal.pcv13)  <- basal.pcv13$`Donor ID`
+rownames(final.ppsv23) <- final.ppsv23$`Donor ID`
+rownames(final.pcv13)  <- final.pcv13$`Donor ID`
+rownames(fc.pcv13)     <- fc.pcv13$`Donor ID`
+rownames(fc.ppsv23)    <- fc.ppsv23$`Donor ID`
+
+
+
+# Combine basal levels for two vaccines
+basal <- rbind(basal.pcv13, basal.ppsv23)
+final <- rbind(final.pcv13, final.ppsv23)
+
+
+basal.order <- apply(basal[,serotypes.sorted], 2, dense_rank) %>% rowSums %>% dense_rank
+
+basal.pcv13.order <- apply(basal.pcv13[,serotypes.sorted], 2, dense_rank) %>%
+    rowSums %>% dense_rank
+
+fc.pcv13.order <- apply(fc.pcv13[,serotypes.sorted], 2, dense_rank) %>%
+    rowSums %>% dense_rank
+
+basal.ppsv23.order <- apply(basal.ppsv23[,serotypes.sorted], 2, dense_rank) %>% 
+    rowSums %>% dense_rank
+
+fc.ppsv23.order <-  apply(fc.ppsv23[,serotypes.sorted], 2, dense_rank) %>% 
+    rowSums %>% dense_rank
+
+df.titer.order <- data.frame(Patient = basal$`Donor ID`, basal.order)
+
+names(fc.pcv13.order) <- fc.pcv13$`Donor ID`
+names(fc.ppsv23.order) <- fc.ppsv23$`Donor ID`
+
+vaccine.received <- read_excel("Data/Pneumo Vaccine-sample collection.xlsx")
+
+batch.control <- vaccine.received[vaccine.received$Day.of.Study == "D0", c(1,4)]
+batch.control <- batch.control %>% mutate (Receiving.Date = as.Date(batch.control[,2][[1]])) %>% mutate(Receiving.Date = format(Receiving.Date, '%y')) %>% rename(Receiving.Date = "Vaccine.year")
+
+batch.control$Sample.ID <- sapply(batch.control$Sample.ID, function(x){
+  paste0(substring(x, 1,2), substring(x, 4,6))
+})
+```
+
+
+```{r PCA Analyses}
+# We don't need to scale or center anymore
+# Samples should be in rows
+pca <- prcomp(t(count.matrix.normalized))
+
+d <- round(pca$sdev^2/sum(pca$sdev^2)*100, digits=1)
+xl <- sprintf("PC 1: %.1f %%", d[1])
+yl <- sprintf("PC 2: %.1f %%", d[2])
+
+df <- data.frame(PC1=as.numeric(pca$x[,1]),
+                 PC2=as.numeric(pca$x[,2]),
+                 # Response = meta.data$Response,
+                 Vaccine_Year = meta.data$Vaccine_Year,
+                 Weight = meta.data$Weight_lbs,
+                 Vaccine = meta.data$Vaccine,
+                 Patient = meta.data$Patient,
+                 Gender = meta.data$Gender,
+                 Batch = meta.data$Batch,
+                 Race = meta.data$Race,
+                 Age = meta.data$Age,
+                 Day = meta.data$Day,
+                 BMI = meta.data$BMI)
+
+# Add titer order
+df <- merge(df, df.titer.order, by = "Patient")
+
+# Add Batch Years
+df <- merge(df, batch.control, by.x = "Patient", by.y = "Sample.ID")
+
+
+PCA.plot.vaccine.year <-
+  ggplot(df, aes(PC1, PC2, color = Vaccine_Year)) +
+    geom_point() +
+    labs(x=xl,y=yl) +
+    theme_minimal() +
+    coord_fixed(ratio = 1) +
+    scale_color_manual(values = c(color.palette))
+ggsave("Results/PCA_plots/PCA_plot_Vaccine_Year.pdf", plot = PCA.plot.vaccine.year)
+
+PCA.plot.batch <- 
+  ggplot(df, aes(PC1, PC2, color = Batch)) + 
+    geom_point() +  
+    labs(x=xl,y=yl) +  
+    theme_minimal() + 
+    coord_fixed(ratio = 1) +  
+    scale_color_manual(values = c(color.palette))
+ggsave("Results/PCA_plots/PCA_plot_Batch.pdf", plot = PCA.plot.batch)
+
+
+
+PCA.plot.titer <- 
+    ggplot(df, aes(PC1, PC2, color = basal.order)) + 
+    geom_point() +  
+    labs(x=xl,y=yl) +  
+    theme_minimal() + 
+    coord_fixed(ratio = 1) +  
+    scale_color_gradient(low = "yellow", high = "red")
+ggsave("Results/PCA_plots/PCA_plot_Titer.pdf", plot = PCA.plot.titer)
+
+
+PCA.plot.BMI <- 
+    ggplot(df, aes(PC1, PC2, color = BMI)) + 
+    geom_point() +  
+    labs(x=xl,y=yl) +  
+    theme_minimal() + 
+    coord_fixed(ratio = 1) +  
+    scale_color_gradient(low = "yellow", high = "red")
+ggsave("Results/PCA_plots/PCA_plot_BMI.pdf", plot = PCA.plot.BMI)
+
+PCA.plot.Weight <- 
+    ggplot(df, aes(PC1, PC2, color = Weight)) + 
+    geom_point() +  
+    labs(x=xl,y=yl) +  
+    theme_minimal() + 
+    coord_fixed(ratio = 1) +  
+    scale_color_gradient(low = "yellow", high = "red")
+ggsave("Results/PCA_plots/PCA_plot_Weight.pdf", plot = PCA.plot.Weight)
+
+
+PCA.plot.gender <- 
+    ggplot(df, aes(PC1, PC2, color = Gender)) + 
+    geom_point() +  
+    labs(x=xl,y=yl) +  
+    theme_minimal() + 
+    coord_fixed(ratio = 1) +  
+    scale_color_manual(values = color.palette)
+ggsave("Results/PCA_plots/PCA_plot_Gender.pdf", plot = PCA.plot.gender)
+
+
+PCA.plot.age <- 
+    ggplot(df, aes(PC1, PC2, color = Age)) + 
+    geom_point() +  
+    labs(x=xl,y=yl) +  
+    theme_minimal() + 
+    coord_fixed(ratio = 1) +  
+    scale_color_gradient(low = "yellow", high = "red") +
+    scale_shape_manual(values=seq(0,20))
+ggsave("Results/PCA_plots/PCA_plot_Age.pdf", plot = PCA.plot.age)
+
+PCA.plot.race <- 
+    ggplot(df, aes(PC1, PC2, color = Race)) + 
+    geom_point() +  
+    labs(x=xl,y=yl) +  
+    theme_minimal() + 
+    coord_fixed(ratio = 1) +  
+    scale_color_manual(values = c(color.palette))
+ggsave("Results/PCA_plots/PCA_plot_Race.pdf", plot = PCA.plot.race)
+
+PCA.plot.vaccine <- 
+    ggplot(df, aes(PC1, PC2, color = Vaccine)) + 
+    geom_point() +  
+    labs(x=xl,y=yl) +  
+    theme_minimal() + 
+    coord_fixed(ratio = 1) +  
+    scale_color_manual(values = c(color.palette, color.palette))
+ggsave("Results/PCA_plots/PCA_plot_Vaccine.pdf", plot = PCA.plot.vaccine)
+
+PCA.plot.day <- 
+    ggplot(df, aes(PC1, PC2, color = Day)) + 
+    geom_point() +  
+    labs(x=xl,y=yl) +  
+    theme_minimal() + 
+    coord_fixed(ratio = 1) +  
+    scale_color_manual(values = c(color.palette, color.palette)) +
+    scale_shape_manual(values=seq(0,20))
+ggsave("Results/PCA_plots/PCA_plot_Day.pdf", plot = PCA.plot.day)
+
+PCA.plot.response.patient <- 
+    ggplot(df, aes(PC1, PC2, color = Response, shape = Patient)) + 
+    geom_point() +  
+    labs(x=xl,y=yl) +  
+    theme_minimal() + 
+    coord_fixed(ratio = 1) +  
+    scale_color_manual(values = c(color.palette, color.palette)) +
+    scale_shape_manual(values=seq(0,20))
+ggsave("Results/PCA_plots/PCA_plot_Response_Patient.pdf", plot = PCA.plot.response.patient)
+
+```
+
+```{r Linear Model for Response}
+# Fit a logistic regression model for the responses
+summary(glm(relevel(df$Response, "R") ~ Age + Vaccine + Gender + Race + Day, data = df, family = binomial))
+
+# Plot Age & Gender since they are the statistically significant ones
+p.response.age.boxplot <- 
+  ggplot(df, aes(x=Response, y=Age )) + 
+  geom_boxplot() +
+  theme_minimal() +
+  stat_compare_means(method = "t.test", label.x = 1.3, label.y = 92) + facet_wrap(~Gender) +
+  scale_color_manual(values = color.palette)
+
+p.response.age.boxplot.pretty <- 
+  ggplot(df, aes(x=Response, y=Age )) + 
+  geom_boxplot() +
+  geom_point(size=2, aes(color = Vaccine)) + 
+  theme_minimal() +
+  stat_compare_means(method = "t.test", label.x = 1.3, label.y = 92) + facet_wrap(~Gender) +
+  scale_color_manual(values = color.palette)
+
+ggsave("Results/Response_Age_glm_boxplot.pdf", plot = p.response.age.boxplot)
+ggsave("Results/Response_Age_glm_boxplot_pretty.pdf", plot = p.response.age.boxplot.pretty)
+
+
+## Age vs Batch Year
+
+lm(Age ~ Vaccine.year , data = df) %>% summary
+
+ggplot(df, aes(x = Vaccine.year, y = Age)) + geom_boxplot() + theme_minimal()
+
+```
+
+
+```{r Differential Analyses Global Parameters}
+FDR.cutoff <- 1
+LFC.cutoff <- 0
+```
+
+
+```{r Differential Analyses - edgeR}
+# Create DGEList object
+y <- DGEList(counts = count.matrix, group = meta.data$Vaccine)
+
+# Calculate normalization factors for library sizes with TMM
+y <- calcNormFactors(y, method = "TMM")
+
+# Create groups to compare
+group  <- factor(paste(meta.data$Vaccine, meta.data$Day ,sep="."))
+
+# Add intercept term for multiple comparisons
+design <- model.matrix(~ 0 + group) 
+rownames(design) <- colnames(count.matrix)
+colnames(design) <- levels(group)
+
+# Estimate dispersion for genes with Bayesian Shrinkage
+y <- estimateDisp(y,design)
+
+# Fit the model
+fit.glm <- glmQLFit(y,design)
+
+
+# Create contrasts to test
+contrasts <- makeContrasts(
+        
+    ## Day Comparisons
+  
+    # PCV13
+    d60xd.7_PCV13 = PCV13.d60 - PCV13.d.7,
+    d10xd.7_PCV13 = PCV13.d10 - PCV13.d.7,
+    d1xd.7_PCV13  = PCV13.d1  - PCV13.d.7,
+
+    # PPSV23
+    d60xd.7_PPSV23 = PPSV23.d60 - PPSV23.d.7,
+    d10xd.7_PPSV23 = PPSV23.d10 - PPSV23.d.7,
+    d1xd.7_PPSV23  = PPSV23.d1  - PPSV23.d.7,
+
+    
+    PCV13xPPSV23_d.7 = PCV13.d.7 - PPSV23.d.7,
+    PCV13xPPSV23_d1  = PCV13.d1  -  PPSV23.d1,
+    PCV13xPPSV23_d10 = PCV13.d10 - PPSV23.d10,
+    PCV13xPPSV23_d60 = PCV13.d60 - PPSV23.d60,
+    
+    levels = fit.glm$design
+)
+
+# Create DE gene list for edgeR
+DE.genes.edger <- list()
+
+pdf("Results/RNA-seq/MAplots_edger_FDR_01.pdf",onefile = T)
+for (i in seq_len(ncol(contrasts))){
+    contrast.name <- colnames(contrasts)[i]
+    qlf <- glmQLFTest(fit.glm,contrast = contrasts[,i])
+    plotMD(qlf, main = contrast.name, p.value = 0.1)
+    top.table <- topTags(qlf, n = Inf, p.value = FDR.cutoff)$table
+    DE.genes.edger[[contrast.name]] <- top.table[abs(top.table$logFC) >= LFC.cutoff,]
+}
+dev.off()
+
+if (FDR.cutoff == 1 & LFC.cutoff == 0) save(file = "Data/All_DE_genes_edger.Rdata", DE.genes.edger)
+```
+
+```{r Differential Analyses - Limma-trend}
+fit.trend <- lmFit(count.matrix.normalized, design)
+fit.trend2 <- eBayes(contrasts.fit(fit.trend, contrasts), trend = T)
+# summary(decideTests(fit.trend2, method="separate", lfc = 0, p.value = 0.1))
+
+# Create DE gene list for limma-trend
+DE.genes.trend <- list()
+
+for (i in seq_len(ncol(contrasts))){
+    contrast.name <- colnames(contrasts)[i]
+    top.table <- topTable(fit.trend2, coef = colnames(contrasts)[i], p.value = FDR.cutoff, lfc = LFC.cutoff, number = Inf)
+    DE.genes.trend[[contrast.name]] <- top.table
+}
+
+```
+
+```{r Differential Analyses - Limma-voom}
+v <- voom(count.matrix, design, plot=T)
+fit.voom <- lmFit(v, design)
+fit.voom2 <- eBayes(contrasts.fit(fit.voom, contrasts))
+# summary(decideTests(fit.voom2, method="separate", lfc = 0, p.value = 0.1))
+
+# Create DE gene list for limma-voom
+DE.genes.voom <- list()
+
+for (i in seq_len(ncol(contrasts))){
+    contrast.name <- colnames(contrasts)[i]
+    top.table <- topTable(fit.voom2, coef = colnames(contrasts)[i], p.value = FDR.cutoff, lfc = LFC.cutoff, number = Inf)
+    DE.genes.voom[[contrast.name]] <- top.table
+}
+```
+
+```{r Differential Analyses - DESeq2}
+# Create your desired groups
+group <- paste(meta.data$Vaccine,meta.data$Response, meta.data$Day ,sep=".")
+
+# Assign each sample to its group
+colData <- cbind(colnames(count.matrix), group) %>% as.data.frame()
+colnames(colData)  = c("sample", "groups")
+
+# Create DEseq Object
+dds <- DESeqDataSetFromMatrix(countData = count.matrix, colData = colData, design = ~ groups)
+
+train.DESeq <- F
+# Run or Load DESeq2
+if (train.DESeq) {
+    dds = DESeq(dds, parallel = T)
+    # Save for later use!
+    save(dds, file = "Cache/DEseq_Object.RData")
+} else {
+    load("Cache/DEseq_Object.RData")
+}
+
+# Create DE gene list for DESeq2
+DE.genes.deseq2 <- list()
+
+for (i in seq_len(ncol(contrasts))){
+    contrast.name <- colnames(contrasts)[i]
+    DEseq.contrast <- rownames(contrasts)[contrasts[,i] != 0]
+    res <- results(dds, c("groups", DEseq.contrast[2], DEseq.contrast[1]), parallel = T, tidy = T)
+    rownames(res) <- res$row
+    res.ordered <- res[order(res$pvalue),]
+    res.significant <- subset(res.ordered, padj <= FDR.cutoff)
+    res.significant <- subset(res.significant, abs(log2FoldChange) >= LFC.cutoff)
+    DE.genes.deseq2[[contrast.name]] <- res.significant
+}
+```
+```{r Save/Load DE genes}
+filename <- paste0("Cache/DE_genes_LFC_", LFC.cutoff, "_FDR_",  gsub('\\.', '-', FDR.cutoff), ".RData")
+try(save(DE.genes.deseq2, DE.genes.edger, DE.genes.trend, DE.genes.voom, file = filename))
+try(load(filename))
+```
+
+
+```{r Compare Different DE Algorithms}
+# TO-DO : Seperate as up/down regulated.
+
+path.venn <- "Results/Venn/"
+
+for (contrast in colnames(contrasts)){
+    
+    set.deseq2 <- rownames(DE.genes.deseq2[[contrast]])
+    set.edger  <- rownames(DE.genes.edger[[contrast]])
+    set.trend  <- rownames(DE.genes.trend[[contrast]])
+    set.voom   <- rownames(DE.genes.voom[[contrast]])
+
+    # Create Chart
+    venn.diagram(
+      x = list(set.deseq2, set.edger, set.trend, set.voom),
+      category.names = c("DESeq2" , "edgeR" , "limma-trend", "limma-voom"),
+      filename = paste0(path.venn,contrast, "_venn.png"),
+      output=TRUE
+    )
+}
+
+# Remove Log Files from Venn folder
+files <- list.files(path = path.venn, pattern = "\\.log$")
+sapply(paste0(path.venn,files), file.remove) %>% invisible
+```
+
+```{r Methods Time Course Comparison}
+
+# Create data frame for time course plot
+df.time.course <- lapply(colnames(contrasts)[1:12], function(contrast){
+  
+  # common.gene.count <- 
+  #   Reduce(intersect, 
+  #          list(
+  #            rownames(DE.genes.deseq2[[contrast]]),
+  #            rownames(DE.genes.edger [[contrast]]),
+  #            rownames(DE.genes.trend [[contrast]]),
+  #            rownames(DE.genes.voom  [[contrast]])
+  #           )) %>% length
+  
+  gene.counts <- c(
+    DE.genes.deseq2[[contrast]] %>% nrow,
+    DE.genes.edger [[contrast]] %>% nrow,
+    DE.genes.trend [[contrast]] %>% nrow,
+    DE.genes.voom  [[contrast]] %>% nrow
+    # common.gene.count
+  )
+  method.names <- c("DESeq2", "edgeR", "limma-trend", "limma-voom")
+  contrast.names <- contrast %>% strsplit("_", fixed = T)
+  contrast.name <- contrast.names[[1]][1]
+  vaccine <- contrast.names[[1]][2]
+  response <- contrast.names[[1]][3]
+  
+  df <- data.frame(gene.counts = gene.counts, 
+                   contrast.name = contrast.name, 
+                   vaccine = vaccine, 
+                   response = response, 
+                   method = method.names)
+  
+}) %>% do.call("rbind", .)
+
+df.time.course$contrast.name <- relevel(relevel(df.time.course$contrast.name, "d10xd.7"), "d1xd.7")
+
+p.time.course <- 
+  ggplot(df.time.course, 
+         aes(x=contrast.name, y=gene.counts, shape=method, color=response)) + 
+  geom_point(size = 2) + 
+  ylim(c(0,150)) + 
+  theme_minimal() + 
+  facet_wrap(~vaccine) + 
+  ylab("DE Gene Count") + 
+  xlab("Time Contrasts") +
+  labs(shape = "Methods", color = "Response") + 
+  scale_color_manual(values = color.palette) 
+
+ggsave(filename = "Results/Time_course_differences_among_all_methods.pdf", 
+       plot = p.time.course)
+```
+
+
+```{r Normalized Heatmaps}
+# We decided to use edgeR for this project
+
+# Take only Day comparisons
+DE.genes.union <- sapply(DE.genes.edger[1:12], function(x){
+  x <- x[x$FDR < 0.1,]
+  rownames(x)
+}) %>% unlist %>% unique()
+
+# Heatmap tree levels in order: Vaccine -> Response -> Day -> Patient
+order.loc <- order(meta.data$Vaccine, meta.data$Response, meta.data$Day, meta.data$Patient)
+
+# Confirm ordering
+meta.data[order.loc,]
+
+# Re-order matrix to make it look pretty in heatmap
+count.matrix.normalized.ordered <- count.matrix.normalized[,order.loc]
+
+# Filter DE genes
+count.matrix.normalized.ordered.filtered <- 
+  count.matrix.normalized.ordered [rownames(count.matrix.normalized.ordered) %in% DE.genes.union,]
+
+# # Substract each gene mean
+# count.matrix.normalized.ordered.filtered <-
+#   count.matrix.normalized.ordered.filtered - apply(count.matrix.normalized.ordered.filtered,1,mean)
+
+
+# Sets the minimum (-8), the maximum (8), and the increasing steps (.001) for the color scale
+# Note: if some of your genes are outside of this range, they will appear white on the heatmap
+breaksList = seq(-8, 8, by = .001)
+
+# Draw heatmap
+pdf("Results/Heatmap_all_de_genes.pdf", width = 7, height = 25)
+pheatmap(count.matrix.normalized.ordered.filtered, 
+         cluster_cols = F, cluster_rows = T,fontsize = 5, cellheight = 4.5, cellwidth = 4.5,
+         scale = "row",
+         color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdYlBu")))(length(breaksList)),
+         breaks = breaksList) # Sets the breaks of the color scale as in breaksList
+
+grid.lines(x = 0.302, y = c(0.0965, 0.9365))
+grid.lines(x = 0.481, y = c(0.0965, 0.9365))
+grid.lines(x = 0.660, y = c(0.0965, 0.9365))
+dev.off()
+
+
+# Seperate DE genes for Prevnar
+DE.union.PCV13 <- sapply(DE.genes.edger[1:6], function(x){
+  rownames(x)
+}) %>% unlist %>% unique()
+
+# Count matrix for PCV13
+cmno.PCV13 <- count.matrix.normalized.ordered[, 1:40]
+
+# Filter DE genes
+cmno.PCV13 <- cmno.PCV13 [rownames(cmno.PCV13) %in% DE.union.PCV13,]
+
+# # Normalize Gene
+# cmno.PCV13 <- cmno.PCV13 - apply(cmno.PCV13,1,mean)
+
+# Draw heatmap
+pdf("Results/Heatmap_pcv13_de_genes.pdf", width = 7, height = 25)
+pheatmap(cmno.PCV13, 
+         cluster_cols = F, cluster_rows = T,fontsize = 5, cellheight = 4.5, cellwidth = 4.5,
+         scale = "row",
+         color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdYlBu")))(length(breaksList)),
+         breaks = breaksList) # Sets the breaks of the color scale as in breaksList
+dev.off()
+
+## Heatmap only for Pneumovax
+DE.union.PPSV23 <- sapply(DE.genes.edger[7:12], function(x){
+  rownames(x)
+}) %>% unlist %>% unique()
+
+# Count matrix for PPSV23
+cmno.PPSV23 <- count.matrix.normalized.ordered[, 41:80]
+
+# Filter DE genes
+cmno.PPSV23 <- cmno.PPSV23 [rownames(cmno.PPSV23) %in% DE.union.PPSV23,]
+
+# # Normalize Gene
+# cmno.PPSV23 <- cmno.PPSV23 - apply(cmno.PPSV23,1,mean)
+
+# Draw heatmap
+pdf("Results/Heatmap_PPSV23_de_genes.pdf", width = 7, height = 25)
+pheatmap(cmno.PPSV23, 
+         cluster_cols = F, cluster_rows = T,fontsize = 5, cellheight = 4.5, cellwidth = 4.5,
+         scale = "row",
+         color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdYlBu")))(length(breaksList)),
+         breaks = breaksList) # Sets the breaks of the color scale as in breaksList
+dev.off()
+```
+
+```{r Vaccine Comparisons}
+# # # # # # # # # # # # # # # # # # # # # # # # # DEPRICATED
+# # Subset all vaccine comparisons
+# DE.genes.vaccine <- tail (DE.genes.edger, 8)
+# 
+# # Create a data frame
+# df.vaccines <- names(DE.genes.vaccine) %>% 
+#   strsplit("_", fixed = T) %>% 
+#   as.data.frame() %>% t %>% 
+#   as.data.frame()
+# 
+# # Re-name col/row
+# rownames(df.vaccines) <- names(DE.genes.vaccine)
+# colnames(df.vaccines) <- c("Contrast", "Day", "Response")
+# 
+# # Add gene counts
+# df.vaccines$Gene.count <- sapply(DE.genes.vaccine, nrow)
+# 
+# p.de.total.vaccine <- 
+#   ggplot(df.vaccines, aes(x = Day, y = Gene.count, color = Response)) + 
+#   geom_point(size = 2) + 
+#   theme_minimal() +
+#   scale_color_manual(values = color.palette) +
+#   ylab("Total DE Gene Count") + ggtitle("Prevnar vs Pneumovax")
+# 
+# ggsave("Results/Prevnar_vs_Pneumovax_DE_counts.pdf", plot = p.de.total.vaccine)
+# 
+# # No genes for FDR < 0.1
+# a <- lapply(DE.genes.vaccine, function(x){ x[x$FDR < 0.1,] }) 
+# # # # # # # # # # # # # # # # # # # # # # # # # DEPRICATED
+```
+
+```{r Enrichment Analysis}
+EnrichmentAnalysis <- 
+  function(genes, tissue.cell.type, contrast, status, union.size = 20e3, fdr.threshold = 0.05){
+  
+  # create an empty dataframe for enriched modules,
+  # so that later we can sort them and prepare excel tables, yey!
+  enriched_modules_df <- data.frame()
+  
+  # for each geneset, iterate each module
+  for (i in 1:length(selected_genesets)){ 
+    
+    geneset.name <- names(selected_genesets_labels)[[i]]
+    module.names <- selected_genesets_labels[[i]]
+    modules      <- selected_genesets  [[i]]
+    modules <- merge(modules, module.names, by = "Module.ID")
+    
+    # here we create empty p values, geneset name vectors so that we can adjust p values later
+    module.count  <- nrow(module.names)
+    vector.p      <- vector.overlap.ratio       <- numeric(module.count) 
+    vector.module.names <- vector.geneset.names <- character(module.count)
+    
+    # iterate the modules
+    for (j in 1:nrow(module.names)){
+        
+        module.ID   <- module.names[j, "Module.ID"]
+        module.name <- module.names[j, "Module.Name"]
+        module      <- modules[(modules[, "Module.ID"] == module.ID), "GeneName"] 
+        
+        # module gene count (constant for up/down)
+        module.gene.count <- unique(module) %>% length
+        
+        # upregulated gene count
+        DE.gene.count <- length(genes)
+        
+        # overlapped up-regulated genes with the module
+        overlap.count <- genes %in% module %>% sum 
+        
+        # Ratio of overlapping genes with that module
+        overlap.ratio <- overlap.count / module.gene.count
+        
+        # here we calculate the probability of having a bigger intersection
+        # than the count of overlapping genes given the module size and the total gene count.
+        # we substract 1 for removing the equality when the lower.tail = F, which changes P(X<x) to 1-P(X>=x).
+        p.hyper <- phyper(overlap.count-1, module.gene.count,
+                       union.size - module.gene.count,
+                       DE.gene.count, lower.tail = F, log.p = F)
+        
+        vector.p[j]             <- p.hyper
+        vector.geneset.names[j] <- names(selected_genesets)[[i]]
+        vector.module.names [j] <- module.name
+        vector.overlap.ratio[j] <- overlap.ratio
+    } # for j
+    
+    df.module.list   <- data.frame(geneset.name  = vector.geneset.names, 
+                                   module.name   = vector.module.names,
+                                   overlap.ratio = vector.overlap.ratio,
+                                   p = vector.p,
+                                   stringsAsFactors = F)
+    
+    # adjust the p-values per module
+    df.module.list$adj.p <- p.adjust(p = df.module.list$p, method = "fdr")
+    
+    # sort according to adjusted p-values and then to p-values
+    df.module.list <- df.module.list[order(df.module.list$adj.p, df.module.list$p),]
+    
+    # check if any modules are enriched for up regulated genes
+    if (any(df.module.list$p < fdr.threshold)){
+            
+      # take the enriched modules
+      enriched_modules <- df.module.list[df.module.list$p < fdr.threshold,]
+      
+      # add enriched modules to dataframe
+      enriched_modules_df <- cbind(TCT = tissue.cell.type, 
+                                   Contrast = contrast, 
+                                   enriched_modules,
+                                   Status = status ,
+                                   Overlapping.Genes = NA) %>% rbind(enriched_modules_df) 
+      
+      for (k in 1:nrow(enriched_modules)){
+          
+          enriched_module_name   <- enriched_modules[k, "module.name"]
+          enriched_modules_df$Overlapping.Genes[k] <- 
+              intersect(modules[modules$Module.Name %in% enriched_module_name,]$GeneName, genes) %>% 
+              paste(collapse = ",")
+      } # for k
+    } # if
+  } # for i
+  if (nrow(enriched_modules_df) == 0) return (NULL)
+  return (enriched_modules_df)
+}
+
+
+load ("Data/enrichment_analysis.Rdata")
+
+pc1 <- pca$rotation[,"PC1"]
+pc1.positive.genes <- names(pc1 %>% sort(decreasing = T) %>% head(500))
+pc1.negative.genes <- names(pc1 %>% sort(decreasing = F) %>% head(500))
+
+pc1.positive.modules <- EnrichmentAnalysis(genes = pc1.positive.genes, tissue.cell.type = "PBMC",
+                             contrast = "None", status = "PCA Genes")
+pc1.negative.modules <- EnrichmentAnalysis(genes = pc1.negative.genes, tissue.cell.type = "PBMC",
+                             contrast = "None", status = "PCA Genes")
+
+# Write modules
+write.csv(pc1.positive.modules, file = "Results/PC1_positive_modules.csv")
+write.csv(pc1.negative.modules, file = "Results/PC1_negative_modules.csv")
+
+df.pca.plot <- 
+  rbind(cbind(pc1.positive.modules[pc1.positive.modules$geneset.name == "vp2008", c("module.name", "p")],Status ="PC1+"),
+        cbind(pc1.negative.modules[pc1.negative.modules$geneset.name == "vp2008", c("module.name", "p")],Status ="PC1-"))
+
+plot.PC1.genes <- ggplot(df.pca.plot, aes(x = module.name, y = Status, color = -log(p)*ifelse(Status == "PC1+", 1,-1))) +
+  geom_point(size = 10) + 
+  coord_flip() + 
+  theme_minimal() + 
+  scale_color_gradient2(low = "#3C5488FF", mid = "white", high = "#E64B35FF") +
+  xlab("Module Names") + ylab("") + labs(color = "-log(p) * Status")
+ggsave(filename = "Results/PC1_genes_comparison.pdf", plot = plot.PC1.genes)
+
+```
+
+
+```{r check geneset without save}
+EnrichmentAnalysis_wo_save <- 
+  function (genes, tissue_cell_type, contrast, union_size = 20000){
+    
+    genes_up_tbl   <- genes [genes$logFC >  0,]
+    genes_down_tbl <- genes [genes$logFC <= 0,]
+    
+    # These are mice gene names which are differentially expressed.
+    genes_up   <- rownames(genes_up_tbl)
+    genes_down <- rownames(genes_down_tbl)
+  
+    # create an empty dataframe for enriched modules,
+    # so that later we can sort them and prepare excel tables, yey!
+    enriched_modules_df <- data.frame()
+    
+    # for each geneset, iterate each module
+    for (i in 1:length(selected_genesets)){
+        
+        geneset_name <- names(selected_genesets_labels)[[i]]
+        module_names <- selected_genesets_labels[[i]]
+        modules      <- selected_genesets  [[i]]
+        modules <- merge(modules, module_names, by = "Module.ID")
+        
+        # here we create empty p values, geneset name vectors so that we can adjust p values later
+        module_count        <- nrow(module_names)
+        vector_p_up         <- vector_p_down <- numeric(module_count) 
+        vector_module_names <- vector_geneset_names <- character(module_count)
+        vector_overlapping_up <- vector_overlapping_dw <- character(module_count)
+        # iterate the modules
+        
+        cat ("Geneset Name:", geneset_name, "\n")
+        for (j in 1:nrow(module_names)){
+            
+            module_ID   <- module_names[j, "Module.ID"]
+            module_name <- module_names[j, "Module.Name"]
+            module      <- modules[(modules[, "Module.ID"] == module_ID), "GeneName"] 
+            
+            # module gene count (constant for up/down)
+            gene_count_module <- unique(module) %>% length
+            
+            # upregulated gene count
+            n_up <- length(genes_up)
+            
+            # overlapped up-regulated genes with the module
+            q_up <- genes_up %in% module %>% sum 
+            
+            
+            # here we calculate the probability of having a bigger intersection
+            # than the count of overlapping genes given the module size and the total gene count.
+            # we substract 1 for removing the equality when the lower.tail = F, which changes P(X<x) to 1-P(X>=x).
+            p_up <- phyper(q_up-1, gene_count_module,
+                           union_size - gene_count_module,
+                           n_up, lower.tail = F, log.p = F)
+            
+            # overlapped genes with modules
+            overlap_genes_up <- genes_up[genes_up %in% module]
+            
+            # overlapped down-regulated genes with the module
+            q_down <- genes_down %in% module %>% sum 
+            
+            # downregulated gene count
+            n_down <- length(genes_down)
+            
+            # calculate p value
+            p_down <- phyper(q_down-1, gene_count_module, 
+                             union_size - gene_count_module, 
+                             n_down, lower.tail = F, log.p = F)
+            
+            # overlapped genes with modules
+            overlap_genes_dw <- genes_down[genes_down %in% module]
+            
+            vector_overlapping_up[j]<- ifelse(isEmpty(overlap_genes_up), "", paste(overlap_genes_up, collapse = ","))
+            vector_overlapping_dw[j]<- ifelse(isEmpty(overlap_genes_dw), "", paste(overlap_genes_dw, collapse = ","))
+            vector_p_up[j]          <- p_up
+            vector_p_down[j]        <- p_down
+            vector_geneset_names[j] <- names(selected_genesets)[[i]]
+            vector_module_names[j]  <- module_name
+            
+        }
+        
+        df_up   <- data.frame(geneset.name = vector_geneset_names, 
+                              module.name = vector_module_names,
+                              overlapping.genes = vector_overlapping_up,
+                              p = vector_p_up,
+                              stringsAsFactors = F)
+        
+        df_down <- data.frame(geneset.name = vector_geneset_names, 
+                              module.name = vector_module_names,
+                              overlapping.genes = vector_overlapping_dw,
+                              p = vector_p_down,
+                              stringsAsFactors = F)
+        
+        # adjust the p-values for each module
+        df_up$adj.p   <- p.adjust(p = df_up$p  , method = "fdr")
+        df_down$adj.p <- p.adjust(p = df_down$p, method = "fdr")
+        
+        # sort according to adjusted p-values and then to p-values
+        df_up   <- df_up  [order(df_up$adj.p  , df_up$p)  ,]
+        df_down <- df_down[order(df_down$adj.p, df_down$p),]
+        
+        # this is an important parameter since it affects the number of modules that are chosen
+        fdr.threshold <- 0.05
+        
+        # check if any modules are enriched for up regulated genes
+        if (any(df_up$adj.p < fdr.threshold)){
+            
+            # take the enriched modules
+            enriched_modules <- df_up[df_up$adj.p < fdr.threshold,]
+            
+            # add enriched modules to dataframe
+            enriched_modules_df <- cbind(TCT = tissue_cell_type, 
+                                         Contrast = contrast, 
+                                         enriched_modules,
+                                         Status="Up") %>% rbind(enriched_modules_df) 
+
+        }
+        
+        # check if any modules are enriched for down regulated genes
+        # To-Do: I know I should make this a function...
+        if (any(df_down$adj.p < fdr.threshold)){
+            
+            # take the enriched modules
+            enriched_modules <- df_down[df_down$adj.p < fdr.threshold,]
+            
+            # add enriched modules to dataframe
+            enriched_modules_df <- cbind(TCT = tissue_cell_type, 
+                                         Contrast = contrast, 
+                                         enriched_modules,
+                                         Status="down") %>% rbind(enriched_modules_df)  
+            
+        }
+    }
+    
+    if (nrow(enriched_modules_df) == 0) return (NULL)
+    return (enriched_modules_df)
+}
+```
+
+
+
+```{r Load & Check Genesets}
+check_genesets <- function (genes, tissue_cell_type, contrast, union_size = 20000){
+    
+    genes_up_tbl   <- genes [genes$logFC >  0,]
+    genes_down_tbl <- genes [genes$logFC <= 0,]
+    
+    # These are mice gene names which are differentially expressed.
+    genes_up   <- rownames(genes_up_tbl)
+    genes_down <- rownames(genes_down_tbl)
+  
+    # create an empty dataframe for enriched modules,
+    # so that later we can sort them and prepare excel tables, yey!
+    enriched_modules_df <- data.frame()
+    
+    # for each geneset, iterate each module
+    for (i in 1:length(selected_genesets)){
+        
+        geneset_name <- names(selected_genesets_labels)[[i]]
+        module_names <- selected_genesets_labels[[i]]
+        modules      <- selected_genesets  [[i]]
+        modules <- merge(modules, module_names, by = "Module.ID")
+        
+        # here we create empty p values, geneset name vectors so that we can adjust p values later
+        module_count        <- nrow(module_names)
+        vector_p_up         <- vector_p_down <- numeric(module_count) 
+        vector_module_names <- vector_geneset_names <- character(module_count)
+        # iterate the modules
+        
+        cat ("Geneset Name:", geneset_name, "\n")
+        for (j in 1:nrow(module_names)){
+            
+            module_ID   <- module_names[j, "Module.ID"]
+            module_name <- module_names[j, "Module.Name"]
+            module      <- modules[(modules[, "Module.ID"] == module_ID), "GeneName"] 
+            
+            # module gene count (constant for up/down)
+            gene_count_module <- unique(module) %>% length
+            
+            # upregulated gene count
+            n_up <- length(genes_up)
+            
+            # overlapped up-regulated genes with the module
+            q_up <- genes_up %in% module %>% sum 
+            
+            
+            # here we calculate the probability of having a bigger intersection
+            # than the count of overlapping genes given the module size and the total gene count.
+            # we substract 1 for removing the equality when the lower.tail = F, which changes P(X<x) to 1-P(X>=x).
+            p_up <- phyper(q_up-1, gene_count_module,
+                           union_size - gene_count_module,
+                           n_up, lower.tail = F, log.p = F)
+            
+            # overlapped down-regulated genes with the module
+            q_down <- genes_down %in% module %>% sum 
+            
+            # downregulated gene count
+            n_down <- length(genes_down)
+            
+            # calculate p value
+            p_down <- phyper(q_down-1, gene_count_module, 
+                             union_size - gene_count_module, 
+                             n_down, lower.tail = F, log.p = F)
+            
+            vector_p_up[j]          <- p_up
+            vector_p_down[j]        <- p_down
+            vector_geneset_names[j] <- names(selected_genesets)[[i]]
+            vector_module_names[j]  <- module_name
+            
+            
+            # cat ("Module Gene Count: ",gene_count_module, "\n")
+            # cat ("Up\t-> overlap: ", q_up, ", gene count: " , n_up, "\n")
+            # cat ("Down\t-> overlap: ", q_down, ", gene count: " , n_down, "\n")
+        }
+        
+        df_up   <- data.frame(geneset.name = vector_geneset_names, 
+                              module.name = vector_module_names,
+                              p = vector_p_up,
+                              stringsAsFactors = F)
+        
+        df_down <- data.frame(geneset.name = vector_geneset_names, 
+                              module.name = vector_module_names,
+                              p = vector_p_down,
+                              stringsAsFactors = F)
+        
+        # adjust the p-values for each module
+        df_up$adj.p   <- p.adjust(p = df_up$p  , method = "fdr")
+        df_down$adj.p <- p.adjust(p = df_down$p, method = "fdr")
+        
+        # sort according to adjusted p-values and then to p-values
+        df_up   <- df_up  [order(df_up$adj.p  , df_up$p)  ,]
+        df_down <- df_down[order(df_down$adj.p, df_down$p),]
+        
+        # this is an important parameter since it affects the number of modules that are chosen
+        fdr.threshold <- 0.05
+        
+        # check if any modules are enriched for up regulated genes
+        if (any(df_up$adj.p < fdr.threshold)){
+            
+            # take the enriched modules
+            enriched_modules <- df_up[df_up$adj.p < fdr.threshold,]
+            
+            # add enriched modules to dataframe
+            enriched_modules_df <- cbind(TCT = tissue_cell_type, 
+                                         Contrast = contrast, 
+                                         enriched_modules,
+                                         Status="Up",
+                                         Overlapping.Genes = NA) %>% rbind(enriched_modules_df) 
+            
+            for (k in 1:nrow(enriched_modules)){
+                
+                enriched_module_name   <- enriched_modules[k, "module.name"]
+                enriched_modules_df$Overlapping.Genes[k] <- 
+                    intersect(modules[modules$Module.Name %in% enriched_module_name,]$GeneName, genes_up) %>% 
+                    paste(collapse = ",")
+                
+                # enriched_module <- modules[modules$Module.Name %in% enriched_module_name,] %>%
+                #     merge(genes_up_tbl, by.x = "GeneName", by.y = 0, all.x = T) %>% 
+                #     arrange(FDR)
+                # write.csv(enriched_module, file = paste0("Results/GSEA/",
+                #                                          contrast, "-",
+                #                                          geneset_name, "-",
+                #                                          gsub("/", "_", enriched_module_name),
+                #                                          "-up_regulated.csv"))
+            }
+        }
+        
+        # check if any modules are enriched for down regulated genes
+        # To-Do: I know I should make this a function...
+        if (any(df_down$adj.p < fdr.threshold)){
+            
+            # take the enriched modules
+            enriched_modules <- df_down[df_down$adj.p < fdr.threshold,]
+            
+            # add enriched modules to dataframe
+            enriched_modules_df <- cbind(TCT = tissue_cell_type, 
+                                         Contrast = contrast, 
+                                         enriched_modules,
+                                         Status="down",
+                                         Overlapping.Genes = NA) %>% rbind(enriched_modules_df)  
+            
+            for (k in 1:nrow(enriched_modules)){
+                
+                enriched_module_name   <- enriched_modules[k, "module.name"]
+                
+                enriched_modules_df$Overlapping.Genes[k] <- 
+                    intersect(modules[modules$Module.Name %in% enriched_module_name,]$GeneName, genes_down) %>% 
+                    paste(collapse = ",")
+                # 
+                # enriched_module <- modules[modules$Module.Name %in% enriched_module_name,] %>%
+                #     merge(genes_down_tbl, by.x = "GeneName", by.y = 0, all.x = T) %>% 
+                #     arrange(FDR)
+                # write.csv(enriched_module, file = paste0("Results/RNA-seq/HyperGeo/",
+                #                                          contrast, "-",
+                #                                          geneset_name, "-",
+                #                                          gsub("/", "_", enriched_module_name),
+                #                                          "-down_regulated.csv"))
+            }
+        }
+    }
+    
+    if (nrow(enriched_modules_df) == 0) return (NULL)
+    return (enriched_modules_df)
+}
+
+# Load genesets
+# https://doi.org/10.1016/j.immuni.2008.05.012
+load("Data/enrichment_analysis.Rdata")
+load("Data/All_DE_genes_edger.Rdata")
+
+list.of.contrasts <- list()
+for (i in seq_along(DE.genes.edger)){
+  genes           <- DE.genes.edger[[i]]
+  genes.DE        <- genes[genes$FDR < 0.1,]
+  
+  contrast.name   <- names(DE.genes.edger)[i]
+  enriched.module <- check_genesets(genes.DE, "PBMC", contrast.name)
+  list.of.contrasts[[contrast.name]] <- enriched.module
+}
+
+do.call("rbind", list.of.contrasts) %>% write.csv("Results/ER_modules_summary.csv")
+```
+
+
+
+```{r Gene Set Enrichment Analyses}
+load("Data/enrichment_analysis.Rdata")
+load("Data/All_DE_genes_edger.Rdata")
+
+
+geneset.name <- "vp2008"
+geneset <- selected_genesets[[geneset.name]]
+geneset.label <- selected_genesets_labels[[geneset.name]]
+
+geneset.merged <- merge(geneset, geneset.label, by = "Module.ID")
+
+pathways <- geneset.merged %>% group_split(Module.Name) %>% sapply(function(x) x[,"GeneName"])
+names(pathways)  <- geneset.label[,"Module.Name"]
+
+cd8.t <- read.csv("Data/CD8T_Nv_vs_Temras_Djamel.csv", stringsAsFactors = F)
+
+pathways[["CD8_Temra"]] <- cd8.t[["Temra"]] 
+pathways[["CD8_Naive"]] <- cd8.t[["Naive"]]
+
+# GSEA Immunologic Signature Pathway
+# pathways <- read.gmt("Data/c7.all.v7.1.symbols.gmt")
+
+
+# # Virginia Pasqual Immune Modules 
+# geneset.name <- "vp2008"
+# geneset <- selected_genesets[[geneset.name]]
+# geneset.label <- selected_genesets_labels[[geneset.name]]
+# 
+# geneset.merged <- merge(geneset, geneset.label, by = "Module.ID")
+# 
+# pathways <- geneset.merged %>% group_split(Module.Name) %>% sapply(function(x) x[,"GeneName"])
+# names(pathways)  <- geneset.label[,"Module.Name"]
+# 
+contrast.list <- names(DE.genes.edger)
+
+fgseaList <- lapply(contrast.list, function(contrast){
+  
+  DE.genes <- DE.genes.edger[[contrast]]
+  ranks <- DE.genes[,"logFC"]
+  names(ranks) <- rownames(DE.genes)
+  
+  # barplot(sort(ranks, decreasing = T)) 
+  
+  fgseaRes <- fgsea(pathways, ranks, minSize=15, maxSize = 500, nperm=1000)
+  # fgseaRes.copy <- fgseaRes
+  # fgseaRes.copy$leadingEdge <- sapply(fgseaRes.copy$leadingEdge,function(x){paste(x,collapse = ",")})
+  # write.csv(fgseaRes.copy, file = paste0("Results/RNA-seq/FGSEA/FGSEA_files/C7_",contrast,".csv"))
+  # 
+  # topUp <- fgseaRes %>% 
+  #     dplyr::filter(ES > 0) %>% 
+  #     dplyr::filter(padj < 0.1) %>% 
+  #     top_n(wt=-pval, n = 10)
+  # topDown <- fgseaRes %>% 
+  #     dplyr::filter(ES < 0) %>% 
+  #     dplyr::filter(padj < 0.1) %>% 
+  #     dplyr::top_n(10, wt=-pval)
+  # topPathways <- bind_rows(topUp, topDown) %>% 
+  #     arrange(-ES)
+  # 
+  # if (nrow(topPathways)>0){
+  #     pdf(paste0("Results/RNA-seq/FGSEA/GSEA_C7_",contrast,".pdf"), 
+  #         width = 20, height = (nrow(topUp) + nrow(topDown))/3)
+  #     plotGseaTable(pathways[topPathways$pathway], 
+  #                   ranks, 
+  #                   fgseaRes, 
+  #                   gseaParam = 0.5)
+  #     
+  #     dev.off()
+  # }
+  
+  return(fgseaRes)
+
+})
+
+names(fgseaList) <- contrast.list
+
+gsea.list <- map_df(fgseaList, ~as.data.frame(.x), .id="contrast")
+
+gsea.list.vaccine <- gsea.list[ gsea.list$contrast %in% paste0("PCV13xPPSV23_", c('d.7','d1','d10','d60')),]
+gsea.list.day     <- gsea.list[!gsea.list$contrast %in% paste0("PCV13xPPSV23_", c('d.7','d1','d10','d60')),]
+
+
+plot.contrast.nes.vaccine <-
+  ggplot(gsea.list.vaccine %>% filter(padj < 0.1),
+         aes(x = contrast, y = pathway,color = NES, size = -log(padj), 
+             label = ifelse(padj < 0.1, "*", ""))) +
+  geom_point() +
+  # geom_text(color = "white") + 
+  scale_fill_gradient2(low = "blue", high = "red") + theme_minimal(base_size = 15) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) + 
+  xlab("Contrast") + ylab("Pathway") + 
+  scale_x_discrete(labels=c("PCV13xPPSV23_d.7" = "Prevnar vs Pneumovax at Baseline",
+                            "PCV13xPPSV23_d1"  = "Prevnar vs Pneumovax at Day 1",
+                            "PCV13xPPSV23_d10" = "Prevnar vs Pneumovax at Day 10",
+                            "PCV13xPPSV23_d60" = "Prevnar vs Pneumovax at Day 60")) +
+  scale_color_paletteer_c("pals::coolwarm")
+
+ggsave(paste0("Results/RNA-seq/FGSEA/Contrasts_vs_Pathways_NES_Vaccine_Summary_",geneset.name,".pdf"),
+       plot = plot.contrast.nes.vaccine,
+       useDingbats = F)
+
+gsea.list.day$contrast <- 
+factor(gsea.list.day$contrast, levels = c("d1xd.7_PCV13", "d10xd.7_PCV13", "d60xd.7_PCV13",
+                                          "d1xd.7_PPSV23", "d10xd.7_PPSV23", "d60xd.7_PPSV23"))
+
+plot.contrast.nes.day <- 
+  ggplot(gsea.list.day %>% filter(padj < 0.1), 
+         aes(x = contrast, y = pathway, size = -log(padj),color = NES, 
+             label = ifelse(padj < 0.05, "*", ""))) +
+  geom_point() +
+  # geom_text(nudge_y = -0.2) + 
+  scale_fill_gradient2(low = "blue", high = "red") + theme_minimal(base_size = 15) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) + 
+  xlab("Contrast") + ylab("Pathway") + 
+  scale_x_discrete(labels=c("d1xd.7_PCV13"  = "Prevnar - Day 1 vs Baseline",
+                            "d10xd.7_PCV13" = "Prevnar - Day 10 vs Baseline",
+                            "d60xd.7_PCV13" = "Prevnar - Day 60 vs Baseline",
+                            "d1xd.7_PPSV23"  = "Pneumovax - Day 1 vs Baseline",
+                            "d10xd.7_PPSV23" = "Pneumovax - Day 10 vs Baseline",
+                            "d60xd.7_PPSV23" = "Pneumovax - Day 60 vs Baseline")) +
+  scale_color_paletteer_c("pals::coolwarm")
+
+ggsave(paste0("Results/RNA-seq/FGSEA/Contrasts_vs_Pathways_NES_Day_Summary_",geneset.name,".pdf"),
+       plot = plot.contrast.nes.day, 
+       useDingbats = F)
+```
+
+
+```{r Day 10 DE Genes vs Days}
+# load("Data/All_DE_genes_edger.Rdata")
+
+pneumovax.d10 <- DE.genes.edger[["d10xd.7_PPSV23"]]
+pneumovax.d10 <- pneumovax.d10[pneumovax.d10$FDR <0.1,]
+pneumovax.d10$genes <- rownames(pneumovax.d10)
+
+prevnar.d10 <- DE.genes.edger[["d10xd.7_PCV13"]]
+prevnar.d10 <- prevnar.d10[prevnar.d10$FDR <0.1,]
+prevnar.d10$genes <- rownames(prevnar.d10)
+
+genes.d10 <- rbind(prevnar.d10, pneumovax.d10)
+genes.d10 <- genes.d10$genes %>% unique
+
+
+count.matrix.normalized.pcv13  <- count.matrix.normalized[,meta.data$Patient %in% names(fc.pcv13.order)]
+count.matrix.normalized.ppsv23 <- count.matrix.normalized[,meta.data$Patient %in% names(fc.ppsv23.order)]
+
+# Add order so you can re-sort after merging
+meta.data.pcv13 <- merge(cbind(meta.data[meta.data$Patient %in% names(fc.pcv13.order),], order=1:40),
+                         fc.pcv13.order, by.x = "Patient", by.y = 0) %>% arrange(order)
+meta.data.ppsv23 <- merge(cbind(meta.data[meta.data$Patient %in% names(fc.ppsv23.order),], order=1:40),
+                         fc.ppsv23.order, by.x = "Patient", by.y = 0) %>% arrange(order)
+
+plot.order.pcv13  <- order(meta.data.pcv13$Day, meta.data.pcv13$y)
+plot.order.ppsv23 <- order(meta.data.ppsv23$Day, meta.data.ppsv23$y)
+
+count.matrix.normalized.pcv13.ordered  <- count.matrix.normalized.pcv13[genes.d10,plot.order.pcv13]
+count.matrix.normalized.ppsv23.ordered <- count.matrix.normalized.ppsv23[genes.d10,plot.order.ppsv23]
+
+
+pdf("Results/RNA-seq/D10_genes_vs_dense_ranked_patients_prevnar.pdf", width = 10)
+pheatmap(count.matrix.normalized.pcv13.ordered , cluster_cols = F, scale = "row", main = "Prevnar - FC Dense Ranked", breaks = breaksList,
+         color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdYlBu")))(length(breaksList)))
+dev.off()
+
+pdf("Results/RNA-seq/D10_genes_vs_dense_ranked_patients_pneumovax.pdf", width = 10)
+pheatmap(count.matrix.normalized.ppsv23.ordered, cluster_cols = F, scale = "row", main = "Pneumovax - FC Dense Ranked", breaks = breaksList,
+         color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdYlBu")))(length(breaksList)))
+dev.off()
+
+breaksList = seq(-3, 3, by = .001)
+cm.fc.ordered <- cbind(count.matrix.normalized.pcv13.ordered, count.matrix.normalized.ppsv23.ordered)
+cm.fc.ordered <- cm.fc.ordered[rownames(cm.fc.ordered) %>% sort,]
+pmap.colnames <- colnames(cm.fc.ordered) %>% strsplit(split = "_", fixed = T) %>% sapply(function(x){x[1]})
+
+annotation.col = data.frame(Vaccine = factor(rep(c("Prevnar", "Pneumovax"), c(40, 40))))
+rownames(annotation.col) <- colnames(cm.fc.ordered)
+
+# Specify colors
+ann_colors = list(
+    Vaccine = c(Prevnar = "#5170AD", Pneumovax = "#AB3F4C")
+)
+pdf("Results/RNA-seq/D10_genes_vs_dense_ranked_patients.pdf", width = 10)
+pheatmap(cm.fc.ordered, 
+         cluster_cols = F, cluster_rows = F, scale = "row", main = "",
+         breaks = breaksList, annotation_col = annotation.col, annotation_legend = T, annotation_colors = ann_colors,
+         gaps_col = seq(10,70,10),labels_col = pmap.colnames, border_color = NA,
+         fontsize = 6, color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdBu")))(length(breaksList)))
+dev.off()
+```
+
+```{r}
+geneset <- selected_genesets[["vp2008"]]
+geneset.label <- selected_genesets_labels[["vp2008"]]
+geneset.merged <- merge(geneset, geneset.label, by = "Module.ID")
+
+# Indices of d10 samples
+d10.locs <- which(meta.data$Day == "d10")
+
+# Names of the modules
+module.names <- unique(geneset.merged$Module.Name)
+
+# Titer means per patient
+titer.patient.pcv13  <- fc.pcv13.titers %>% log
+titer.patient.ppsv23 <- fc.ppsv23.titers %>% log
+
+# Create empty matrices for correlations
+cor.matrix.pcv13 <- cor.matrix.ppsv23 <- 
+  matrix(NA, length(module.names), ncol(titer.patient.pcv13))
+
+# Set rownames
+rownames(cor.matrix.pcv13) <- rownames(cor.matrix.ppsv23) <-
+  module.names
+
+# Set colnames
+colnames(cor.matrix.pcv13) <- colnames(cor.matrix.ppsv23) <-
+  titer.patient.pcv13 %>% colnames
+
+for (i in c(1:length(module.names))){
+  
+  # Get module name
+  module.name  <- module.names[i]
+  
+  # Get gene list of module
+  module.genes <- geneset.merged[geneset.merged$Module.Name %in% module.name,"GeneName"]
+  
+  # Find the count matrix genes which are in the module
+  module.patient.means <- count.matrix.normalized[module.genes,d10.locs] %>% na.omit %>% colMeans
+  names(module.patient.means) <- meta.data[d10.locs,]$Patient %>% as.vector
+  
+  # Iterate over each titer
+  for (j in c(1:ncol(titer.patient.pcv13))){
+    
+    titer.col.pcv13 <- titer.patient.pcv13[,j]
+    names(titer.col.pcv13) <- titer.patient.pcv13 %>% rownames
+    
+    titer.col.ppsv23 <- titer.patient.ppsv23[,j]
+    names(titer.col.ppsv23) <- titer.patient.ppsv23 %>% rownames
+    
+    merged.count.titer.pcv13  <- merge(module.patient.means, titer.col.pcv13 , by = 0) 
+    merged.count.titer.ppsv23 <- merge(module.patient.means, titer.col.ppsv23, by = 0) 
+    
+    cor.matrix.pcv13[i,j]  <- cor(merged.count.titer.pcv13$x, merged.count.titer.pcv13$y)
+    cor.matrix.ppsv23[i,j] <- cor(merged.count.titer.ppsv23$x, merged.count.titer.ppsv23$y)
+  }
+}
+
+pheatmap.breaks <- seq(-1, 1, by= 0.01) 
+pheatmap.colors <- colorRampPalette(colors = c("#1c74ff", "white", "#DC0000FF"))(length(pheatmap.breaks))
+
+pdf("Results/Modules_vs_Serotypes.pdf", onefile = T)
+pheatmap(cor.matrix.pcv13, cluster_rows = F, cluster_cols = F, 
+         breaks = pheatmap.breaks, color = pheatmap.colors, main = "Prevnar")
+pheatmap(cor.matrix.ppsv23, cluster_rows = F, cluster_cols = F, 
+         breaks = pheatmap.breaks, color = pheatmap.colors, main = "Pneumovax")
+dev.off()
+```
+
+```{r Gene Antibody Linear Model Day 10}
+load("Cache/count_matrices.Rdata")
+
+# Indices of d10 samples
+d10.locs <- which(meta.data$Day == "d10")
+base.locs <- which(meta.data$Day == "d.7")
+
+md.d10 <- meta.data[d10.locs,]
+md.base <- meta.data[base.locs,]
+
+# Create an Order
+md.d10$Order <- 1:nrow(md.d10)
+md.base$Order <- 1:nrow(md.base)
+
+# Sort according to Patients
+md.d10 <- md.d10 %>% arrange(Patient)
+md.base <- md.base %>% arrange(Patient)
+
+md.d10.pcv13  <- md.d10[md.d10$Vaccine == "PCV13",  "Patient"] %>% as.vector
+md.d10.ppsv23 <- md.d10[md.d10$Vaccine == "PPSV23", "Patient"] %>% as.vector
+
+# Seperate according to days
+cm.d10 <- count.matrix[,d10.locs]
+cm.base <- count.matrix[,base.locs] + 1
+
+# Sort according to Order
+cm.d10.ordered <- cm.d10[,md.d10$Order]
+cm.base.ordered <- cm.base[,md.base$Order]
+
+# Gene expression Day 10 vs Baseline
+cm.d10_base <- (cm.d10.ordered / (cm.base.ordered ))
+
+cm.d10.pcv13  <- cm.d10_base [, md.d10$Vaccine == "PCV13"]
+cm.d10.ppsv23 <- cm.d10_base [, md.d10$Vaccine == "PPSV23"]
+
+
+# Prevnar #
+gene.titer.p.vals.pcv13 <- gene.titer.adj.r2.pcv13 <- matrix(NA, nrow(cm.d10.pcv13), 13)
+rownames(gene.titer.p.vals.pcv13) <- rownames(gene.titer.adj.r2.pcv13) <- rownames(cm.d10.pcv13)
+colnames(gene.titer.p.vals.pcv13) <- colnames(gene.titer.adj.r2.pcv13) <- colnames(titer.patient.pcv13)
+
+titer.gene.pcv13 <- fc.pcv13.titers[md.d10.pcv13,]
+
+for(i in c(1:nrow(gene.titer.p.vals.pcv13))){
+  for(j in c(1:ncol(gene.titer.p.vals.pcv13))){
+    
+    sum.pcv13 <- summary(lm(titer.gene.pcv13[,j] ~ cm.d10.pcv13[i,] %>% as.numeric))
+    if(nrow(sum.pcv13$coefficients) > 1){
+      gene.titer.p.vals.pcv13[i,j] <- sum.pcv13$coefficients[2,4]
+      gene.titer.adj.r2.pcv13[i,j] <- sum.pcv13$adj.r.squared
+    }
+  }
+}
+
+gene.titer.p.vals.pcv13.omitted <- na.omit(gene.titer.p.vals.pcv13)
+gene.titer.adj.r2.pcv13.omitted <- na.omit(gene.titer.adj.r2.pcv13)
+
+p.signif.pcv13 <- rowSums(gene.titer.p.vals.pcv13.omitted < 0.05) >= 7
+
+plot.gene.titer.pcv13 <- 
+  gene.titer.adj.r2.pcv13.omitted[p.signif.pcv13,] %>% 
+  melt %>% mutate(p.val = melt(gene.titer.p.vals.pcv13.omitted[p.signif.pcv13,])[,3]) %>% 
+  ggplot(aes(Var2, Var1, fill = value, label = ifelse(p.val < 0.05, "*", ""))) + 
+  geom_tile() +
+  geom_text(nudge_y = -0.3, color = "#525252") + 
+  scale_fill_gradient2(low = "blue", high = "red") +
+  labs(fill = "Adj R Squared") +
+  xlab("Serotype") + ylab("DE Genes") +
+  theme_minimal() +
+  ggtitle("Prevnar")
+
+ggsave("Results/DE_genes_vs_Serotype_Prevnar_n_7.pdf", plot = plot.gene.titer.pcv13)
+
+
+# Pneumovax - DE genes vs Serotype 
+
+gene.titer.p.vals.ppsv23 <- gene.titer.adj.r2.ppsv23 <- matrix(NA, nrow(cm.d10.ppsv23), 13)
+rownames(gene.titer.p.vals.ppsv23) <- rownames(gene.titer.adj.r2.ppsv23) <- rownames(cm.d10.ppsv23)
+colnames(gene.titer.p.vals.ppsv23) <- colnames(gene.titer.adj.r2.ppsv23) <- colnames(titer.patient.ppsv23)
+
+titer.gene.ppsv23 <- fc.ppsv23.titers[md.d10.ppsv23,] %>% log10
+
+for(i in c(1:nrow(gene.titer.p.vals.ppsv23))){
+  for(j in c(1:ncol(gene.titer.p.vals.ppsv23))){
+    
+    x <- cm.d10.ppsv23[i,] %>% as.numeric
+    sum.ppsv23 <- summary(lm(titer.gene.ppsv23[,j] ~ x))
+                          
+    if(nrow(sum.ppsv23$coefficients) > 1){
+      gene.titer.p.vals.ppsv23[i,j] <- sum.ppsv23$coefficients[2,4]
+      gene.titer.adj.r2.ppsv23[i,j] <- sum.ppsv23$adj.r.squared
+    }
+  }
+}
+
+gene.titer.p.vals.ppsv23.omitted <- na.omit(gene.titer.p.vals.ppsv23)
+gene.titer.adj.r2.ppsv23.omitted <- na.omit(gene.titer.adj.r2.ppsv23)
+
+p.signif.ppsv23 <- rowSums(gene.titer.p.vals.ppsv23.omitted < 0.05) >= 7
+
+plot.gene.titer.ppsv23 <- 
+  gene.titer.adj.r2.ppsv23.omitted[p.signif.ppsv23,] %>% 
+  melt %>% mutate(p.val = melt(gene.titer.p.vals.ppsv23.omitted[p.signif.ppsv23,])[,3]) %>% 
+  ggplot(aes(Var2, Var1, fill = value, label = ifelse(p.val < 0.05, "*", ""))) + 
+  geom_tile() +
+  geom_text(nudge_y = -0.3, color = "#525252") + 
+  scale_fill_gradient2(low = "blue", high = "red") +
+  labs(fill = "Adj R Squared") +
+  xlab("Serotype") + ylab("DE Genes") +
+  theme_minimal() +
+  ggtitle("Pneumovax")
+
+ggsave("Results/DE_genes_vs_Serotype_Pneumovax_n_7.pdf", plot = plot.gene.titer.ppsv23)
+
+
+# Serotype vs Significant Gene Count
+
+gene.titer.p.vals.pcv13.fdr <- 
+  apply(gene.titer.p.vals.pcv13, 2, function(x){p.adjust(x, method = "BH")})
+
+gene.titer.p.vals.ppsv23.fdr <- 
+  apply(gene.titer.p.vals.ppsv23, 2, function(x){p.adjust(x, method = "BH")})
+
+pdf("Results/Serotypes_vs_Significant_Gene_Count.pdf")
+barplot((gene.titer.p.vals.pcv13 < 0.05) %>% colSums(na.rm = T), las = 2, main = "Prevnar")
+barplot((gene.titer.p.vals.ppsv23 < 0.05) %>% colSums(na.rm = T), las = 2, main = "Pneumovax")
+dev.off()
+
+df.sero.plot <- data.frame(stringsAsFactors = F)
+inter.genes <- list()
+p.cutoff.sero <- 0.05
+for (i in c(1:ncol(gene.titer.p.vals.pcv13))){
+  inter <- (gene.titer.p.vals.pcv13[,i] < p.cutoff.sero) & (gene.titer.p.vals.ppsv23[,i] < p.cutoff.sero)
+  diff.prev <- (gene.titer.p.vals.pcv13[,i] < p.cutoff.sero) & !(inter) 
+  diff.pvax <- (gene.titer.p.vals.ppsv23[,i] < p.cutoff.sero) & !(inter) 
+  
+  inter.genes[[colnames(gene.titer.p.vals.pcv13)[i]]] <- names(inter[inter == TRUE])
+  df.sero.plot <- df.sero.plot %>% 
+    rbind(list(Intersected = inter %>% sum(na.rm = T),
+          Prevnar = diff.prev %>%  sum(na.rm = T),
+          Pneumovax = diff.pvax %>%  sum(na.rm = T)))
+}
+df.sero.plot$serotypes <- colnames(gene.titer.p.vals.pcv13)
+df.sero.plot.melted <- df.sero.plot %>% melt(id = "serotypes")
+
+ggplot(df.sero.plot.melted, aes(serotypes, value, fill = variable)) + 
+  geom_bar(stat = "identity") + 
+  theme_minimal(base_size = 15) + 
+  scale_fill_manual(values = c("#d4d4d4",color.palette[3], color.palette[1])) + 
+  ylab("Gene Count") +  xlab("") + labs(fill = "Status")
+
+save(gene.titer.p.vals.pcv13, gene.titer.p.vals.ppsv23, 
+     file = "Dropbox (JAX)/Prevnar Project/Cache/gene_titer_p_vals.RData")
+```
+
+
+```{r TCseq}
+load("Cache/count_matrices.Rdata")
+
+library(stringr)
+library(TCseq)
+numextract <- function(string){ 
+  str_extract(string, "\\-*\\d+\\.*\\d*")
+} 
+
+meta.data$Order <- 1:nrow(meta.data)
+meta.data.sorted <- meta.data %>% arrange(Day)
+
+colnames(count.matrix) <- paste0(meta.data$Patient,"_", meta.data$Day)
+
+meta.data.sorted.prev <- meta.data.sorted[meta.data.sorted$Vaccine == "PCV13",]
+meta.data.sorted.pvax <- meta.data.sorted[meta.data.sorted$Vaccine == "PPSV23",]
+
+cm.prev <- count.matrix[,meta.data.sorted.prev$Order] %>% as.matrix
+cm.pvax <- count.matrix[,meta.data.sorted.pvax$Order] %>% as.matrix
+
+# TCA - Prevnar
+experiment <- data.frame(sampleid = colnames(cm.prev), 
+                         timepoint = meta.data.sorted.prev$Day, 
+                         group = numextract(meta.data.sorted.prev$Patient))
+
+genomicfeature <- data.frame(chr = NA, start= NA, end = NA, id =rownames(cm.prev))
+
+tca <- TCA(design = experiment, counts = cm.prev, genomicFeature = genomicfeature)
+tca <- DBanalysis(tca, filter.type = "raw", filter.value = 10, samplePassfilter = 2)
+tca <- timecourseTable(tca, value = "FC", norm.method = "rpkm", filter = TRUE, pvalue.threshold = 0.05, abs.fold = 2)
+t.prev <- tcTable(tca)
+
+# TCA - Pneumovax
+experiment <- data.frame(sampleid = colnames(cm.pvax), 
+                         timepoint = meta.data.sorted.pvax$Day, 
+                         group = numextract(meta.data.sorted.pvax$Patient))
+
+genomicfeature <- data.frame(chr = NA, start= NA, end = NA, id =rownames(cm.pvax))
+
+tca <- TCA(design = experiment, counts = cm.pvax, genomicFeature = genomicfeature)
+tca <- DBanalysis(tca, filter.type = "raw", filter.value = 10, samplePassfilter = 2)
+tca <- timecourseTable(tca, value = "FC", norm.method = "rpkm", filter = TRUE, pvalue.threshold = 0.05, abs.fold = 2)
+t.pvax <- tcTable(tca)
+
+#tca <- timeclust(tca, algo = "cm", k = 7, standardize = TRUE)
+#p <- timeclustplot(tca, value = "z-score(RPKM)", cols = 3)
+# 
+# pdf("Results/RNA-seq/TCseq_results.pdf")
+# print(p)
+# dev.off()
+
+
+tca.prev.genes <- rownames(t.prev)
+tca.pvax.genes <- rownames(t.pvax)
+
+tca.genes <- union(tca.prev.genes, tca.pvax.genes)
+par(nrow = c(2,1))
+colnames(t.prev) <- c("Baseline", "Day 1", "Day 10", "Day 60")
+plot.tc.prev<- 
+  t.prev %>% melt %>% ggplot(aes(x = Var2, y = value, group = Var1)) + geom_line() + theme_pubr() + ylab("logFC DE Genes \n (compared to baseline)") + xlab("") + ggtitle("Prevnar-13") 
+
+colnames(t.pvax) <- c("Baseline", "Day 1", "Day 10", "Day 60")
+plot.tc.pvax <- 
+  t.pvax %>% melt %>% ggplot(aes(x = Var2, y = value, group = Var1)) + geom_line() + theme_pubr() + ylab("logFC DE Genes \n (compared to baseline)") + xlab("") + ggtitle("Pneumovax-23")
+
+plot.tc.comb <- ggarrange(plot.tc.prev, plot.tc.pvax, ncol = 1, nrow = 2)
+ggsave("Results/RNA-seq/TCseq_both_vaccine_time_course.pdf", plot = plot.tc.comb)
+
+
+write.csv(x = t.prev, file = "Results/RNA-seq/TCseq_Prevnar_Gene_logFC_relative_to_baseline.csv")
+write.csv(x = t.pvax, file = "Results/RNA-seq/TCseq_Pneumovax_Gene_logFC_relative_to_baseline.csv")
+
+# Heatmap tree levels in order: Vaccine -> Response -> Day -> Patient
+order.loc <- order(meta.data$Vaccine, meta.data$Response, meta.data$Day, meta.data$Patient)
+
+# Confirm ordering
+meta.data[order.loc,]
+
+# Re-order matrix to make it look pretty in heatmap
+count.matrix.normalized.ordered <- count.matrix.normalized[,order.loc]
+
+# Filter DE genes
+count.matrix.normalized.ordered.filtered <- 
+  count.matrix.normalized.ordered [rownames(count.matrix.normalized.ordered) %in% tca.genes,]
+
+# # Substract each gene mean
+# count.matrix.normalized.ordered.filtered <-
+#   count.matrix.normalized.ordered.filtered - apply(count.matrix.normalized.ordered.filtered,1,mean)
+
+
+# Sets the minimum (-8), the maximum (8), and the increasing steps (.001) for the color scale
+# Note: if some of your genes are outside of this range, they will appear white on the heatmap
+breaksList = seq(-3, 3, by = .001)
+
+# Draw heatmap
+pdf("Results/RNA-seq/TCseq_genes_summary_figure_01.pdf")
+pheatmap(count.matrix.normalized.ordered.filtered, 
+         cluster_cols = F, cluster_rows = T,fontsize = 5, cellheight = 4.5, cellwidth = 4.5,
+         scale = "row",
+         color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdYlBu")))(length(breaksList)),
+         breaks = breaksList) # Sets the breaks of the color scale as in breaksList
+dev.off()
+
+
+# Write DE genes and TCseq genes to Excel
+write_xlsx(x = list(`Day 10 DE Genes (Prevnar)` = prevnar.d10,
+                    `Day 10 DE Genes (Pneumovax)` = pneumovax.d10,
+                    `TCseq genes (Prevnar)` = t.prev %>% as.data.frame %>% mutate(Genes = rownames(.)),
+                    `TCseq genes (Pneumovax)` = t.pvax %>% as.data.frame %>% mutate(Genes = rownames(.))),
+           path = "Results/Supplementary-Table-5.xlsx", 
+           )
+```
+
+
+```{r Fernando Modules}
+fernando.modules <- read_excel("Data/Selected_genesets_April_22_2020.xlsx")
+pdf("Results/RNA-seq/Fernando_Modules_Heatmap.pdf", height = 9)
+for (i in 1:ncol(fernando.modules)){
+  cm.fernando <- 
+    count.matrix.normalized.ordered[rownames(count.matrix.normalized.ordered) %in%
+                                      na.omit(fernando.modules[,i])[[1]],]
+  pheatmap(cm.fernando, 
+         cluster_cols = F, cluster_rows = T,fontsize = 5, cellheight = 4.5, cellwidth = 4.5,
+         scale = "row",
+         color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdYlBu")))(length(breaksList)),
+         breaks = breaksList, main = colnames(fernando.modules)[i]) # Sets the breaks of the color scale as in breaksList
+}
+dev.off()
+```
+
+```{r IG-genes}
+IG.genes <- rownames(count.matrix.normalized)[grepl("^IG", rownames(count.matrix.normalized))] %>% sort
+
+# Heatmap tree levels in order: Vaccine -> Response -> Day -> Patient
+order.loc <- order( meta.data$Vaccine, meta.data$Day,  meta.data$Response, meta.data$Patient)
+
+# Confirm ordering
+# meta.data[order.loc,]
+
+# Re-order matrix to make it look pretty in heatmap
+count.matrix.normalized.ordered <- count.matrix.normalized[,order.loc]
+
+# Filter DE genes
+count.matrix.normalized.ordered.filtered <- 
+  count.matrix.normalized.ordered [rownames(count.matrix.normalized.ordered) %in% IG.genes,]
+
+breaksList = seq(-3, 3, by = .01)
+
+pdf("Results/RNA-seq/IG_genes_expressions.pdf", height = 15)
+pheatmap(count.matrix.normalized.ordered.filtered, 
+         cluster_cols = F, cluster_rows = F,fontsize = 5, cellheight = 5, cellwidth = 5,
+         scale = "row", gaps_col = seq(10, 80, 10),
+         color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdBu")))(length(breaksList)),
+         breaks = breaksList, border_color = NA) # Sets the breaks of the color scale as in breaksList
+dev.off()
+```
+
+```{r Fernando Correlation Analyses}
+# use this function to make row or column names bold
+# parameters:
+#   mat: the matrix passed to pheatmap
+#   rc_fun: either rownames or colnames
+#   rc_names: vector of names that should appear in boldface
+make_bold_names <- function(mat, rc_fun, rc_names) {
+  bold_names <- rc_fun(mat)
+  ids <- rc_names %>% match(rc_fun(mat))
+  ids %>%
+    walk(
+      function(i)
+        bold_names[i] <<-
+        bquote(bold(.(rc_fun(mat)[i]))) %>%
+        as.expression()
+    )
+  bold_names
+}
+
+
+# Seperate meta data for both vaccines
+md.prev <- meta.data[meta.data$Vaccine == "PCV13",]
+md.pvax <- meta.data[meta.data$Vaccine == "PPSV23",]
+
+# Seperate count matrices for both vaccines
+cm.prev <- count.matrix.normalized[,which(meta.data$Vaccine == "PCV13")]
+cm.pvax <- count.matrix.normalized[,which(meta.data$Vaccine == "PPSV23")]
+
+# Seperate meta data for baseline and d10 - Prev
+md.prev.base <- md.prev[md.prev$Day == "d.7",]
+md.prev.d10  <- md.prev[md.prev$Day == "d10",]
+
+# Seperate meta data for baseline and d10 - Pvax
+md.pvax.base <- md.pvax[md.pvax$Day == "d.7",]
+md.pvax.d10  <- md.pvax[md.pvax$Day == "d10",]
+
+# Seperate d10 and baseline for Prevnar count matrix
+cm.prev.base <- cm.prev[,which(md.prev$Day == "d.7")]
+cm.prev.d10  <- cm.prev[,which(md.prev$Day == "d10")]
+
+# Seperate d10 and baseline for Pneumovax
+cm.pvax.base <- cm.pvax[,which(md.pvax$Day == "d.7")]
+cm.pvax.d10  <- cm.pvax[,which(md.pvax$Day == "d10")]
+
+md.prev.base$Order <- 1:nrow(md.prev.base)
+md.pvax.base$Order <- 1:nrow(md.pvax.base)
+md.prev.d10$Order <- 1:nrow(md.prev.d10)
+md.pvax.d10$Order <- 1:nrow(md.pvax.d10)
+
+md.prev.base <- md.prev.base %>% arrange(Patient)
+md.prev.d10  <- md.prev.d10 %>% arrange(Patient)
+md.pvax.base <- md.pvax.base  %>% arrange(Patient)
+md.pvax.d10  <- md.pvax.d10  %>% arrange(Patient)
+
+# Day 10 vs Baseline Count Matrix
+cm.fc.prev <- cm.prev.d10 [,md.prev.d10$Order]/cm.prev.base[,md.prev.base$Order]
+cm.fc.pvax <- cm.pvax.d10 [,md.pvax.d10$Order]/cm.pvax.base[,md.pvax.base$Order]
+
+# Samples Responsed to serotypes
+serotype.res.prev <- (fc.pcv13.titers  > 8) %>% rowSums / 13
+serotype.res.pvax <- (fc.ppsv23.titers > 8) %>% rowSums / 13
+
+# Serotypes 
+serotype.res.prev <- serotype.res.prev[md.prev.base$Patient %>% as.character]
+serotype.res.pvax <- serotype.res.pvax[md.pvax.base$Patient %>% as.character]
+
+# Serotypes FC add to correlation matrix
+corr.prev.serotypes <- rbind(fc.pcv13.titers [md.prev.base$Patient %>% as.character,] %>% t %>% log10, 
+                             cm.fc.prev[IG.genes,] %>% `colnames<-`(md.prev.base$Patient))
+corr.pvax.serotypes <- rbind(fc.ppsv23.titers[md.pvax.base$Patient %>% as.character,] %>% t,
+                             cm.fc.pvax[IG.genes,] %>% `colnames<-`(md.pvax.base$Patient))
+
+breaksList = seq(-1, 1, by = .01)
+pdf("Results/IG_genes_vs_Serotype_correlations_Prev.pdf")
+pheatmap(cor(t(corr.prev.serotypes)), 
+         fontsize = 4, cellheight = 3, cellwidth = 3, 
+         color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdBu")))(length(breaksList)),
+         breaks = breaksList, border_color = NA, 
+         labels_row = make_bold_names(cor(t(corr.prev.serotypes)), rownames, c(colnames(fc.pcv13.titers))),
+         main = "Prevnar - Day 10/Baseline IG Genes and Serotype Correlations")
+dev.off()
+
+pdf("Results/IG_genes_vs_Serotype_correlations_Pvax.pdf")
+pheatmap(cor(t(corr.pvax.serotypes)), 
+         fontsize = 4, cellheight = 3, cellwidth = 3, 
+         color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdBu")))(length(breaksList)),
+         breaks = breaksList, border_color = NA, 
+         labels_row = make_bold_names(cor(t(corr.pvax.serotypes)), rownames, c(colnames(fc.ppsv23.titers))),
+         main = "Prevnar - Day 10/Baseline IG Genes and Serotype Correlations")
+dev.off()
+
+
+# Add Serotype Responses
+corr.prev <- rbind(AGE = md.prev.base$Age, `SEROTYPE RESPONSE` = serotype.res.prev, cm.fc.prev[IG.genes,]) %>% t %>% cor
+corr.pvax <- rbind(AGE = md.pvax.base$Age, `SEROTYPE RESPONSE` = serotype.res.pvax, cm.fc.pvax[IG.genes,]) %>% t %>% cor
+
+breaksList = seq(-1, 1, by = .01)
+pdf("Results/IG_genes_vs_Antibody_correlations_Prev.pdf")
+pheatmap(cor(t(corr.prev)), 
+         fontsize = 4, cellheight = 3, cellwidth = 3, 
+         color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdBu")))(length(breaksList)),
+         breaks = breaksList, border_color = NA, 
+         labels_row = make_bold_names(cor(t(corr.pvax)), rownames, c("SEROTYPE RESPONSE", "AGE")),
+         main = "Prevnar - Day 10/Baseline IG Genes and Antibody/Age FC Correlations")
+dev.off()
+
+pdf("Results/IG_genes_vs_Antibody_correlations_Pvax.pdf")
+pheatmap(cor(t(corr.pvax)), 
+         fontsize = 4, cellheight = 3, cellwidth = 3, 
+         color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdBu")))(length(breaksList)),
+         breaks = breaksList, border_color = NA, 
+         labels_row = make_bold_names(cor(t(corr.pvax)), rownames,  c("SEROTYPE RESPONSE", "AGE")),
+         main = "Prevnar - Day 10/Baseline IG Genes and Antibody/Age FC Correlations")
+dev.off()
+
+### ONLY FOR AGE
+# Add Serotype Responses
+corr.prev.AGE <- rbind(AGE = md.prev.base$Age, cm.fc.prev[IG.genes,])
+corr.pvax.AGE <- rbind(AGE = md.pvax.base$Age, cm.fc.pvax[IG.genes,])
+
+breaksList = seq(-1, 1, by = .01)
+pdf("Results/IG_genes_vs_Antibody_correlations_Prev_Age_Only.pdf")
+pheatmap(cor(t(corr.prev.AGE)), 
+         fontsize = 4, cellheight = 3, cellwidth = 3, 
+         color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdBu")))(length(breaksList)),
+         breaks = breaksList, border_color = NA, 
+         labels_row = make_bold_names(cor(t(corr.prev.AGE)), rownames, c("AGE")),
+         main = "Prevnar - Day 10/Baseline IG Genes and Age Correlations")
+dev.off()
+
+pdf("Results/IG_genes_vs_Antibody_correlations_Pvax_Age_Only.pdf")
+pheatmap(cor(t(corr.pvax.AGE)), 
+         fontsize = 4, cellheight = 3, cellwidth = 3, 
+         color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdBu")))(length(breaksList)),
+         breaks = breaksList, border_color = NA, 
+         labels_row = make_bold_names(cor(t(corr.pvax.AGE)), rownames,  c("AGE")),
+         main = "Pneumovax - Day 10/Baseline IG Genes and Age Correlations")
+dev.off()
+
+# Find the genes for serotype response
+serotype.res.genes.prev <- rownames(corr.prev[abs(corr.prev["SEROTYPE RESPONSE",]) > 0.6,])
+serotype.res.genes.pvax <- rownames(corr.pvax[abs(corr.pvax["SEROTYPE RESPONSE",]) > 0.6,])
+
+intersect(serotype.res.genes.prev, serotype.res.genes.pvax)
+```
+
+
+# Jacques, Immunity 2013
+We need to compare our findings, specifically IG genes, with the previous study we have conducted.
+```{r Prepare Jacques 2013 Data}
+# #   Boxplot for selected GEO samples
+# library(Biobase)
+# library(GEOquery)
+# library(illuminaHumanv4.db)
+#
+# # load series and platform data from GEO
+# 
+# gset <- getGEO("GSE30101", GSEMatrix =TRUE, getGPL=FALSE)
+# if (length(gset) > 1) idx <- grep("GPL6947", attr(gset, "names")) else idx <- 1
+# gset <- gset[[idx]]
+# 
+# cm.2013 <- gset@assayData$exprs
+# 
+# x<- illuminaHumanv4SYMBOL
+# 
+# mapped_probes <- mappedkeys(x)
+# xx <- as.list(x[mapped_probes])
+# 
+# map.rownames <- xx[rownames(cm.2013)] %>% unlist
+# 
+# rownames(cm.2013)[rownames(cm.2013) %in% names(map.rownames)] <- map.rownames
+# 
+# meta.data.2013 <- gset@phenoData@data
+# meta.data.2013 <- meta.data.2013[c(1,2,39:49)]
+
+# colnames(meta.data.2013) <- c("Title", "Geo.accession", "Age", "Blood.source", "Cell.population", "Day", "Ethnicity", "Gender", "Race", "Sample.set", "Sample.ID", "Vaccine")
+
+load("Data/Jacques_Immunity_2013_Data.RData")
+```
+
+```{r}
+#Filter out lowly expressed genes
+cm.2013 <- cm.2013 [rowSums(cpm(cm.2013) >= 1) >= 4,] %>% as.matrix
+
+meta.data.2013 %>% group_by(Sample.set,Vaccine) %>% count()
+
+# Take the training/test sets from vein
+md.vein <- meta.data.2013[meta.data.2013$Sample.set %in% c("Training_Set_Vein"),]
+
+# Make all vaccine names consistent
+md.vein$Vaccine[(md.vein$Vaccine %in% "PNEUM")]  <- "Pneumovax"
+md.vein$Vaccine[(md.vein$Vaccine %in% "saline")] <- "Saline"
+md.vein$Vaccine[(md.vein$Vaccine %in% c("Flu", "FLUZONE"))] <- "Influenza"
+
+# Determine the levels order for days
+md.vein$Day <- factor(md.vein$Day, levels = c(-7,0,1,3,7,10,14,21,28))
+
+# Filter out Saline
+md.vein <- md.vein[md.vein$Vaccine %in% c("Pneumovax", "Influenza"),]
+
+# Get the ordering for samples ready
+order.loc <- order(md.vein$Vaccine, md.vein$Day, md.vein$Sample.ID)
+
+IG.genes.2013 <- cm.cpm[grep("^IG", rownames(cm.cpm)),] 
+
+
+
+breaksList = seq(-3, 3, by = .01)
+
+
+pheatmap(IG.genes.2013[,md.vein[order.loc,]$Geo.accession], 
+         cluster_cols = F, cluster_rows = F,fontsize = 4, cellheight = 3, cellwidth = 3,
+         scale = "row", gaps_col = seq(6,108,6),
+         color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdBu")))(length(breaksList)),
+         breaks = breaksList, border_color = NA)
+```
+
+```{r IG Genes Baseline and Day 10 for both vaccines}
+load("Cache/count_matrices.Rdata")
+
+IG.genes <- count.matrix.normalized[grep("^IG", rownames(count.matrix.normalized)) %>% sort,]
+
+base.d10.locs <- meta.data$Day %in% c("d.7", "d10")
+
+IG.genes.base.d10 <- IG.genes[,base.d10.locs]
+meta.data.base.d10<- meta.data[base.d10.locs,]
+meta.data.base.d10$Day <- factor(meta.data.base.d10$Day, labels = c("d-7",  "d10"))
+
+lapply(rownames(IG.genes), function(x){
+  df.gg <- IG.genes.base.d10[x,] %>% melt %>% cbind(meta.data.base.d10)
+  
+  plot.gg <-
+    ggplot(df.gg, aes(x = Day, y = value)) + 
+    geom_boxplot(aes(color = Vaccine), size = 1.1) + 
+    stat_compare_means(label = "p.signif", paired = TRUE, size = 8, hjust = -1.5, vjust=0.2) +
+    geom_line(aes(group = Patient), color = "darkgray") +
+    geom_point(aes(color= Vaccine), size = 4) + theme_pubr(base_size = 35) + 
+    ylab("Normalized\nGene Expression") + ggtitle(x) + xlab("")  +
+    scale_color_manual(values = c("#81a6d4", "#d90000")) + facet_wrap(~ Vaccine) +
+    theme(legend.title = element_blank(), legend.position = "none", strip.text.x =
+            element_blank(), strip.background = element_blank())
+  
+  ggsave(plot = plot.gg, paste0("Results/RNA-seq/IG Genes Baseline vs Day 10/", x, ".pdf"))
+})
+```
+
+```{r DICE and 29Cell lines}
+cell.29   <- read_excel("Data/Absolute Deconvolution of Human Immune Cell Types.xlsx")
+cell.dice <- read_excel("Data/DICE_cell_line_genes.xlsx", ) [-1,]  %>% 
+  gather(key = "cell.line", value = "genes", na.rm = T)
+
+load("Data/All_DE_genes_edger.Rdata")
+
+pvax.d10 <- DE.genes.edger[["d10xd.7_PPSV23"]]
+pvax.d10 <- pvax.d10[pvax.d10$FDR < 0.1,]
+pvax.d10$genes <- rownames(pvax.d10)
+
+prev.d10 <- DE.genes.edger[["d10xd.7_PCV13"]]
+prev.d10 <- prev.d10[prev.d10$FDR < 0.1,]
+prev.d10$genes <- rownames(prev.d10)
+
+
+# modules: It should be a dataframe consisting of gene names and corresponding module names.
+
+hyper_geo <- function(modules, genes, union.size = 20e3, geneset.name = "", contrast = "") {
+        # here we create empty p values, geneset name vectors so that we can adjust p values later
+        module_names        <- unique(modules[,1])[[1]]
+        module_count        <- module_names %>% length
+        vector_p            <- numeric(0) 
+        overlapping_genes   <- character(0)
+        for (module_name in module_names){
+
+            # Get the module genes
+            module      <- modules[modules[,1][[1]] == module_name,2][[1]]
+            
+            # Module gene count
+            k <- unique(module) %>% length
+            
+            # gene count
+            n <- length(genes)
+            
+            # overlapped up-regulated genes with the module
+            q <- genes %in% module %>% sum 
+            
+            
+            # here we calculate the probability of having a bigger intersection
+            # than the count of overlapping genes given the module size and the total gene count.
+            # we substract 1 for removing the equality when the lower.tail = F, which changes P(X<x) to 1-P(X>=x).
+            vector_p[module_name] <- phyper(q-1, k, union.size - k, n, lower.tail = F, log.p = F)
+            
+            # take the overlapping genes for the modules
+            og <- genes[genes %in% module]
+            overlapping_genes [module_name] <- ifelse(isEmpty(og), "", paste(og, collapse = ","))
+        }
+        
+        df_modules   <- data.frame(geneset.name = geneset.name,
+                                   contrast = contrast,
+                                   module.name = module_names,
+                                   overlapping.genes = overlapping_genes,
+                                   p = vector_p,
+                                   stringsAsFactors = F)
+        
+        
+        df_modules$adj.p   <- p.adjust(p = df_modules$p  , method = "fdr")
+        
+        
+        # sort according to adjusted p-values and then to p-values
+        df_modules   <- df_modules  [order(df_modules$adj.p, df_modules$p),]
+        
+        return(df_modules)
+}
+
+prev.29 <- hyper_geo(cell.29[,c(2,1)], prev.d10$genes, geneset.name = "29-cell-line")
+prev.dice <- hyper_geo(cell.dice, prev.d10$genes, geneset.name = "Dice-and-others")
+
+pvax.29 <- hyper_geo(cell.29[,c(2,1)], pvax.d10$genes, geneset.name = "29-cell-line")
+pvax.dice <- hyper_geo(cell.dice, pvax.d10$genes,  geneset.name = "Dice-and-others")
+
+all.enrichent = rbind(cbind(rbind(prev.29, prev.dice), Vaccine = "Prev"),
+                      cbind(rbind(pvax.29, pvax.dice), Vaccine = "Pvax"))
+rownames(all.enrichent) <- NULL
+write.csv("Results/RNA-seq/Hyper_Enrichment_DICE_and_29_cell_line_FC2.csv", 
+          x = all.enrichent)
+
+
+
+
+
+# Heatmap tree levels in order: Vaccine -> Response -> Day -> Patient
+order.loc <- order( meta.data$Vaccine, meta.data$Day,  meta.data$Response, meta.data$Patient)
+
+# Confirm ordering
+# meta.data[order.loc,]
+
+# Re-order matrix to make it look pretty in heatmap
+count.matrix.normalized.ordered <- count.matrix.normalized[,order.loc]
+
+# Filter IFN genes
+count.matrix.normalized.ordered.filtered <- 
+  count.matrix.normalized.ordered [rownames(count.matrix.normalized.ordered) %in% c("SIGLEC1","IFI44L","IFIT1","IFI27"),]
+    
+    
+breaksList = seq(-3, 3, by = .01)
+
+pdf("Results/RNA-seq/IG_genes_expressions.pdf", height = 15)
+pheatmap(count.matrix.normalized.ordered.filtered, 
+         cluster_cols = F, cluster_rows = F,fontsize = 5, cellheight = 5, cellwidth = 5,
+         scale = "row", gaps_col = seq(10, 80, 10),
+         color = colorRampPalette(rev(brewer.pal(n = 7, name = "RdBu")))(length(breaksList)),
+         breaks = breaksList, border_color = NA) # Sets the breaks of the color scale as in breaksList
+dev.off()
+```
+
+
+
+```{r Log2 fold Enrichment Analyses}
+# load("Data/All_DE_genes_edger.Rdata")
+# load("Data/enrichment_analysis.Rdata")
+
+DE.prev <- DE.genes.edger[33:35]
+DE.pvax <- DE.genes.edger[36:38]
+
+# Prevnar Enrichment
+ER.results.prev <- NULL
+for (contrast in names(DE.prev)){
+  x <- DE.prev[[contrast]]
+  genes.DE <- x[abs(x[,"logFC"]) >= 2,]
+  ER.results.prev[[contrast]] <- EnrichmentAnalysis_wo_save(genes.DE, "PBMC", contrast)
+}
+ER.results.prev.df <- do.call("rbind", ER.results.prev)
+ER.results.prev.df$Contrast <- factor(ER.results.prev.df$Contrast, 
+                                      levels = c("d1xd.7_PCV13", "d10xd.7_PCV13", "d60xd.7_PCV13"),
+                                      labels = c("D1", "D10", "D60"))
+
+ER.results.prev.df %>% filter(geneset.name == "vp2008") %>% 
+  ggplot(aes(x = Contrast, y= module.name, size = -log(adj.p), color = Status)) + 
+  geom_point() + theme_minimal(base_size = 20) + xlab("Day compared to Baseline (d-7)") + ylab("") + 
+  scale_color_manual(values = color.palette) 
+
+ggsave("Results/RNA-seq/Log2_Enrichment_VP_2008_Prevnar.pdf")
+
+
+# Pneumovax Enrichment
+ER.results.pvax <- NULL
+for (contrast in names(DE.pvax)){
+  x <- DE.pvax[[contrast]]
+  genes.DE <- x[abs(x[,"logFC"]) >= 2,]
+  ER.results.pvax[[contrast]] <- EnrichmentAnalysis_wo_save(genes.DE, "PBMC", contrast)
+}
+ER.results.pvax.df <- do.call("rbind", ER.results.pvax)
+ER.results.pvax.df$Contrast <- factor(ER.results.pvax.df$Contrast, 
+                                      levels = c("d1xd.7_PPSV23", "d10xd.7_PPSV23", "d60xd.7_PPSV23"),
+                                      labels = c("D1", "D10", "D60"))
+
+
+ER.results.pvax.df %>% filter(geneset.name == "vp2008") %>% 
+  ggplot(aes(x = Contrast, y= module.name, size = -log(adj.p), color = Status)) + 
+  geom_point() + theme_minimal(base_size = 20) + xlab("Day compared to Baseline (d-7)") + ylab("") + 
+  scale_color_manual(values = color.palette) 
+
+ggsave("Results/RNA-seq/Log2_Enrichment_VP_2008_Pneumovax.pdf")
+
+# Enrichment Analysis w/ 29 cell line
+ER.prev.29 <- NULL
+
+for (contrast in names(DE.prev)){
+  genes <- DE.prev[[contrast]]
+  genes.ur <- genes[genes$logFC >=  2,]
+  genes.dr <- genes[genes$logFC <= -2,]
+  
+  er.ur <- hyper_geo(cell.29[,c(2,1)], rownames(genes.ur), geneset.name = "29-Cell", contrast = contrast)
+  er.dr <- hyper_geo(cell.29[,c(2,1)], rownames(genes.dr), geneset.name = "29-Cell", contrast = contrast)
+  
+  ER.prev.29[[contrast]] <- rbind(
+    cbind(er.ur, Status = "Up"),
+    cbind(er.dr, Status = "Down")
+  )
+}
+ER.prev.29.df <- do.call("rbind", ER.prev.29)
+ER.prev.29.df$contrast <- factor(ER.prev.29.df$contrast, 
+                                      levels = c("d1xd.7_PCV13", "d10xd.7_PCV13", "d60xd.7_PCV13"),
+                                      labels = c("D1", "D10", "D60"))
+ER.prev.29.df %>% filter(adj.p < 0.1) %>% 
+  ggplot(aes(x = contrast, y= module.name, size = -log(adj.p), color = Status)) + 
+  geom_point() + theme_minimal(base_size = 20) + xlab("Day compared to Baseline (d-7)") + ylab("") + 
+  scale_color_manual(values = color.palette) 
+ggsave("Results/RNA-seq/Log2_Enrichment_Cell_29_Prevnar.pdf")
+
+# Enrichment Analysis w/ 29 cell line
+ER.pvax.29 <- NULL
+
+for (contrast in names(DE.pvax)){
+  genes <- DE.pvax[[contrast]]
+  genes.ur <- genes[genes$logFC >=  2,]
+  genes.dr <- genes[genes$logFC <= -2,]
+  
+  er.ur <- hyper_geo(cell.29[,c(2,1)], rownames(genes.ur), geneset.name = "29-Cell", contrast = contrast)
+  er.dr <- hyper_geo(cell.29[,c(2,1)], rownames(genes.dr), geneset.name = "29-Cell", contrast = contrast)
+  
+  ER.pvax.29[[contrast]] <- rbind(
+    cbind(er.ur, Status = "Up"),
+    cbind(er.dr, Status = "Down")
+  )
+}
+ER.pvax.29.df <- do.call("rbind", ER.pvax.29)
+ER.pvax.29.df$contrast <- factor(ER.pvax.29.df$contrast, 
+                                      levels = c("d1xd.7_PPSV23", "d10xd.7_PPSV23", "d60xd.7_PPSV23"),
+                                      labels = c("D1", "D10", "D60"))
+
+ER.pvax.29.df %>% filter(adj.p < 0.1) %>% 
+  ggplot(aes(x = contrast, y= module.name, size = -log(adj.p), color = Status)) + 
+  geom_point() + theme_minimal(base_size = 20) + xlab("Day compared to Baseline (d-7)") + ylab("") + 
+  scale_color_manual(values = color.palette) 
+ggsave("Results/RNA-seq/Log2_Enrichment_Cell_29_Pneumovax.pdf")
+```
+
+# System vaccinology approach
+I will use baseline gene expression levels to predict the extent (response to the vaccination) via a random forest algorithm and try to find the features (genes) which are responsible for most of the variation using SHaP values.
+
+Found code in: https://github.com/pablo14/shap-values
+
+```{r xgboost and shapley for baseline predictions}
+# load("Data/enrichment_analysis.Rdata")
+load("Cache/count_matrices.Rdata")
+load("Data/All_DE_genes_edger.Rdata")
+
+
+prev.d10 <- DE.genes.edger[["d10xd.7_PCV13"]]
+pvax.d10 <- DE.genes.edger[["d10xd.7_PPSV23"]]
+
+prev.de.d10 <- prev.d10[prev.d10$FDR < 0.1,]
+pvax.de.d10 <- prev.d10[pvax.d10$FDR < 0.1,]
+
+prev.de.d10.genes <- rownames(prev.de.d10)
+pvax.de.d10.genes <- rownames(pvax.de.d10)
+union.de.d10.genes <- c(rownames(prev.de.d10), rownames(pvax.de.d10)) %>% unique
+
+cm.baseline <- count.matrix.normalized[union.de.d10.genes,meta.data$Day == "d.7"]
+md.baseline <- meta.data[meta.data$Day == "d.7",]
+
+md.baseline$Order <- 1:nrow(md.baseline)
+
+cm.baseline.prev <- count.matrix.normalized[prev.de.d10.genes, 
+                                            meta.data$Day == "d.7" & meta.data$Vaccine == "PCV13"]
+cm.baseline.pvax <- count.matrix.normalized[pvax.de.d10.genes, 
+                                            meta.data$Day == "d.7" & meta.data$Vaccine == "PPSV23"]
+
+# immune.modules <- merge(selected_genesets$vp2008, selected_genesets_labels$vp2008, by = "Module.ID")
+# plasma.genes <- immune.modules[immune.modules$Module.Name == "Plasma cells",]$GeneName
+
+# extent
+fc.titers <- rbind(fc.pcv13, fc.ppsv23)
+fc.titers <- fc.titers[,serotypes.sorted] 
+
+md.extent <- data.frame(Patient = rownames(fc.titers),Extent = rowSums(fc.titers > 8))
+md.baseline <- merge(md.baseline, md.extent, by = "Patient", sort = F) %>% arrange(Order)
+
+md.baseline.prev <- md.baseline[md.baseline$Vaccine == "PCV13",]
+md.baseline.pvax <- md.baseline[md.baseline$Vaccine == "PPSV23",]
+
+train_x = t(cm.baseline)
+```
+
+
+```{r}
+# X is gene by sample data.frame
+# y is a sample length vector
+lasso.cv <- function(X, y, title = ""){
+
+  x <- model.matrix(y ~ . , as.data.frame(t(X)))[,-1] 
+  
+  cv <- cv.glmnet(x, y, alpha = 1, nfold = 5)
+  
+  # Create lasso model
+  lassomodel <- glmnet(x, y, alpha = 1, lambda = cv$lambda.min, intercept = F) 
+  
+  #see coefs for cell types   
+  # coef(lassomodel)
+  
+  # predict all ages with the best model
+  y.pred <- predict(lassomodel, newx = x, s = "lambda.min")
+  
+  df.prediction.lasso <- data.frame(x = y, y = y.pred %>% as.vector)
+  
+  ggplot(df.prediction.lasso, aes(x,y)) + geom_point() + xlim(0, 13) + ylim(0,13) +
+    ggtitle(title) + xlab("Extent") + ylab("Predicted Extent")
+}
+
+lasso.cv(cm.baseline, md.baseline$Extent)
+lasso.cv(cm.baseline.prev, md.baseline.prev$Extent, title = "Prevnar")
+lasso.cv(cm.baseline.pvax, md.baseline.pvax$Extent, title = "Pneumovax")
+```
+
+
+
+
+```{r xgboost and shapley for baseline predictions}
+# RANDOM FOREST
+library(xgboost)
+## Create the xgboost model
+model.base = xgboost(data = train_x, 
+                   nround = 10, 
+                   objective="reg:linear",
+                   label= md.baseline$Extent) 
+
+model.base <- xgb.cv(data = train_x, 
+                     nrounds = 100, 
+                     nfold = 10, 
+                     prediction = T, 
+                     objective = "reg:linear", 
+                     label = md.baseline$Extent, 
+                     verbose = T, early_stopping_rounds = 5)
+
+a <- cbind(x = md.baseline$Extent, y = model.base$pred) %>% as.data.frame
+
+pred <- predict(model.base, train_x)
+plot(md.baseline$Extent , pred, xlab = "Extent", ylab = "Predicted Extent")
+
+
+shap.result.base = shap.score.rank(xgb_model = model.base, 
+                                   X_train = train_x, 
+                                   shap_approx = F)
+
+## Plot var importance based on SHAP
+var_importance(shap.result.base, top_n=50)
+
+## Prepare data for top N variables
+shap.long.base = shap.prep(shap = shap.result.base,
+                           X_train = train_x , 
+                           top_n = 2
+                           )
+
+## Plot shap overall metrics
+plot.shap.summary(data_long = shap.long.base)
+
+
+## 
+xgb.plot.shap(data = train_x, # input data
+              model = model_bike, # xgboost model
+              features = names(shap.result.base$mean_shap_score[1:10]), # only top 10 var
+              n_col = 3, # layout option
+              plot_loess = T # add red line to plot
+              )
+```
+
