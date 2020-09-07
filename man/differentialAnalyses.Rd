@@ -10,7 +10,8 @@ differentialAnalyses(
   DA.choice,
   DA.fdr.threshold,
   DA.lfc.threshold,
-  save.DA.peaks
+  save.DA.peaks,
+  DA.peaks.path
 )
 }
 \arguments{
@@ -26,6 +27,9 @@ differentialAnalyses(
 \item{DA.lfc.threshold}{log-fold change cutoff for differential analyses}
 
 \item{save.DA.peaks}{saves differentially accessible peaks to an excel file}
+
+\item{DA.peaks.path}{the path which the excel file of the DA peaks will be saved,
+if not set it will be saved to current directory.}
 }
 \value{
 DApeaks returns DA peaks
