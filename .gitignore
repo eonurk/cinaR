@@ -46,3 +46,6 @@ vignettes/*.pdf
 
 # remove output excel
 .xlsx
+
+# remove project
+cinaR.Rproj
