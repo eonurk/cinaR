@@ -45,7 +45,7 @@ vignettes/*.pdf
 .DS_Store
 
 # remove output excel
-.xlsx
+DApeaks.xlsx
 
 # remove project
 cinaR.Rproj
