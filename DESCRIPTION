@@ -11,9 +11,9 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Depends: R (>= 3.5.0)
-Imports: edgeR, ChIPseeker, annotables, 
+Imports: edgeR, DESeq2, ChIPseeker, annotables, 
          GenomicRanges, preprocessCore, 
-         utils, limma
+         utils, limma, writexl
 Suggests: TxDb.Hsapiens.UCSC.hg38.knownGene, 
           TxDb.Hsapiens.UCSC.hg19.knownGene, 
           TxDb.Mmusculus.UCSC.mm10.knownGene

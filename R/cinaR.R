@@ -5,7 +5,8 @@
 #' @param consensus.peaks bed formatted consensus peak matrix: CHR, START, STOP and raw peak counts (peaks by 3+samples)
 #' @param contrasts user-defined contrasts for comparing samples
 #' @param DA.choice determines which pipeline to run:
-#' (1) edgeR, (2) limma-voom, (3) limma-trend, (4) DEseq2
+#' (1) edgeR, (2) limma-voom, (3) limma-trend, (4) DEseq2.
+#' Note: Use limma-trend if consensus peaks are already normalized, otherwise use other methods.
 #' @param norm.method normalization method for consensus peaks
 #' @param filter.method filtering method for low expressed peaks
 #' @param TSS.threshold Distance to transcription start site in base-pairs. Default set to 50,000.
@@ -16,6 +17,8 @@
 #' @param DA.fdr.threshold fdr cut-off for differential analyses
 #' @param DA.lfc.threshold log-fold change cutoff for differential analyses
 #' @param save.DA.peaks saves differentially accessible peaks to an excel file
+#' @param DA.peaks.path the path which the excel file of the DA peaks will be saved,
+#' if not set it will be saved to current directory.
 #' @return DApeaks returns DA peaks
 #'
 #' @export
@@ -26,6 +29,7 @@ cinaR <-
            DA.fdr.threshold = 0.05,
            DA.lfc.threshold = 0,
            save.DA.peaks = F,
+           DA.peaks.path = NULL,
            norm.method = "cpm",
            filter.method = "custom",
            library.threshold = 2,
@@ -61,18 +65,13 @@ cinaR <-
 
 
     # edgeR, limma-voom, DEseq 2
-    if (DA.choice %in% c(1, 2, 4)) {
+    if (DA.choice %in% c(1:4)) {
       DA.results <- differentialAnalyses(cp = final.peaks,
                                          contrasts = contrasts,
                                          DA.choice = DA.choice,
                                          DA.fdr.threshold = DA.fdr.threshold,
                                          DA.lfc.threshold = DA.lfc.threshold,
                                          save.DA.peaks = save.DA.peaks)
-    } else if (DA.choice == 3) {
-      # limma-trend
-      final.peaks.normalized <-
-        normalizeConsensus(final.peaks, norm.method = norm.method)
-      DA.results <- differentialAnalyses(final.peaks.normalized)
     } else {
       stop (
         "DA.choice must be one of the followings.\n(1) edgeR, (2) limma-voom, (3) limma-trend, (4) DEseq2"
@@ -201,12 +200,14 @@ annotatePeaks <-
 #' @param DA.fdr.threshold fdr cut-off for differential analyses
 #' @param DA.lfc.threshold log-fold change cutoff for differential analyses
 #' @param save.DA.peaks saves differentially accessible peaks to an excel file
+#' @param DA.peaks.path the path which the excel file of the DA peaks will be saved,
+#' if not set it will be saved to current directory.
 #' @return DApeaks returns DA peaks
 #'
 #' @export
 differentialAnalyses <- function(cp, contrasts, DA.choice,
                                  DA.fdr.threshold, DA.lfc.threshold,
-                                 save.DA.peaks) {
+                                 save.DA.peaks, DA.peaks.path) {
   cp.meta <- cp[, 1:15]
   cp.metaless <- cp[, 16:ncol(cp)]
 
@@ -292,11 +293,49 @@ differentialAnalyses <- function(cp, contrasts, DA.choice,
           top.table <- merge(cp.meta, top.table, by = 0)
           DA.peaks[[contrast.name]] <- top.table
         }
-    } # else-if #3
-  } # end-if
-  else if(DA.choice == 4){ ## DESeq2
+    } else if (DA.choice == 4) { ## DEseq2
+        cat(">> Method: DEseq2\n\tFDR:", DA.fdr.threshold, "& abs(logFC)<", DA.lfc.threshold, "\n")
 
-  } ## end-elseif
+        # Create your desired groups
+        group <- contrasts
+
+        # Assign each sample to its group
+        colData <- as.data.frame(cbind(colnames(cp.metaless), group))
+        colnames(colData)  = c("sample", "groups")
+
+        # Create DEseq Object
+        dds <- DESeq2::DESeqDataSetFromMatrix(countData = cp.metaless, colData = colData, design = ~ groups)
+
+        dds = DESeq2::DESeq(dds, parallel = T)
+
+        # Create DE gene list for DESeq2
+
+        for (i in seq_len(ncol(ccc))){
+          contrast.name <- colnames(ccc)[i]
+          DEseq.contrast <- rownames(ccc)[ccc[,i] != 0]
+          res <- DESeq2::results(dds, c("groups", DEseq.contrast[2], DEseq.contrast[1]), parallel = T, tidy = T)
+          rownames(res) <- res$row
+          res.ordered <- res[order(res$pvalue),]
+          res.significant <- subset(res.ordered, padj <= DA.fdr.threshold)
+          res.significant <- subset(res.significant, abs(log2FoldChange) >= DA.lfc.threshold)
+          res.significant <- merge(cp.meta, res.significant, by = 0)
+
+          DA.peaks[[contrast.name]] <- res.significant
+        }
+    }
+  } # end-if
+
   cat(">> DA peaks are found!\n")
+
+  if(save.DA.peaks){
+    if (is.null(DA.peaks.path)){
+      cat(">> Saving DA peaks to current directory as DApeaks.xlsx...\n")
+      writexl::write_xlsx(x = DA.peaks, path = "./DApeaks.xlsx")
+    } else {
+      cat(paste0(">> Saving DA peaks to ", DA.peaks.path,"...\n"))
+      writexl::write_xlsx(x = DA.peaks, path = DA.peaks.path)
+    }
+  }
+
   return(DA.peaks)
 }
