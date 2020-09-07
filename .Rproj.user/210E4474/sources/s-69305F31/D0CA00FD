@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1597292271780.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "D0CA00FD",
+    "lastKnownWriteTime" : 1599457979,
+    "last_content_update" : 1599457979942,
+    "path" : "~/Dropbox (JAX)/cinaR/cinaR/R/cinaR.R",
+    "project_path" : "R/cinaR.R",
+    "properties" : {
+        "cursorPosition" : "334,56",
+        "scrollLine" : "325"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

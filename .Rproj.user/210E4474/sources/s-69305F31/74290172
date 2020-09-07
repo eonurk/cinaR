@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1598965105242.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "74290172",
+    "lastKnownWriteTime" : 1596138484,
+    "last_content_update" : 1596138484,
+    "path" : "~/Dropbox (JAX)/Prevnar Project/Differential_Analyses.Rmd",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "1152,8",
+        "scrollLine" : "1218"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}

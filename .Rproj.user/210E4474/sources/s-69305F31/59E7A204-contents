@@ -1,0 +1,20 @@
+Package: cinaR
+Type: Package
+Title: Computational pipelINe for Atac-seq in R (cinaR)
+Version: 0.1.0
+Author: E Onur Karakaslar
+Maintainer: The package maintainer <eonurkara@gmail.com>
+Description: Differential analyses and Enrichment pipeline for ATAC-seq data
+  analyses. This package combines different packages to have an ultimate package
+  for both data analyses and visualization of ATAC-seq data.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Depends: R (>= 3.5.0)
+Imports: edgeR, DESeq2, ChIPseeker, annotables, 
+         GenomicRanges, preprocessCore, 
+         utils, limma, writexl
+Suggests: TxDb.Hsapiens.UCSC.hg38.knownGene, 
+          TxDb.Hsapiens.UCSC.hg19.knownGene, 
+          TxDb.Mmusculus.UCSC.mm10.knownGene
+RoxygenNote: 7.1.1
