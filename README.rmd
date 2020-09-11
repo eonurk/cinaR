@@ -1,0 +1,68 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE
+)
+library(knitr)
+library(kableExtra)
+```
+
+# Quick Start
+
+```{r}
+library(cinaR)
+data("atac_seq_consensus_bm")
+```
+
+Bed formatted consensus matrix (chr, start, end and samples)
+```{r}
+dim(bed)
+```
+
+
+```{r}
+# bed formatted file
+head(bed[,1:5])
+```
+
+Create the contrasts you want to compare
+```{r}
+# create contrast vector which will be compared.
+contrasts <- sapply(strsplit(colnames(bed), split = "-", fixed = T), 
+                    function(x){x[1]})[4:25]
+contrasts
+```
+
+`cinaR` function directly computes the differentially accessible peaks.
+```{r cache=TRUE}
+# If reference genome is not set hg38 will be used!
+results <- cinaR(bed, contrasts, reference.genome = "mm10")
+```
+
+```{r}
+colnames(results[[1]])
+```
+
+
+```{r }
+head(results[[1]][,1:5])
+```
+
+
+
+# Creating contrasts
+
+Note that you can further divide the resolution of contrasts, for instance this
+is also a valid vector
+```{r}
+contrasts <- sapply(strsplit(colnames(bed), split = "-", fixed = T), 
+                    function(x){paste(x[1:4], collapse = "-")})[4:25]
+unique(contrasts)
+```
+in this case, each of them will be compared to each other which will result in
+28 different comparisons.
