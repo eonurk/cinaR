@@ -27,7 +27,8 @@ head(bed[,1:5])
 ## 6 chr1 4785296 4786419                        494                        342
 ```
 
-Create the contrasts you want to compare
+Create the contrasts you want to compare, here we create contrasts for
+22 mice samples from different strains.
 
 ``` r
 # create contrast vector which will be compared.
