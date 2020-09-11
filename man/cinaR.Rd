@@ -54,8 +54,21 @@ if not set it will be saved to current directory.}
 \item{reference.genome}{genome of interested species. It should be 'hg38', 'hg19' or 'mm10'.}
 }
 \value{
-DApeaks returns DA peaks
+returns differentially accessible peaks
 }
 \description{
 Runs DA pipeline and makes it ready for enrichment analyses
+}
+\examples{
+
+data(atac_seq_consensus_bm) # calls 'bed'
+
+# a vector for comparing the examples
+contrasts <- sapply(strsplit(colnames(bed), split = "-", fixed = T),
+                    function(x){x[1]})[4:25]
+
+DA.results <- cinaR(bed, contrasts, reference.genome = "mm10")
+
+
+
 }

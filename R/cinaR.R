@@ -19,7 +19,20 @@
 #' @param save.DA.peaks saves differentially accessible peaks to an excel file
 #' @param DA.peaks.path the path which the excel file of the DA peaks will be saved,
 #' if not set it will be saved to current directory.
-#' @return DApeaks returns DA peaks
+#'
+#' @examples
+#'
+#' data(atac_seq_consensus_bm) # calls 'bed'
+#'
+#' # a vector for comparing the examples
+#' contrasts <- sapply(strsplit(colnames(bed), split = "-", fixed = T),
+#'                     function(x){x[1]})[4:25]
+#'
+#' DA.results <- cinaR(bed, contrasts, reference.genome = "mm10")
+#'
+#'
+#'
+#' @return returns differentially accessible peaks
 #'
 #' @export
 cinaR <-
