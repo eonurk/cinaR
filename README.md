@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Quick Start
+## Quick Start
 
 ``` r
 library(cinaR)
@@ -44,16 +44,12 @@ contrasts
 ``` r
 # If reference genome is not set hg38 will be used!
 results <- cinaR(bed, contrasts, reference.genome = "mm10")
-## 
-## Registered S3 method overwritten by 'enrichplot':
-##   method               from
-##   fortify.enrichResult DOSE
-## >> preparing features information...      2020-09-11 10:27:13 
-## >> identifying nearest features...        2020-09-11 10:27:14 
-## >> calculating distance from peak to TSS...   2020-09-11 10:27:17 
-## >> assigning genomic annotation...        2020-09-11 10:27:17 
-## >> assigning chromosome lengths           2020-09-11 10:27:40 
-## >> done...                    2020-09-11 10:27:40 
+## >> preparing features information...      2020-09-11 10:36:11 
+## >> identifying nearest features...        2020-09-11 10:36:13 
+## >> calculating distance from peak to TSS...   2020-09-11 10:36:17 
+## >> assigning genomic annotation...        2020-09-11 10:36:17 
+## >> assigning chromosome lengths           2020-09-11 10:36:42 
+## >> done...                    2020-09-11 10:36:42 
 ## >> Estimating dispersion...
 ## >> Fitting GLM...
 ## >> Method: edgeR
@@ -82,7 +78,7 @@ head(results[[1]][,1:5])
 ## 6 chr1_106170912_106173892     chr1 106170912 106173892  2981
 ```
 
-# Creating contrasts
+## Creating different contrasts
 
 Note that you can further divide the resolution of contrasts, for
 instance this is also a valid vector
@@ -97,3 +93,62 @@ unique(contrasts)
 
 in this case, each of them will be compared to each other which will
 result in 28 different comparisons.
+
+## Saving DA peaks to excel
+
+Setting `save.DA.peaks = TRUE` in `cinaR` function will create a
+`DApeaks.xlsx` file in the current directory. This file includes all the
+comparisons in different tabs. Additionally, you can set the path/name
+of the file using `DA.peaks.path` argument after setting `save.DA.peaks
+= TRUE`.
+
+For instance,
+
+``` r
+results <- cinaR(bed, contrasts, reference.genome = "mm10", 
+                 save.DA.peaks = T, DA.peaks.path = "./Peaks_mice.xlsx")
+```
+
+will create an excel file with name `Peaks_mice.xlsx` in the current
+directory.
+
+## Using different GLM algorithms
+
+Currently, `cinaR` supports 4 different algorithms, namely;
+
+  - edgeR
+  - limma-voom
+  - limma-trend
+  - DESeq2
+
+You can change the used algorithm by simply setting `DA.choice`
+argument. For more information, `?cinaR`
+
+## Contribution
+
+You can send pull requests to make your contributions.
+
+I occasionally mess up, so all comments are appreciated\!
+
+## Author
+
+  - [E Onur Karakaslar](https://eonurk.github.io)
+
+## License
+
+  - GNU General Public License v3.0
+
+## References
+
+  - Robinson MD, McCarthy DJ, Smyth GK (2010). “edgeR: a Bioconductor
+    package for differential expression analysis of digital gene
+    expression data.” Bioinformatics, 26(1), 139-140. doi:
+    10.1093/bioinformatics/btp616.
+
+  - Ritchie ME, Phipson B, Wu D, Hu Y, Law CW, Shi W, Smyth GK (2015).
+    “limma powers differential expression analyses for RNA-sequencing
+    and microarray studies.” Nucleic Acids Research, 43(7), e47.
+
+  - Love, M.I., Huber, W., Anders, S. (2014) Moderated estimation of
+    fold change and dispersion for RNA-seq data with DESeq2. Genome
+    Biology, 15:550. 10.1186/s13059-014-0550-8
