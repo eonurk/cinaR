@@ -30,7 +30,8 @@ dim(bed)
 head(bed[,1:5])
 ```
 
-Create the contrasts you want to compare
+Create the contrasts you want to compare, here we create contrasts for 
+22 mice samples from different strains.
 ```{r}
 # create contrast vector which will be compared.
 contrasts <- sapply(strsplit(colnames(bed), split = "-", fixed = T), 
