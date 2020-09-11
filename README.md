@@ -1,6 +1,19 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+# cinaR
+
+`cinaR` is an end-to-end computational pipeline for bulk ATAC-seq
+profiles. It starts from consensus peak files and outputs the
+Differentially Accessible (DA) peaks.
+
+## Installation
+
+``` r
+library(devtools)
+install_github("eonurk/cinaR")
+```
+
 ## Quick Start
 
 ``` r
@@ -44,12 +57,12 @@ contrasts
 ``` r
 # If reference genome is not set hg38 will be used!
 results <- cinaR(bed, contrasts, reference.genome = "mm10")
-## >> preparing features information...      2020-09-11 10:36:11 
-## >> identifying nearest features...        2020-09-11 10:36:13 
-## >> calculating distance from peak to TSS...   2020-09-11 10:36:17 
-## >> assigning genomic annotation...        2020-09-11 10:36:17 
-## >> assigning chromosome lengths           2020-09-11 10:36:42 
-## >> done...                    2020-09-11 10:36:42 
+## >> preparing features information...      2020-09-11 11:10:18 
+## >> identifying nearest features...        2020-09-11 11:10:19 
+## >> calculating distance from peak to TSS...   2020-09-11 11:10:21 
+## >> assigning genomic annotation...        2020-09-11 11:10:21 
+## >> assigning chromosome lengths           2020-09-11 11:10:45 
+## >> done...                    2020-09-11 11:10:45 
 ## >> Estimating dispersion...
 ## >> Fitting GLM...
 ## >> Method: edgeR
@@ -129,6 +142,16 @@ argument. For more information, `?cinaR`
 You can send pull requests to make your contributions.
 
 I occasionally mess up, so all comments are appreciated\!
+
+## Future work
+
+  - Add enrichment pipeline
+      - hyper-geometric p-value
+      - geneset enrichment analyses
+      - make it compitable with `.gmt` format
+  - Batch effect correction with 2 options
+      - combaT
+      - add it to design matrix (probably later versions)
 
 ## Author
 
