@@ -19,17 +19,21 @@
 #' @param save.DA.peaks saves differentially accessible peaks to an excel file
 #' @param DA.peaks.path the path which the excel file of the DA peaks will be saved,
 #' if not set it will be saved to current directory.
+#' @param batch.correction logical, if set will run unsupervised batch correction
+#' via sva (default) or if the batch information is known `batch.information`
+#' argument should be provided by user.
+#' @param batch.information character vector, given by user.
 #'
 #' @examples
-#'
+#' \dontrun{
 #' data(atac_seq_consensus_bm) # calls 'bed'
 #'
 #' # a vector for comparing the examples
-#' contrasts <- sapply(strsplit(colnames(bed), split = "-", fixed = T),
+#' contrasts <- sapply(strsplit(colnames(bed), split = "-", fixed = TRUE),
 #'                     function(x){x[1]})[4:25]
 #'
 #' DA.results <- cinaR(bed, contrasts, reference.genome = "mm10")
-#'
+#' }
 #'
 #'
 #' @return returns differentially accessible peaks
@@ -49,9 +53,10 @@ cinaR <-
            cpm.threshold = 1,
            TSS.threshold = 50e3,
            show.annotation.pie = F,
-           reference.genome = NULL) {
-
-    if(length(contrasts) != (ncol(consensus.peaks)-3)){
+           reference.genome = NULL,
+           batch.correction = FALSE,
+           batch.information = NULL) {
+    if (length(contrasts) != (ncol(consensus.peaks) - 3)) {
       stop("Length of 'contrasts' must be equal to number of samples in 'consensus.peaks'")
     }
 
@@ -67,6 +72,7 @@ cinaR <-
     cp.filtered <-
       filterConsensus(cp, library.threshold = library.threshold, cpm.threshold = cpm.threshold)
 
+
     # annotate the peaks to the closest TSS
     cp.filtered.annotated <- annotatePeaks(cp.filtered,
                                            reference.genome = reference.genome,
@@ -79,15 +85,20 @@ cinaR <-
 
     # edgeR, limma-voom, DEseq 2
     if (DA.choice %in% c(1:4)) {
-      DA.results <- differentialAnalyses(cp = final.peaks,
-                                         contrasts = contrasts,
-                                         DA.choice = DA.choice,
-                                         DA.fdr.threshold = DA.fdr.threshold,
-                                         DA.lfc.threshold = DA.lfc.threshold,
-                                         save.DA.peaks = save.DA.peaks)
+      DA.results <- differentialAnalyses(
+        cp = final.peaks,
+        contrasts = contrasts,
+        DA.choice = DA.choice,
+        DA.fdr.threshold = DA.fdr.threshold,
+        DA.lfc.threshold = DA.lfc.threshold,
+        save.DA.peaks = save.DA.peaks,
+        batch.correction = batch.correction,
+        batch.information = batch.information
+      )
     } else {
       stop (
-        "DA.choice must be one of the followings.\n(1) edgeR, (2) limma-voom, (3) limma-trend, (4) DEseq2"
+        "DA.choice must be one of the followings.
+        (1) edgeR, (2) limma-voom, (3) limma-trend, (4) DEseq2"
       )
     }
 
@@ -136,7 +147,7 @@ filterConsensus <-
 normalizeConsensus <-
   function(cp, norm.method = "cpm") {
     if (norm.method == "cpm") {
-      cp.norm <- edgeR::cpm(cp, log = T)
+      cp.norm <- edgeR::cpm(cp, log = F)
     } else if (norm.method == "quantile") {
       cp.norm <- preprocessCore::normalize.quantiles(cp)
     } else {
@@ -160,23 +171,56 @@ annotatePeaks <-
   function(cp,
            reference.genome,
            show.annotation.pie = F) {
-
-    bed <- as.data.frame(do.call(rbind, strsplit(rownames(cp), "_", fixed = T)))
+    bed <-
+      as.data.frame(do.call(rbind, strsplit(rownames(cp), "_", fixed = T)))
     colnames(bed) <- c("CHR", "Start", "End")
     bed.GRanges <- GenomicRanges::GRanges(bed)
 
     if (is.null(reference.genome)) {
       warning("'reference.genome' is not set, therefore hg38 will be used!")
-      txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene
+
+      if (!requireNamespace("TxDb.Hsapiens.UCSC.hg38.knownGene", quietly = TRUE)) {
+        stop(
+          "Package \"TxDb.Hsapiens.UCSC.hg38.knownGene\" needed for this
+             function to work. Please install it.",
+          call. = FALSE
+        )
+      }
+      txdb <-
+        TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene
       genome <- annotables::grch38
     } else if (reference.genome == "hg38") {
-      txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene
+      if (!requireNamespace("TxDb.Hsapiens.UCSC.hg38.knownGene", quietly = TRUE)) {
+        stop(
+          "Package \"TxDb.Hsapiens.UCSC.hg38.knownGene\" needed for this
+             function to work. Please install it.",
+          call. = FALSE
+        )
+      }
+      txdb <-
+        TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene
       genome <- annotables::grch38
     } else if (reference.genome == "hg19") {
-      txdb <- TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
+      if (!requireNamespace("TxDb.Hsapiens.UCSC.hg19.knownGene", quietly = TRUE)) {
+        stop(
+          "Package \"TxDb.Hsapiens.UCSC.hg19.knownGene\" needed for this
+             function to work. Please install it.",
+          call. = FALSE
+        )
+      }
+      txdb <-
+        TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
       genome <- annotables::grch37
     } else if (reference.genome == "mm10") {
-      txdb <- TxDb.Mmusculus.UCSC.mm10.knownGene::TxDb.Mmusculus.UCSC.mm10.knownGene
+      if (!requireNamespace("TxDb.Mmusculus.UCSC.mm10.knownGene", quietly = TRUE)) {
+        stop(
+          "Package \"TxDb.Mmusculus.UCSC.mm10.knownGene\" needed for this
+             function to work. Please install it.",
+          call. = FALSE
+        )
+      }
+      txdb <-
+        TxDb.Mmusculus.UCSC.mm10.knownGene::TxDb.Mmusculus.UCSC.mm10.knownGene
       genome <- annotables::grcm38
     } else {
       stop ("reference.genome should be 'hg38', 'hg19' or 'mm10'")
@@ -193,7 +237,10 @@ annotatePeaks <-
     entrezids <- unique(annoPeaks.anno$geneId)
 
     # entrez to gene name mapping
-    entrez2gene <- base::subset(genome, genome$entrez %in% entrezids, select = c('entrez', 'symbol'))
+    entrez2gene <-
+      base::subset(genome,
+                   genome$entrez %in% entrezids,
+                   select = c('entrez', 'symbol'))
 
     # Match to each annotation dataframe
     m <- match(annoPeaks.anno$geneId, entrez2gene$entrez)
@@ -212,29 +259,110 @@ annotatePeaks <-
 #' @param contrasts user-defined contrasts for comparing samples
 #' @param DA.fdr.threshold fdr cut-off for differential analyses
 #' @param DA.lfc.threshold log-fold change cutoff for differential analyses
-#' @param save.DA.peaks saves differentially accessible peaks to an excel file
+#' @param save.DA.peaks logical, saves differentially accessible peaks to an excel file
 #' @param DA.peaks.path the path which the excel file of the DA peaks will be saved,
 #' if not set it will be saved to current directory.
+#' @param batch.correction logical, if set will run unsupervised batch correction
+#' via sva (default) or if the batch information is known `batch.information`
+#' argument should be provided by user.
+#' @param batch.information character vector, given by user.
+#'
 #' @return DApeaks returns DA peaks
 #'
 #' @export
-differentialAnalyses <- function(cp, contrasts, DA.choice,
-                                 DA.fdr.threshold, DA.lfc.threshold,
-                                 save.DA.peaks, DA.peaks.path) {
+differentialAnalyses <- function(cp,
+                                 contrasts,
+                                 DA.choice,
+                                 DA.fdr.threshold,
+                                 DA.lfc.threshold,
+                                 save.DA.peaks,
+                                 DA.peaks.path,
+                                 batch.correction,
+                                 batch.information) {
+
   cp.meta <- cp[, 1:15]
   cp.metaless <- cp[, 16:ncol(cp)]
 
-  if (DA.choice %in% c(1:3)) { ## edgeR, limma-voom, limma-trend
+  design <- stats::model.matrix(~ 0 + contrasts)
+
+  if(batch.correction){
+
+    if(is.null(batch.information)){
+
+      ## First normalize the consensus peaks to avoid detecting the effects
+      ## confounding from library size as Michael Love and Jeff Leek suggests
+      ## in this thread:
+      cat(">> Running SVA for batch correction...")
+
+      cp.metaless.normalized <- normalizeConsensus(cp.metaless)
+      mod  <- stats::model.matrix(~ 0 + contrasts)
+      mod0 <- cbind(rep(1,length(contrasts)))
+
+      ## TODO
+      ## (1) make surrogate variable size an argument
+      ## (2) Prohibit users to use SV1 and SV2 as names for contrast
+      sva.res <- sva::svaseq(cp.metaless.normalized, mod, mod0, n.sv = 2)
+
+
+      design <- cbind(design, SV1 = sva.res$sv[,1], SV2 = sva.res$sv[,2])
+    } else { # if there is batch information available
+      cat(">> Adding batch information to design matrix...")
+
+      if(nrow(design) != length(batch.information)) {
+        stop("Number of samples and `batch.information` should be same length!")
+      }
+
+      design <- cbind(design, BatchInfo = batch.information)
+    }
+  }
+
+  # Add intercept term for multiple comparisons
+
+  rownames(design) <- colnames(cp.metaless)
+  colnames(design) <- gsub("contrasts", "", colnames(design))
+
+  # Create contrasts for all comparisons
+  combs <- utils::combn(colnames(design)[1:length(unique(contrasts))], 2)
+
+  contrast.names <-
+    apply(combs, 2, function(x) {
+      paste(x, collapse = "_")
+    })
+  cc <- apply(combs, 2,
+              function(x) {
+                paste0(paste(x, collapse = "_"), "=", x[1], "-", x[2])
+              })
+
+  # to avoid the message in R CMD check!
+  ccc <- NULL
+
+  # create contrasts to be compared
+  eval(parse(
+    text = paste0(
+      "ccc <- limma::makeContrasts(",
+      paste(cc, collapse = ","),
+      ",levels = colnames(design))"
+    )
+  ))
+
+  # Create DE gene list for differentially accessible peaks
+  DA.peaks <- list()
+
+  if (DA.choice == 1) {
+    ## edgeR
+
+    cat(
+      ">> Method: edgeR\n\tFDR:",
+      DA.fdr.threshold,
+      "& abs(logFC)<",
+      DA.lfc.threshold,
+      "\n"
+    )
 
     y <- edgeR::DGEList(counts = cp.metaless, group = contrasts)
 
     # Calculate normalization factors for library sizes with TMM
     y <- edgeR::calcNormFactors(y, method = "TMM")
-
-    # Add intercept term for multiple comparisons
-    design <- stats::model.matrix(~0 + contrasts)
-    rownames(design) <- colnames(cp.metaless)
-    colnames(design) <- levels(y$samples$group)
 
     # Estimate dispersion for genes with Bayesian Shrinkage
     cat(">> Estimating dispersion...\n")
@@ -244,108 +372,150 @@ differentialAnalyses <- function(cp, contrasts, DA.choice,
     cat(">> Fitting GLM...\n")
     fit.glm <- edgeR::glmQLFit(y, design)
 
+    for (i in seq_len(ncol(ccc))) {
+      contrast.name <- colnames(ccc)[i]
+      qlf <- edgeR::glmQLFTest(fit.glm, contrast = ccc[, i])
+      # plotMD(qlf, main = contrast.name, p.value = 0.1)
+      top.table <-
+        edgeR::topTags(qlf, n = Inf, p.value = DA.fdr.threshold)$table
+      top.table <- merge(cp.meta, top.table, by = 0)
 
-    # Create contrasts for all comparisons
-    combs <- utils::combn(colnames(design), 2)
-
-    contrast.names <- apply(combs, 2,function(x){paste(x, collapse = "_")})
-    cc <- apply(combs, 2,
-          function(x){
-            paste0(paste(x, collapse = "_"), "=", x[1], "-", x[2])
-          })
-
-    # to avoid the message in R CMD check!
-    ccc <- NULL
-
-    # create contrasts for package
-    eval(parse(text = paste0("ccc <- limma::makeContrasts(",
-                             paste(cc, collapse = ","),
-                             ",levels = fit.glm$design)")))
-
-    # Create DE gene list for differentially accessible peaks
-    DA.peaks <- list()
-
-    if(DA.choice == 1){ ## edgeR
-      cat(">> Method: edgeR\n\tFDR:", DA.fdr.threshold, "& abs(logFC)<", DA.lfc.threshold, "\n")
-      for (i in seq_len(ncol(ccc))){
-        contrast.name <- colnames(ccc)[i]
-        qlf <- edgeR::glmQLFTest(fit.glm,contrast = ccc[,i])
-        # plotMD(qlf, main = contrast.name, p.value = 0.1)
-        top.table <- edgeR::topTags(qlf, n = Inf, p.value = DA.fdr.threshold)$table
-        top.table <- merge(cp.meta, top.table, by = 0)
-        DA.peaks[[contrast.name]] <- top.table[abs(top.table$logFC) >= DA.lfc.threshold,]
+      # ifelse does not return the dataframe for some reason,
+      # therefore, implemented this check explicitly
+      if(nrow(top.table) > 0){
+        DA.peaks[[contrast.name]] <-
+          top.table[abs(top.table$logFC) >= DA.lfc.threshold,]
+      } else {
+        DA.peaks[[contrast.name]] <- list()
       }
-    } else if (DA.choice == 2) { ## limma-voom
-        cat(">> Method: limma-voom\n\tFDR:", DA.fdr.threshold, "& abs(logFC)<", DA.lfc.threshold, "\n")
-        v <- limma::voom(cp.metaless, design, plot=F)
-        fit.voom <- limma::lmFit(v, design)
-        fit.voom2 <- limma::eBayes(limma::contrasts.fit(fit.voom, ccc))
-        # summary(decideTests(fit.voom2, method="separate", lfc = 0, p.value = 0.1))
-
-        for (i in seq_len(ncol(ccc))){
-          contrast.name <- colnames(ccc)[i]
-          top.table <- limma::topTable(fit.voom2, coef = colnames(ccc)[i],
-                                       p.value = DA.fdr.threshold, lfc = DA.lfc.threshold,
-                                       number = Inf)
-          top.table <- merge(cp.meta, top.table, by = 0)
-          DA.peaks[[contrast.name]] <- top.table
-        }
-    } else if (DA.choice == 3){ ## limma-trend
-        cat(">> Method: limma-trend\n\tFDR:", DA.fdr.threshold, "& abs(logFC)<", DA.lfc.threshold, "\n")
-        fit.trend <- limma::lmFit(cp.metaless, design)
-        fit.trend2 <- limma::eBayes(limma::contrasts.fit(fit.trend, ccc),
-                                    trend = T)
-        # summary(decideTests(fit.trend2, method="separate", lfc = 0, p.value = 0.1))
-
-        for (i in seq_len(ncol(ccc))){
-          contrast.name <- colnames(ccc)[i]
-          top.table <- limma::topTable(fit.trend2, coef = colnames(ccc)[i],
-                                p.value = DA.fdr.threshold,
-                                lfc = DA.lfc.threshold,
-                                number = Inf)
-          top.table <- merge(cp.meta, top.table, by = 0)
-          DA.peaks[[contrast.name]] <- top.table
-        }
-    } else if (DA.choice == 4) { ## DEseq2
-        cat(">> Method: DEseq2\n\tFDR:", DA.fdr.threshold, "& abs(logFC)<", DA.lfc.threshold, "\n")
-
-        # Create your desired groups
-        group <- contrasts
-
-        # Assign each sample to its group
-        colData <- as.data.frame(cbind(colnames(cp.metaless), group))
-        colnames(colData)  = c("sample", "groups")
-
-        # Create DEseq Object
-        dds <- DESeq2::DESeqDataSetFromMatrix(countData = cp.metaless, colData = colData, design = ~ groups)
-
-        dds = DESeq2::DESeq(dds, parallel = T)
-
-        # Create DE gene list for DESeq2
-
-        for (i in seq_len(ncol(ccc))){
-          contrast.name <- colnames(ccc)[i]
-          DEseq.contrast <- rownames(ccc)[ccc[,i] != 0]
-          res <- DESeq2::results(dds, c("groups", DEseq.contrast[2], DEseq.contrast[1]), parallel = T, tidy = T)
-          rownames(res) <- res$row
-          res.ordered <- res[order(res$pvalue),]
-          res.significant <- subset(res.ordered, padj <= DA.fdr.threshold)
-          res.significant <- subset(res.significant, abs(log2FoldChange) >= DA.lfc.threshold)
-          res.significant <- merge(cp.meta, res.significant, by = 0)
-
-          DA.peaks[[contrast.name]] <- res.significant
-        }
     }
-  } # end-if
+  } else if (DA.choice == 2) {
+    ## limma-voom
+    cat(
+      ">> Method: limma-voom\n\tFDR:",
+      DA.fdr.threshold,
+      "& abs(logFC)<",
+      DA.lfc.threshold,
+      "\n"
+    )
+    v <- limma::voom(cp.metaless, design, plot = F)
+    fit.voom <- limma::lmFit(v, design)
+    fit.voom2 <-
+      limma::eBayes(limma::contrasts.fit(fit.voom, ccc))
+    # summary(decideTests(fit.voom2, method="separate", lfc = 0, p.value = 0.1))
+
+    for (i in seq_len(ncol(ccc))) {
+      contrast.name <- colnames(ccc)[i]
+      top.table <-
+        limma::topTable(
+          fit.voom2,
+          coef = colnames(ccc)[i],
+          p.value = DA.fdr.threshold,
+          lfc = DA.lfc.threshold,
+          number = Inf
+        )
+      top.table <- merge(cp.meta, top.table, by = 0)
+
+      if(nrow(top.table) > 0){
+        DA.peaks[[contrast.name]] <- top.table
+      } else {
+        DA.peaks[[contrast.name]] <- list()
+      }
+
+    }
+  } else if (DA.choice == 3) {
+    ## limma-trend
+    cat(
+      ">> Method: limma-trend\n\tFDR:",
+      DA.fdr.threshold,
+      "& abs(logFC)<",
+      DA.lfc.threshold,
+      "\n"
+    )
+    fit.trend <- limma::lmFit(cp.metaless, design)
+    fit.trend2 <-
+      limma::eBayes(limma::contrasts.fit(fit.trend, ccc),
+                    trend = T)
+    # summary(decideTests(fit.trend2, method="separate", lfc = 0, p.value = 0.1))
+
+    for (i in seq_len(ncol(ccc))) {
+      contrast.name <- colnames(ccc)[i]
+      top.table <-
+        limma::topTable(
+          fit.trend2,
+          coef = colnames(ccc)[i],
+          p.value = DA.fdr.threshold,
+          lfc = DA.lfc.threshold,
+          number = Inf
+        )
+      top.table <- merge(cp.meta, top.table, by = 0)
+
+      if(nrow(top.table) > 0){
+        DA.peaks[[contrast.name]] <- top.table
+      } else {
+        DA.peaks[[contrast.name]] <- list()
+      }
+    }
+  } else if (DA.choice == 4) {
+    ## DEseq2
+    cat(
+      ">> Method: DEseq2\n\tFDR:",
+      DA.fdr.threshold,
+      "& abs(logFC)<",
+      DA.lfc.threshold,
+      "\n"
+    )
+
+    # Create your desired groups
+    group <- contrasts
+
+    # Assign each sample to its group
+    colData <- as.data.frame(cbind(colnames(cp.metaless), group))
+    colnames(colData)  = c("sample", "groups")
+
+    # Create DEseq Object
+    dds <-
+      DESeq2::DESeqDataSetFromMatrix(countData = cp.metaless,
+                                     colData = colData,
+                                     design = ~ groups)
+
+    dds = DESeq2::DESeq(dds, parallel = T)
+
+    # Create DE gene list for DESeq2
+
+    for (i in seq_len(ncol(ccc))) {
+      contrast.name <- colnames(ccc)[i]
+      DEseq.contrast <- rownames(ccc)[ccc[, i] != 0]
+      res <-
+        DESeq2::results(
+          dds,
+          c("groups", DEseq.contrast[2], DEseq.contrast[1]),
+          parallel = T,
+          tidy = T
+        )
+      rownames(res) <- res$row
+      res.ordered <- res[order(res$pvalue), ]
+      res.significant <-
+        subset(res.ordered, padj <= DA.fdr.threshold &
+                 abs(log2FoldChange) >= DA.lfc.threshold)
+      res.significant <- merge(cp.meta, res.significant, by = 0)
+
+      if(nrow(res.significant) > 0){
+        DA.peaks[[contrast.name]] <- res.significant
+      } else {
+        DA.peaks[[contrast.name]] <- list()
+      }
+    }
+  }
 
   cat(">> DA peaks are found!\n")
 
-  if(save.DA.peaks){
-    if (is.null(DA.peaks.path)){
+  if (save.DA.peaks) {
+    if (is.null(DA.peaks.path)) {
       cat(">> Saving DA peaks to current directory as DApeaks.xlsx...\n")
       writexl::write_xlsx(x = DA.peaks, path = "./DApeaks.xlsx")
     } else {
-      cat(paste0(">> Saving DA peaks to ", DA.peaks.path,"...\n"))
+      cat(paste0(">> Saving DA peaks to ", DA.peaks.path, "...\n"))
       writexl::write_xlsx(x = DA.peaks, path = DA.peaks.path)
     }
   }
