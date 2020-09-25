@@ -3,6 +3,9 @@
 .Rhistory
 .Rapp.history
 
+# Rmd Cache
+/inst/rmd/README_Cache
+
 # Session Data files
 .RData
 
