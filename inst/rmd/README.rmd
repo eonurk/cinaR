@@ -43,7 +43,7 @@ dim(bed)
 
 ```{r}
 # bed formatted file
-head(bed[,1:5])
+head(bed[,1:4])
 ```
 
 Create the contrasts you want to compare, here we create contrasts for 
@@ -61,15 +61,17 @@ contrasts
 results <- cinaR(bed, contrasts, reference.genome = "mm10")
 ```
 
+There are many information `cinaR` provides such as adjusted p value, 
+log fold-changes, gene names etc.
 ```{r}
-colnames(results[[1]])
+# B6 vs NZO
+colnames(results$B6_NZO)
 ```
 
-
+Here is an overview of the result:
 ```{r }
-head(results[[1]][,1:5])
+head(results$B6_NZO[,1:5])
 ```
-
 
 
 ## Creating different contrasts
@@ -84,6 +86,30 @@ unique(contrasts)
 in this case, each of them will be compared to each other which will result in
 28 different comparisons.
 
+## Selecting different reference genomes
+For now, `cinaR` supports 3 genomes,for human and mice models:
+
+- `hg39`
+- `hg38`
+- `mm10`
+
+You can set your it using `reference.genome` argument.
+
+## Batch Effect Correction
+If you suspect your data have unknown batch effects, you can use:
+```{r eval=FALSE}
+cinaR(..., batch.correction = T)
+```
+This option will run [Surrogate Variable Analysis](http://bioconductor.org/packages/release/bioc/html/sva.html) (SVA) and try to
+adjust your data for unknown batch effects. If however, you already know the batches of the samples, you can simply set the `batch.information` argument as well:
+
+```{r eval=FALSE}
+# batch information should be number a vector where
+# the length of it equals to the number of samples.
+cinaR(..., batch.correction = T, batch.information = c(rep(0, 11), rep(1,11)))
+```
+> Reminder - In our example data we have 22 samples
+  
 ## Saving DA peaks to excel
 
 Setting `save.DA.peaks = TRUE` in `cinaR` function will create a `DApeaks.xlsx` file
@@ -108,9 +134,9 @@ Currently, `cinaR` supports 4 different algorithms, namely;
 - limma-trend
 - DESeq2
 
+If not set, it uses `edgeR` for differential analyses. 
 You can change the used algorithm by simply setting `DA.choice` argument.
 For more information, `?cinaR`
-
 
 ## Contribution
 
@@ -123,10 +149,6 @@ I occasionally mess up, so all comments are appreciated!
   - hyper-geometric p-value
   - geneset enrichment analyses
   - make it compitable with `.gmt` format
-  
-- Batch effect correction with 2 options
-  - combaT
-  - add it to design matrix (probably later versions)
 
 
 ## Author
