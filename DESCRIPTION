@@ -12,10 +12,17 @@ Encoding: UTF-8
 LazyData: true
 biocViews:
 Depends: R (>= 3.5.0)
-Imports: edgeR, DESeq2, ChIPseeker, annotables, 
-         GenomicRanges, preprocessCore, 
-         utils, limma, writexl, sva
-Suggests: TxDb.Hsapiens.UCSC.hg38.knownGene, 
-          TxDb.Hsapiens.UCSC.hg19.knownGene, 
-          TxDb.Mmusculus.UCSC.mm10.knownGene
+Imports: annotables, 
+         ChIPseeker, 
+         DESeq2, 
+         edgeR, 
+         GenomicRanges, 
+         limma, 
+         utils, 
+         preprocessCore, 
+         sva,
+         TxDb.Hsapiens.UCSC.hg38.knownGene, 
+         TxDb.Hsapiens.UCSC.hg19.knownGene, 
+         TxDb.Mmusculus.UCSC.mm10.knownGene,
+         writexl 
 RoxygenNote: 7.1.1
