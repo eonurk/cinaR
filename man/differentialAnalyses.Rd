@@ -11,7 +11,9 @@ differentialAnalyses(
   DA.fdr.threshold,
   DA.lfc.threshold,
   save.DA.peaks,
-  DA.peaks.path
+  DA.peaks.path,
+  batch.correction,
+  batch.information
 )
 }
 \arguments{
@@ -26,10 +28,16 @@ differentialAnalyses(
 
 \item{DA.lfc.threshold}{log-fold change cutoff for differential analyses}
 
-\item{save.DA.peaks}{saves differentially accessible peaks to an excel file}
+\item{save.DA.peaks}{logical, saves differentially accessible peaks to an excel file}
 
 \item{DA.peaks.path}{the path which the excel file of the DA peaks will be saved,
 if not set it will be saved to current directory.}
+
+\item{batch.correction}{logical, if set will run unsupervised batch correction
+via sva (default) or if the batch information is known `batch.information`
+argument should be provided by user.}
+
+\item{batch.information}{character vector, given by user.}
 }
 \value{
 DApeaks returns DA peaks
