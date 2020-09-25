@@ -18,7 +18,9 @@ cinaR(
   cpm.threshold = 1,
   TSS.threshold = 50000,
   show.annotation.pie = F,
-  reference.genome = NULL
+  reference.genome = NULL,
+  batch.correction = FALSE,
+  batch.information = NULL
 )
 }
 \arguments{
@@ -52,6 +54,12 @@ if not set it will be saved to current directory.}
 \item{show.annotation.pie}{shows the annotation pie chart produced with ChipSeeker}
 
 \item{reference.genome}{genome of interested species. It should be 'hg38', 'hg19' or 'mm10'.}
+
+\item{batch.correction}{logical, if set will run unsupervised batch correction
+via sva (default) or if the batch information is known `batch.information`
+argument should be provided by user.}
+
+\item{batch.information}{character vector, given by user.}
 }
 \value{
 returns differentially accessible peaks
@@ -64,7 +72,7 @@ Runs DA pipeline and makes it ready for enrichment analyses
 data(atac_seq_consensus_bm) # calls 'bed'
 
 # a vector for comparing the examples
-contrasts <- sapply(strsplit(colnames(bed), split = "-", fixed = T),
+contrasts <- sapply(strsplit(colnames(bed), split = "-", fixed = TRUE),
                     function(x){x[1]})[4:25]
 
 DA.results <- cinaR(bed, contrasts, reference.genome = "mm10")
