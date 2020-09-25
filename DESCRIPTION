@@ -14,7 +14,7 @@ biocViews:
 Depends: R (>= 3.5.0)
 Imports: edgeR, DESeq2, ChIPseeker, annotables, 
          GenomicRanges, preprocessCore, 
-         utils, limma, writexl
+         utils, limma, writexl, sva
 Suggests: TxDb.Hsapiens.UCSC.hg38.knownGene, 
           TxDb.Hsapiens.UCSC.hg19.knownGene, 
           TxDb.Mmusculus.UCSC.mm10.knownGene
