@@ -3,10 +3,13 @@
 
 # cinaR
 
+<img align="left" width="125" height="125" src="../logo/cinaR.png">
+
+   
 `cinaR` is a single wrapper function for end-to-end computational
 analyses of bulk ATAC-seq profiles. It starts from a consensus peak file
 and outputs Differentially Accessible (DA) peaks with corresponding
-genenames, adjusted p-values, log-fold changes and so on.
+genenames, adjusted p-values, log-fold changes and so on.    
 
 ## Installation
 
