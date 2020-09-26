@@ -3,7 +3,7 @@
 
 # cinaR
 
-<img align="left" width="125" height="125" src="../logo/cinaR.png">
+<img align="left" width="125" height="125" src="inst/logo/cinaR.png">
 
    
 `cinaR` is a single wrapper function for end-to-end computational
