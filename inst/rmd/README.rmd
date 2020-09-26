@@ -23,7 +23,8 @@ library(kableExtra)
 bulk ATAC-seq profiles. It starts from a consensus peak file and outputs
 Differentially Accessible (DA) peaks with corresponding genenames,
 adjusted p-values, log-fold changes and so on.
-\ \
+
+<br/>
 
 ## Installation
 
