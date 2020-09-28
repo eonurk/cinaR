@@ -51,11 +51,8 @@ Create the contrasts you want to compare, here we create contrasts for
 
 ``` r
 # create contrast vector which will be compared.
-contrasts <- sapply(strsplit(colnames(bed), split = "-", fixed = T), 
-                    function(x){x[1]})[4:25]
-contrasts
-##  [1] "B6"  "B6"  "B6"  "B6"  "B6"  "NZO" "NZO" "NZO" "NZO" "NZO" "NZO" "B6" 
-## [13] "B6"  "B6"  "B6"  "B6"  "NZO" "NZO" "NZO" "NZO" "NZO" "NZO"
+contrasts<- c("B6", "B6", "B6", "B6", "B6", "NZO", "NZO", "NZO", "NZO", "NZO", "NZO", 
+              "B6", "B6", "B6", "B6", "B6", "NZO", "NZO", "NZO", "NZO", "NZO", "NZO")
 ```
 
 `cinaR` function directly computes the differentially accessible peaks.
@@ -123,8 +120,8 @@ result in 28 different comparisons.
 
 For now, `cinaR` supports 3 genomes,for human and mice models:
 
-  - `hg39`
   - `hg38`
+  - `hg19`
   - `mm10`
 
 You can set your it using `reference.genome` argument.
@@ -162,8 +159,7 @@ of the file using `DA.peaks.path` argument after setting `save.DA.peaks
 For instance,
 
 ``` r
-results <- cinaR(bed, contrasts, reference.genome = "mm10", 
-                 save.DA.peaks = T, DA.peaks.path = "./Peaks_mice.xlsx")
+results <- cinaR(..., save.DA.peaks = T, DA.peaks.path = "./Peaks_mice.xlsx")
 ```
 
 will create an excel file with name `Peaks_mice.xlsx` in the current
