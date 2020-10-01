@@ -5,7 +5,7 @@
 \title{Differential Analyses}
 \usage{
 differentialAnalyses(
-  cp,
+  final.peaks,
   contrasts,
   DA.choice,
   DA.fdr.threshold,
@@ -17,7 +17,7 @@ differentialAnalyses(
 )
 }
 \arguments{
-\item{cp}{Consensus peaks}
+\item{final.peaks}{Annotated Consensus peaks}
 
 \item{contrasts}{user-defined contrasts for comparing samples}
 

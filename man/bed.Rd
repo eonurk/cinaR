@@ -5,7 +5,7 @@
 \alias{bed}
 \title{Example peaks from bone marrow of B6 mice}
 \format{
-An object of class \code{data.frame} with 75281 rows and 25 columns.
+An object of class \code{data.frame} with 1000 rows and 25 columns.
 }
 \usage{
 data(atac_seq_consensus_bm)

@@ -68,7 +68,7 @@ returns differentially accessible peaks
 Runs DA pipeline and makes it ready for enrichment analyses
 }
 \examples{
-
+\dontrun{
 data(atac_seq_consensus_bm) # calls 'bed'
 
 # a vector for comparing the examples
@@ -76,7 +76,7 @@ contrasts <- sapply(strsplit(colnames(bed), split = "-", fixed = TRUE),
                     function(x){x[1]})[4:25]
 
 DA.results <- cinaR(bed, contrasts, reference.genome = "mm10")
-
+}
 
 
 }
