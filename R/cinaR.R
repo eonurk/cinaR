@@ -86,7 +86,7 @@ cinaR <-
     # edgeR, limma-voom, DEseq 2
     if (DA.choice %in% c(1:4)) {
       DA.results <- differentialAnalyses(
-        cp = final.peaks,
+        final.peaks = final.peaks,
         contrasts = contrasts,
         DA.choice = DA.choice,
         DA.fdr.threshold = DA.fdr.threshold,
@@ -253,7 +253,7 @@ annotatePeaks <-
 #'
 #' Runs differential analyses pipeline of choice on consensus peaks
 #'
-#' @param cp Consensus peaks
+#' @param final.peaks Annotated Consensus peaks
 #' @param DA.choice determines which pipeline to run:
 #' (1) edgeR, (2) limma-voom, (3) limma-trend, (4) DEseq2
 #' @param contrasts user-defined contrasts for comparing samples
@@ -270,7 +270,7 @@ annotatePeaks <-
 #' @return DApeaks returns DA peaks
 #'
 #' @export
-differentialAnalyses <- function(cp,
+differentialAnalyses <- function(final.peaks,
                                  contrasts,
                                  DA.choice,
                                  DA.fdr.threshold,
@@ -280,8 +280,8 @@ differentialAnalyses <- function(cp,
                                  batch.correction,
                                  batch.information) {
 
-  cp.meta <- cp[, 1:15]
-  cp.metaless <- cp[, 16:ncol(cp)]
+  cp.meta <- final.peaks[, 1:15]
+  cp.metaless <- final.peaks[, 16:ncol(final.peaks)]
 
   design <- stats::model.matrix(~ 0 + contrasts)
 
@@ -383,8 +383,10 @@ differentialAnalyses <- function(cp,
       # ifelse does not return the dataframe for some reason,
       # therefore, implemented this check explicitly
       if(nrow(top.table) > 0){
-        DA.peaks[[contrast.name]] <-
-          top.table[abs(top.table$logFC) >= DA.lfc.threshold,]
+        top.table <- top.table[abs(top.table$logFC) >= DA.lfc.threshold,]
+        # Refactor to uniformize DA results
+        top.table <- top.table[,c(1:17,21)]
+        DA.peaks[[contrast.name]] <- top.table
       } else {
         DA.peaks[[contrast.name]] <- list()
       }
@@ -415,6 +417,10 @@ differentialAnalyses <- function(cp,
           number = Inf
         )
       top.table <- merge(cp.meta, top.table, by = 0)
+
+      # Refactor to uniformize DA results
+      top.table <- top.table[,c(1:17, 21)]
+      colnames(top.table)[18] <- "FDR"
 
       if(nrow(top.table) > 0){
         DA.peaks[[contrast.name]] <- top.table
@@ -449,6 +455,10 @@ differentialAnalyses <- function(cp,
           number = Inf
         )
       top.table <- merge(cp.meta, top.table, by = 0)
+
+      # Refactor to uniformize DA results
+      top.table <- top.table[,c(1:17, 21)]
+      colnames(top.table)[18] <- "FDR"
 
       if(nrow(top.table) > 0){
         DA.peaks[[contrast.name]] <- top.table
@@ -500,8 +510,10 @@ differentialAnalyses <- function(cp,
                  abs(log2FoldChange) >= DA.lfc.threshold)
       res.significant <- merge(cp.meta, res.significant, by = 0)
 
-      if(nrow(res.significant) > 0){
-        DA.peaks[[contrast.name]] <- res.significant
+      top.table <- res.significant[,c(1:16,19,23)]
+      colnames(top.table)[c(17,18)] <- c("logFC", "FDR")
+      if(nrow(top.table) > 0){
+        DA.peaks[[contrast.name]] <- top.table
       } else {
         DA.peaks[[contrast.name]] <- list()
       }
