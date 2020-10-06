@@ -127,7 +127,8 @@ cinaR <-
           enrichment.FDR.cutoff = enrichment.FDR.cutoff,
           background.genes.size = background.genes.size
         )
-
+      cat(">> Enrichment results are ready...\n")
+      cat(">> Done!\n")
       return(list(DA.results = DA.results,
                   Enrichment.Results = enrichment.results))
     }
