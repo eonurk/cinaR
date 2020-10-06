@@ -69,7 +69,7 @@ HPEA <- function(genes, geneset, background.genes.size) {
 #' TODO: add ... to parameters
 #' @export
 GSEA <- function(genes, geneset) {
-  fgseaRes <- fgsea::fgsea(geneset, genes, minSize=15, maxSize = 500, nperm=1000)
+  fgseaRes <- fgsea::fgsea(geneset, genes)
 
   # Unlist the genes inside fgsea object to make it saveable.
   fgseaRes$leadingEdge <- vapply(fgseaRes$leadingEdge,function(x){paste(x,collapse = ",")},
@@ -134,7 +134,7 @@ run_enrichment <- function (
       ## x[,"gene_name"] <- ifelse(is.na(mapped.genes),
       ##                          x[,"gene_name"], mapped.genes)
       x[, "gene_name"] <- mapped.genes
-
+      cat(">> Human gene symbols are converted to mice!\n")
       return(x)
     })
   }
@@ -172,14 +172,15 @@ run_enrichment <- function (
         )
 
       enrichment.results <-
-        enrichment.results[enrichment.results[,"adj.p"] < enrichment.FDR.cutoff,]
+        enrichment.results[enrichment.results[,"adj.p"] <= enrichment.FDR.cutoff,]
       return(enrichment.results)
     })
   } else if (enrichment.method == "GSEA") {
     enrichment.results <- lapply(results, function(x){
       rank <- x[,"logFC"]
       names(rank) <- x[,"gene_name"]
-      res <- GSEA(genes = rank, geneset = geneset)
+      res <- as.data.frame(GSEA(genes = rank, geneset = geneset))
+      res <- res[res[,"padj"] <= enrichment.FDR.cutoff,]
       return(res)
     })
   } else {
