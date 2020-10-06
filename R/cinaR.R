@@ -23,6 +23,16 @@
 #' via sva (default) or if the batch information is known `batch.information`
 #' argument should be provided by user.
 #' @param batch.information character vector, given by user.
+#' @param run.enrichment logical, turns off enrichment pipeline
+#' @param enrichment.method There are two methodologies for enrichment analyses,
+#' Hyper-geometric p-value (HPEA) or Geneset Enrichment Analyses (GSEA).
+#' @param enrichment.FDR.cutoff FDR cut-off for enriched terms, p-values
+#' are corrected by Benjamini-Hochberg procedure
+#' @param background.genes.size number of background genes for hyper-geometric p-value
+#' calculations. Default is 20,000.
+#' @param geneset Pathways to be used in enrichment analyses. If not set vp2008 (Chaussabel, 2008)
+#' immune modules will be used. This can be set to any geneset using `read.gmt` function from `qusage`
+#' package. Different modules are available: https://www.gsea-msigdb.org/gsea/downloads.jsp.
 #'
 #' @examples
 #' \dontrun{
@@ -55,7 +65,12 @@ cinaR <-
            show.annotation.pie = F,
            reference.genome = NULL,
            batch.correction = FALSE,
-           batch.information = NULL) {
+           batch.information = NULL,
+           run.enrichment = TRUE,
+           enrichment.method = NULL,
+           enrichment.FDR.cutoff = 0.05,
+           background.genes.size = 20e3,
+           geneset = NULL) {
     if (length(contrasts) != (ncol(consensus.peaks) - 3)) {
       stop("Length of 'contrasts' must be equal to number of samples in 'consensus.peaks'")
     }
@@ -65,7 +80,7 @@ cinaR <-
       apply(consensus.peaks[, 1:3], 1, function(x) {
         paste0(trimws(x), collapse = "_")
       })
-    cp <- consensus.peaks[, -c(1:3)]
+    cp <- consensus.peaks[,-c(1:3)]
     rownames(cp) <- cp.rownames
 
     # filter low expressed peaks
@@ -80,7 +95,7 @@ cinaR <-
 
     # filter distance to TSS
     final.peaks <-
-      cp.filtered.annotated[abs(cp.filtered.annotated$distanceToTSS) <= TSS.threshold, ]
+      cp.filtered.annotated[abs(cp.filtered.annotated$distanceToTSS) <= TSS.threshold,]
 
 
     # edgeR, limma-voom, DEseq 2
@@ -102,6 +117,20 @@ cinaR <-
       )
     }
 
+    if (run.enrichment) {
+      enrichment.results <-
+        run_enrichment(
+          results = DA.results,
+          geneset = geneset,
+          reference.genome = reference.genome,
+          enrichment.method = enrichment.method,
+          enrichment.FDR.cutoff = enrichment.FDR.cutoff,
+          background.genes.size = background.genes.size
+        )
+
+      return(list(DA.results = DA.results,
+                  Enrichment.Results = enrichment.results))
+    }
     return(DA.results)
   }
 
@@ -125,7 +154,7 @@ filterConsensus <-
            cpm.threshold = 1) {
     if (filter.method == "custom") {
       cp.filtered <-
-        cp[rowSums(edgeR::cpm(cp) >= cpm.threshold) >= library.threshold, ]
+        cp[rowSums(edgeR::cpm(cp) >= cpm.threshold) >= library.threshold,]
     } else if (filter.method == "edgeR") {
       cp.filtered <- edgeR::filterByExpr(cp)
     } else {
@@ -279,36 +308,36 @@ differentialAnalyses <- function(final.peaks,
                                  DA.peaks.path,
                                  batch.correction,
                                  batch.information) {
-
   cp.meta <- final.peaks[, 1:15]
   cp.metaless <- final.peaks[, 16:ncol(final.peaks)]
 
-  design <- stats::model.matrix(~ 0 + contrasts)
+  design <- stats::model.matrix( ~ 0 + contrasts)
 
-  if(batch.correction){
-
-    if(is.null(batch.information)){
-
+  if (batch.correction) {
+    if (is.null(batch.information)) {
       ## First normalize the consensus peaks to avoid detecting the effects
       ## confounding from library size as Michael Love and Jeff Leek suggests
       ## in this thread:
       cat(">> Running SVA for batch correction...")
 
       cp.metaless.normalized <- normalizeConsensus(cp.metaless)
-      mod  <- stats::model.matrix(~ 0 + contrasts)
-      mod0 <- cbind(rep(1,length(contrasts)))
+      mod  <- stats::model.matrix( ~ 0 + contrasts)
+      mod0 <- cbind(rep(1, length(contrasts)))
 
       ## TODO
       ## (1) make surrogate variable size an argument
       ## (2) Prohibit users to use SV1 and SV2 as names for contrast
-      sva.res <- sva::svaseq(cp.metaless.normalized, mod, mod0, n.sv = 2)
+      sva.res <-
+        sva::svaseq(cp.metaless.normalized, mod, mod0, n.sv = 2)
 
 
-      design <- cbind(design, SV1 = sva.res$sv[,1], SV2 = sva.res$sv[,2])
-    } else { # if there is batch information available
+      design <-
+        cbind(design, SV1 = sva.res$sv[, 1], SV2 = sva.res$sv[, 2])
+    } else {
+      # if there is batch information available
       cat(">> Adding batch information to design matrix...")
 
-      if(nrow(design) != length(batch.information)) {
+      if (nrow(design) != length(batch.information)) {
         stop("Number of samples and `batch.information` should be same length!")
       }
 
@@ -322,7 +351,8 @@ differentialAnalyses <- function(final.peaks,
   colnames(design) <- gsub("contrasts", "", colnames(design))
 
   # Create contrasts for all comparisons
-  combs <- utils::combn(colnames(design)[1:length(unique(contrasts))], 2)
+  combs <-
+    utils::combn(colnames(design)[1:length(unique(contrasts))], 2)
 
   contrast.names <-
     apply(combs, 2, function(x) {
@@ -382,10 +412,10 @@ differentialAnalyses <- function(final.peaks,
 
       # ifelse does not return the dataframe for some reason,
       # therefore, implemented this check explicitly
-      if(nrow(top.table) > 0){
-        top.table <- top.table[abs(top.table$logFC) >= DA.lfc.threshold,]
+      if (nrow(top.table) > 0) {
+        top.table <- top.table[abs(top.table$logFC) >= DA.lfc.threshold, ]
         # Refactor to uniformize DA results
-        top.table <- top.table[,c(1:17,21)]
+        top.table <- top.table[, c(1:17, 21)]
         DA.peaks[[contrast.name]] <- top.table
       } else {
         DA.peaks[[contrast.name]] <- list()
@@ -419,10 +449,10 @@ differentialAnalyses <- function(final.peaks,
       top.table <- merge(cp.meta, top.table, by = 0)
 
       # Refactor to uniformize DA results
-      top.table <- top.table[,c(1:17, 21)]
+      top.table <- top.table[, c(1:17, 21)]
       colnames(top.table)[18] <- "FDR"
 
-      if(nrow(top.table) > 0){
+      if (nrow(top.table) > 0) {
         DA.peaks[[contrast.name]] <- top.table
       } else {
         DA.peaks[[contrast.name]] <- list()
@@ -457,10 +487,10 @@ differentialAnalyses <- function(final.peaks,
       top.table <- merge(cp.meta, top.table, by = 0)
 
       # Refactor to uniformize DA results
-      top.table <- top.table[,c(1:17, 21)]
+      top.table <- top.table[, c(1:17, 21)]
       colnames(top.table)[18] <- "FDR"
 
-      if(nrow(top.table) > 0){
+      if (nrow(top.table) > 0) {
         DA.peaks[[contrast.name]] <- top.table
       } else {
         DA.peaks[[contrast.name]] <- list()
@@ -504,15 +534,16 @@ differentialAnalyses <- function(final.peaks,
           tidy = T
         )
       rownames(res) <- res$row
-      res.ordered <- res[order(res$pvalue), ]
+      res.ordered <- res[order(res$pvalue),]
       res.significant <-
-        subset(res.ordered, padj <= DA.fdr.threshold &
+        subset(res.ordered,
+               padj <= DA.fdr.threshold &
                  abs(log2FoldChange) >= DA.lfc.threshold)
       res.significant <- merge(cp.meta, res.significant, by = 0)
 
-      top.table <- res.significant[,c(1:16,19,23)]
-      colnames(top.table)[c(17,18)] <- c("logFC", "FDR")
-      if(nrow(top.table) > 0){
+      top.table <- res.significant[, c(1:16, 19, 23)]
+      colnames(top.table)[c(17, 18)] <- c("logFC", "FDR")
+      if (nrow(top.table) > 0) {
         DA.peaks[[contrast.name]] <- top.table
       } else {
         DA.peaks[[contrast.name]] <- list()
@@ -531,6 +562,5 @@ differentialAnalyses <- function(final.peaks,
       writexl::write_xlsx(x = DA.peaks, path = DA.peaks.path)
     }
   }
-
   return(DA.peaks)
 }

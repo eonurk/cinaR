@@ -20,7 +20,12 @@ cinaR(
   show.annotation.pie = F,
   reference.genome = NULL,
   batch.correction = FALSE,
-  batch.information = NULL
+  batch.information = NULL,
+  run.enrichment = TRUE,
+  enrichment.method = NULL,
+  enrichment.FDR.cutoff = 0.05,
+  background.genes.size = 20000,
+  geneset = NULL
 )
 }
 \arguments{
@@ -60,6 +65,21 @@ via sva (default) or if the batch information is known `batch.information`
 argument should be provided by user.}
 
 \item{batch.information}{character vector, given by user.}
+
+\item{run.enrichment}{logical, turns off enrichment pipeline}
+
+\item{enrichment.method}{There are two methodologies for enrichment analyses,
+Hyper-geometric p-value (HPEA) or Geneset Enrichment Analyses (GSEA).}
+
+\item{enrichment.FDR.cutoff}{FDR cut-off for enriched terms, p-values
+are corrected by Benjamini-Hochberg procedure}
+
+\item{background.genes.size}{number of background genes for hyper-geometric p-value
+calculations. Default is 20,000.}
+
+\item{geneset}{Pathways to be used in enrichment analyses. If not set vp2008 (Chaussabel, 2008)
+immune modules will be used. This can be set to any geneset using `read.gmt` function from `qusage`
+package. Different modules are available: https://www.gsea-msigdb.org/gsea/downloads.jsp.}
 }
 \value{
 returns differentially accessible peaks
