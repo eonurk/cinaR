@@ -68,7 +68,7 @@ cinaR <-
            batch.information = NULL,
            run.enrichment = TRUE,
            enrichment.method = NULL,
-           enrichment.FDR.cutoff = 0.05,
+           enrichment.FDR.cutoff = 1,
            background.genes.size = 20e3,
            geneset = NULL) {
     if (length(contrasts) != (ncol(consensus.peaks) - 3)) {
