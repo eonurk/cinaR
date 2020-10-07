@@ -172,7 +172,10 @@ For more information, `?cinaR`
 # new FDR threshold for DA peaks
 results <- cinaR(..., DA.fdr.threshold = 0.1)
 
-# Does not run enrichment pipeline
+# filters out pathways
+results <- cinaR(..., enrichment.FDR.cutoff = 0.1)
+
+# does not run enrichment pipeline
 results <- cinaR(..., run.enrichment = FALSE)
 
 # creates the piechart from chIpSeeker package
