@@ -21,8 +21,7 @@ library(kableExtra)
 \ \
 `cinaR` is a single wrapper function for end-to-end computational analyses of 
 bulk ATAC-seq profiles. It starts from a consensus peak file and outputs
-Differentially Accessible (DA) peaks with corresponding genenames,
-adjusted p-values, log-fold changes and so on.
+Differentially Accessible (DA) peaks and Enrichment Analyses results.
 
 <br/>
 
@@ -66,17 +65,26 @@ contrasts<- c("B6", "B6", "B6", "B6", "B6", "NZO", "NZO", "NZO", "NZO", "NZO", "
 results <- cinaR(bed, contrasts, reference.genome = "mm10")
 ```
 
-There are many information `cinaR` provides such as adjusted p value, 
-log fold-changes, gene names etc.
+Now, you can access differential accessiblity (DA) and enrichment results.
 ```{r}
-# B6 vs NZO
-colnames(results$B6_NZO)
+names(results)
 ```
 
-Here is an overview of the result:
-```{r }
-head(results$B6_NZO[,1:5])
+There are many information `cinaR` provides such as adjusted p value, 
+log fold-changes, gene names etc for DA results:
+```{r}
+colnames(results$DA.results$B6_NZO)
 ```
+
+Here is an overview of the DA results:
+```{r }
+head(results$DA.results$B6_NZO[,1:5])
+```
+and here is a little overview for enrichment analyses results:
+```{r}
+head(results$Enrichment.Results$B6_NZO[,c("overlapping.genes", "adj.p")])
+```
+
 
 
 ## Creating different contrasts
@@ -91,8 +99,25 @@ unique(contrasts)
 in this case, each of them will be compared to each other which will result in
 28 different comparisons.
 
+## Running enrichment with different dataset
+You can run the enrichment analyses with a custom geneset:
+```{r eval=FALSE}
+cinaR(..., geneset = new_geneset)
+```
+
+`geneset` must be a `.gmt` formatted symbol file. You can download different genesets from this [site](https://www.gsea-msigdb.org/gsea/downloads.jsp). 
+
+> You can use `read.gmt` function from `qusage` package to read genesets into your current environment.
+
+Also, you can familarize yourself with the format by checking out :
+```{r eval=FALSE}
+# default geneset to be used
+data("VP2008")
+```
+
+
 ## Selecting different reference genomes
-For now, `cinaR` supports 3 genomes,for human and mice models:
+For now, `cinaR` supports 3 genomes for human and mice models:
 
 - `hg38`
 - `hg19`
@@ -142,6 +167,18 @@ If not set, it uses `edgeR` for differential analyses.
 You can change the used algorithm by simply setting `DA.choice` argument.
 For more information, `?cinaR`
 
+## Some useful arguments
+```{r eval=FALSE}
+# new FDR threshold for DA peaks
+results <- cinaR(..., DA.fdr.threshold = 0.1)
+
+# Does not run enrichment pipeline
+results <- cinaR(..., run.enrichment = FALSE)
+
+# creates the piechart from chIpSeeker package
+results <- cinaR(..., show.annotation.pie = TRUE)
+```
+
 ## Contribution
 
 You can send pull requests to make your contributions.
@@ -149,10 +186,19 @@ You can send pull requests to make your contributions.
 I occasionally mess up, so all comments are appreciated!
 
 ## Future work
-- Add enrichment pipeline
-  - hyper-geometric p-value
-  - geneset enrichment analyses
-  - make it compitable with `.gmt` format
+1. ~~Add enrichment pipeline~~
+  + ~~hyper-geometric p-value~~
+  + ~~geneset enrichment analyses~~
+  + ~~make it compitable with `.gmt` format~~
+
+2. Visualization of Enrichment Results
+  + Dot plot
+  + Network plot
+
+3. Small improvements
+  + save enrichment to excel option
+  + make SV number an argument
+  + pass `...` into several functions
 
 
 ## Author

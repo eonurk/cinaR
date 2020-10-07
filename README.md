@@ -8,8 +8,8 @@
    
 `cinaR` is a single wrapper function for end-to-end computational
 analyses of bulk ATAC-seq profiles. It starts from a consensus peak file
-and outputs Differentially Accessible (DA) peaks with corresponding
-genenames, adjusted p-values, log-fold changes and so on.
+and outputs Differentially Accessible (DA) peaks and Enrichment Analyses
+results.
 
 <br/>
 
@@ -60,44 +60,68 @@ contrasts<- c("B6", "B6", "B6", "B6", "B6", "NZO", "NZO", "NZO", "NZO", "NZO", "
 ``` r
 # If reference genome is not set hg38 will be used!
 results <- cinaR(bed, contrasts, reference.genome = "mm10")
-## >> preparing features information...      2020-09-11 11:10:18 
-## >> identifying nearest features...        2020-09-11 11:10:19 
-## >> calculating distance from peak to TSS...   2020-09-11 11:10:21 
-## >> assigning genomic annotation...        2020-09-11 11:10:21 
-## >> assigning chromosome lengths           2020-09-11 11:10:45 
-## >> done...                    2020-09-11 11:10:45 
-## >> Estimating dispersion...
-## >> Fitting GLM...
+## >> preparing features information...      2020-10-07 10:06:36 
+## >> identifying nearest features...        2020-10-07 10:06:37 
+## >> calculating distance from peak to TSS...   2020-10-07 10:06:38 
+## >> assigning genomic annotation...        2020-10-07 10:06:38 
+## >> assigning chromosome lengths           2020-10-07 10:07:03 
+## >> done...                    2020-10-07 10:07:03 
 ## >> Method: edgeR
 ##  FDR: 0.05 & abs(logFC)< 0 
+## >> Estimating dispersion...
+## >> Fitting GLM...
 ## >> DA peaks are found!
+## >> Converting mouse genes to human...
+## >> Mouse to human mapping is created for all genes!
+## >> Human gene symbols are converted to mice!
+## >> Enrichment results are ready...
+## >> Done!
+```
+
+Now, you can access differential accessiblity (DA) and enrichment
+results.
+
+``` r
+names(results)
+## [1] "DA.results"         "Enrichment.Results"
 ```
 
 There are many information `cinaR` provides such as adjusted p value,
-log fold-changes, gene names etc.
+log fold-changes, gene names etc for DA results:
 
 ``` r
-# B6 vs NZO
-colnames(results$B6_NZO)
+colnames(results$DA.results$B6_NZO)
 ##  [1] "Row.names"     "seqnames"      "start"         "end"          
 ##  [5] "width"         "strand"        "annotation"    "geneChr"      
 ##  [9] "geneStart"     "geneEnd"       "geneLength"    "geneStrand"   
 ## [13] "geneId"        "transcriptId"  "distanceToTSS" "gene_name"    
-## [17] "logFC"         "logCPM"        "F"             "PValue"       
-## [21] "FDR"
+## [17] "logFC"         "FDR"
 ```
 
-Here is an overview of the result:
+Here is an overview of the DA results:
 
 ``` r
-head(results$B6_NZO[,1:5])
+head(results$DA.results$B6_NZO[,1:5])
 ##                  Row.names seqnames     start       end width
-## 1 chr1_104737782_104738294     chr1 104737782 104738294   513
-## 2 chr1_104738589_104739011     chr1 104738589 104739011   423
-## 3 chr1_105662857_105665310     chr1 105662857 105665310  2454
-## 4 chr1_105989457_105992240     chr1 105989457 105992240  2784
-## 5 chr1_106153994_106154441     chr1 106153994 106154441   448
-## 6 chr1_106170912_106173892     chr1 106170912 106173892  2981
+## 1 chr1_134559439_134560787     chr1 134559439 134560787  1349
+## 2 chr1_138158514_138159483     chr1 138158514 138159483   970
+## 3 chr1_164247654_164251852     chr1 164247654 164251852  4199
+## 4 chr1_171631196_171631780     chr1 171631196 171631780   585
+## 5 chr1_173954537_173955745     chr1 173954537 173955745  1209
+## 6 chr1_177935969_177936852     chr1 177935969 177936852   884
+```
+
+and here is a little overview for enrichment analyses results:
+
+``` r
+head(results$Enrichment.Results$B6_NZO[,c("overlapping.genes", "adj.p")])
+##                                             overlapping.genes      adj.p
+## Myeloid lineage 1         PLXNC1,GM2A,AGTPBP1,CTSB,TFEB,FBXL5 0.06091435
+## U_metabolism/replication              PECAM1,GM2A,CTSB,SLC2A6 0.06091435
+## U_mitochondrial proteins      PTPRC,MAP4K4,PIK3R1,PAQR3,UBE3A 0.33826666
+## U_proteasome/ubiquitin cx                  PTPRC,PIK3R1,IREB2 0.36655302
+## U_cAMP/NF-KB activation                RUNX1,RUNX1,ETS2,CCNG2 0.36655302
+## U_Immunity/cytoskeleton                            RPS6,RPS19 0.56382267
 ```
 
 ## Creating different contrasts
@@ -116,9 +140,31 @@ unique(contrasts)
 in this case, each of them will be compared to each other which will
 result in 28 different comparisons.
 
+## Running enrichment with different dataset
+
+You can run the enrichment analyses with a custom geneset:
+
+``` r
+cinaR(..., geneset = new_geneset)
+```
+
+`geneset` must be a `.gmt` formatted symbol file. You can download
+different genesets from this
+[site](https://www.gsea-msigdb.org/gsea/downloads.jsp).
+
+> You can use `read.gmt` function from `qusage` package to read genesets
+> into your current environment.
+
+Also, you can familarize yourself with the format by checking out :
+
+``` r
+# default geneset to be used
+data("VP2008")
+```
+
 ## Selecting different reference genomes
 
-For now, `cinaR` supports 3 genomes,for human and mice models:
+For now, `cinaR` supports 3 genomes for human and mice models:
 
   - `hg38`
   - `hg19`
@@ -178,6 +224,19 @@ If not set, it uses `edgeR` for differential analyses. You can change
 the used algorithm by simply setting `DA.choice` argument. For more
 information, `?cinaR`
 
+## Some useful arguments
+
+``` r
+# new FDR threshold for DA peaks
+results <- cinaR(..., DA.fdr.threshold = 0.1)
+
+# Does not run enrichment pipeline
+results <- cinaR(..., run.enrichment = FALSE)
+
+# creates the piechart from chIpSeeker package
+results <- cinaR(..., show.annotation.pie = TRUE)
+```
+
 ## Contribution
 
 You can send pull requests to make your contributions.
@@ -186,10 +245,32 @@ I occasionally mess up, so all comments are appreciated\!
 
 ## Future work
 
-  - Add enrichment pipeline
-      - hyper-geometric p-value
-      - geneset enrichment analyses
-      - make it compitable with `.gmt` format
+1.  ~~Add enrichment pipeline~~
+
+<!-- end list -->
+
+  - ~~hyper-geometric p-value~~
+  - ~~geneset enrichment analyses~~
+  - ~~make it compitable with `.gmt` format~~
+
+<!-- end list -->
+
+2.  Visualization of Enrichment Results
+
+<!-- end list -->
+
+  - Dot plot
+  - Network plot
+
+<!-- end list -->
+
+3.  Small improvements
+
+<!-- end list -->
+
+  - save enrichment to excel option
+  - make SV number an argument
+  - pass `...` into several functions
 
 ## Author
 
