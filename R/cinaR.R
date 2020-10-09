@@ -97,6 +97,14 @@ cinaR <-
     final.peaks <-
       cp.filtered.annotated[abs(cp.filtered.annotated$distanceToTSS) <= TSS.threshold,]
 
+    if (enrichment.method == "GSEA" & run.enrichment == TRUE){
+      warning("Setting `DA.fdr.threshold = 1` and `DA.lfc.threshold = 0`
+              since GSEA is chosen for enrichment method!")
+
+      DA.fdr.threshold <- 1
+      DA.lfc.threshold <- 0
+    }
+
 
     # edgeR, limma-voom, DEseq 2
     if (DA.choice %in% c(1:4)) {
@@ -118,6 +126,7 @@ cinaR <-
     }
 
     if (run.enrichment) {
+
       enrichment.results <-
         run_enrichment(
           results = DA.results,
