@@ -173,6 +173,9 @@ run_enrichment <- function (
 
       enrichment.results <-
         enrichment.results[enrichment.results[,"adj.p"] <= enrichment.FDR.cutoff,]
+
+      rownames(enrichment.results) <- NULL
+
       return(enrichment.results)
     })
   } else if (enrichment.method == "GSEA") {

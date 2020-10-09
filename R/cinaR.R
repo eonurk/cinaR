@@ -1,6 +1,6 @@
 #' cinaR
 #'
-#' Runs DA pipeline and makes it ready for enrichment analyses
+#' Runs differential analyses and enrichment pipelines
 #'
 #' @param consensus.peaks bed formatted consensus peak matrix: CHR, START, STOP and raw peak counts (peaks by 3+samples)
 #' @param contrasts user-defined contrasts for comparing samples
@@ -97,14 +97,16 @@ cinaR <-
     final.peaks <-
       cp.filtered.annotated[abs(cp.filtered.annotated$distanceToTSS) <= TSS.threshold,]
 
-    if (enrichment.method == "GSEA" & run.enrichment == TRUE){
-      warning("Setting `DA.fdr.threshold = 1` and `DA.lfc.threshold = 0`
+
+    if (!is.null(enrichment.method)){
+      if (enrichment.method == "GSEA" & run.enrichment == TRUE){
+        warning("Setting `DA.fdr.threshold = 1` and `DA.lfc.threshold = 0`
               since GSEA is chosen for enrichment method!")
 
-      DA.fdr.threshold <- 1
-      DA.lfc.threshold <- 0
+        DA.fdr.threshold <- 1
+        DA.lfc.threshold <- 0
+      }
     }
-
 
     # edgeR, limma-voom, DEseq 2
     if (DA.choice %in% c(1:4)) {
