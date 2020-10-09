@@ -319,24 +319,29 @@ differentialAnalyses <- function(final.peaks,
       ## First normalize the consensus peaks to avoid detecting the effects
       ## confounding from library size as Michael Love and Jeff Leek suggests
       ## in this thread:
-      cat(">> Running SVA for batch correction...")
+      cat(">> Running SVA for batch correction...\n")
 
       cp.metaless.normalized <- normalizeConsensus(cp.metaless)
       mod  <- stats::model.matrix( ~ 0 + contrasts)
       mod0 <- cbind(rep(1, length(contrasts)))
 
-      ## TODO
-      ## (1) make surrogate variable size an argument
-      ## (2) Prohibit users to use SV1 and SV2 as names for contrast
+      # calculate the batch effects
       sva.res <-
-        sva::svaseq(cp.metaless.normalized, mod, mod0, n.sv = 2)
+        sva::svaseq(cp.metaless.normalized, mod, mod0)
 
+      # batch effect additional matrix
+      add.batch <- sva.res$sv
 
+      # make the colnames prettier just for fun
+      colnames(add.batch) <- paste0("SV", c(1:ncol(add.batch)))
+
+      # add it to the design matrix
       design <-
-        cbind(design, SV1 = sva.res$sv[, 1], SV2 = sva.res$sv[, 2])
+        cbind(design, add.batch)
+
     } else {
       # if there is batch information available
-      cat(">> Adding batch information to design matrix...")
+      cat(">> Adding batch information to design matrix...\n")
 
       if (nrow(design) != length(batch.information)) {
         stop("Number of samples and `batch.information` should be same length!")
