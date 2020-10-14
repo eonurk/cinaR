@@ -78,7 +78,7 @@ results <- cinaR(bed, contrasts, reference.genome = "mm10")
 ## >> Done!
 ```
 
-Now, you can access differential accessiblity (DA) and enrichment
+Now, you can access differential accessibility (DA) and enrichment
 results.
 
 ``` r
@@ -111,6 +111,10 @@ head(results$DA.results$B6_NZO[,1:5])
 ## 6 chr1_177935969_177936852     chr1 177935969 177936852   884
 ```
 
+> Since the comparison is `B6_NZO`, if fold-changes are positive it
+> means they are more accesible in B6 compared to NZO and vice versa for
+> negative values\!
+
 and here is a little overview for enrichment analyses results:
 
 ``` r
@@ -123,6 +127,23 @@ head(results$Enrichment.Results$B6_NZO[,c("overlapping.genes", "adj.p")])
 ## U_cAMP/NF-KB activation                RUNX1,RUNX1,ETS2,CCNG2 0.36655302
 ## U_Immunity/cytoskeleton                            RPS6,RPS19 0.56382267
 ```
+
+You can plot your enrichment results using:
+
+``` r
+dot_plot(results)
+```
+
+![](inst/rmd/README_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+
+if it gets too crowded, you can get rid of the irrelevant pathways as
+well:
+
+``` r
+dot_plot(results, filter.pathways = T)
+```
+
+![](inst/rmd/README_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 ## Creating different contrasts
 
@@ -238,6 +259,9 @@ results <- cinaR(..., run.enrichment = FALSE)
 
 # creates the piechart from chIpSeeker package
 results <- cinaR(..., show.annotation.pie = TRUE)
+
+# change cut-off value for dot plots
+dot_plot(..., fdr.cutoff = 0.05)
 ```
 
 ## Contribution
@@ -262,7 +286,7 @@ I occasionally mess up, so all comments are appreciated\!
 
 <!-- end list -->
 
-  - Dot plot
+  - ~~Dot plot~~
   - Network plot
 
 <!-- end list -->
@@ -271,8 +295,8 @@ I occasionally mess up, so all comments are appreciated\!
 
 <!-- end list -->
 
-  - save enrichment to excel option
-  - make SV number an argument
+  - save enrichment files to excel
+  - ~~make SV number an argument~~
   - pass `...` into several functions
 
 ## Author

@@ -65,7 +65,7 @@ contrasts<- c("B6", "B6", "B6", "B6", "B6", "NZO", "NZO", "NZO", "NZO", "NZO", "
 results <- cinaR(bed, contrasts, reference.genome = "mm10")
 ```
 
-Now, you can access differential accessiblity (DA) and enrichment results.
+Now, you can access differential accessibility (DA) and enrichment results.
 ```{r}
 names(results)
 ```
@@ -80,11 +80,21 @@ Here is an overview of the DA results:
 ```{r }
 head(results$DA.results$B6_NZO[,1:5])
 ```
+> Since the comparison is `B6_NZO`, if fold-changes are positive it means they are more accesible in B6 compared to NZO and vice versa for negative values!
+
 and here is a little overview for enrichment analyses results:
 ```{r}
 head(results$Enrichment.Results$B6_NZO[,c("overlapping.genes", "adj.p")])
 ```
+You can plot your enrichment results using:
+```{r dpi=300}
+dot_plot(results)
+```
 
+if it gets too crowded, you can get rid of the irrelevant pathways as well:
+```{r dpi=300}
+dot_plot(results, filter.pathways = T)
+```
 
 
 ## Creating different contrasts
@@ -180,6 +190,9 @@ results <- cinaR(..., run.enrichment = FALSE)
 
 # creates the piechart from chIpSeeker package
 results <- cinaR(..., show.annotation.pie = TRUE)
+
+# change cut-off value for dot plots
+dot_plot(..., fdr.cutoff = 0.05)
 ```
 
 ## Contribution
@@ -195,12 +208,12 @@ I occasionally mess up, so all comments are appreciated!
   + ~~make it compitable with `.gmt` format~~
 
 2. Visualization of Enrichment Results
-  + Dot plot
+  + ~~Dot plot~~
   + Network plot
 
 3. Small improvements
-  + save enrichment to excel option
-  + make SV number an argument
+  + save enrichment files to excel
+  + ~~make SV number an argument~~
   + pass `...` into several functions
 
 
