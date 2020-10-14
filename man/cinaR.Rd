@@ -85,7 +85,7 @@ package. Different modules are available: https://www.gsea-msigdb.org/gsea/downl
 returns differentially accessible peaks
 }
 \description{
-Runs DA pipeline and makes it ready for enrichment analyses
+Runs differential analyses and enrichment pipelines
 }
 \examples{
 \dontrun{
