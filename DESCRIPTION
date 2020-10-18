@@ -32,8 +32,7 @@ Imports: annotables,
          TxDb.Hsapiens.UCSC.hg19.knownGene, 
          TxDb.Mmusculus.UCSC.mm10.knownGene,
          writexl 
-Remote: 
-         stephenturner/annotables
+Remotes: stephenturner/annotables
 RoxygenNote: 7.1.1
 Suggests: 
     knitr,
