@@ -75,12 +75,17 @@ cinaR <-
       stop("Length of 'contrasts' must be equal to number of samples in 'consensus.peaks'")
     }
 
+    if (is.null(reference.genome)) {
+      warning("'reference.genome' is not set, therefore hg38 will be used!")
+      reference.genome <- "hg38"
+    }
+
     # collapse chr, start, end and make them rownames
     cp.rownames <-
       apply(consensus.peaks[, 1:3], 1, function(x) {
         paste0(trimws(x), collapse = "_")
       })
-    cp <- consensus.peaks[,-c(1:3)]
+    cp <- consensus.peaks[, -c(1:3)]
     rownames(cp) <- cp.rownames
 
     # filter low expressed peaks
@@ -95,13 +100,15 @@ cinaR <-
 
     # filter distance to TSS
     final.peaks <-
-      cp.filtered.annotated[abs(cp.filtered.annotated$distanceToTSS) <= TSS.threshold,]
+      cp.filtered.annotated[abs(cp.filtered.annotated$distanceToTSS) <= TSS.threshold, ]
 
 
-    if (!is.null(enrichment.method)){
-      if (enrichment.method == "GSEA" & run.enrichment == TRUE){
-        warning("Setting `DA.fdr.threshold = 1` and `DA.lfc.threshold = 0`
-              since GSEA is chosen for enrichment method!")
+    if (!is.null(enrichment.method)) {
+      if (enrichment.method == "GSEA" & run.enrichment == TRUE) {
+        warning(
+          "Setting `DA.fdr.threshold = 1` and `DA.lfc.threshold = 0`
+              since GSEA is chosen for enrichment method!"
+        )
 
         DA.fdr.threshold <- 1
         DA.lfc.threshold <- 0
@@ -128,7 +135,6 @@ cinaR <-
     }
 
     if (run.enrichment) {
-
       enrichment.results <-
         run_enrichment(
           results = DA.results,
@@ -166,7 +172,7 @@ filterConsensus <-
            cpm.threshold = 1) {
     if (filter.method == "custom") {
       cp.filtered <-
-        cp[rowSums(edgeR::cpm(cp) >= cpm.threshold) >= library.threshold,]
+        cp[rowSums(edgeR::cpm(cp) >= cpm.threshold) >= library.threshold, ]
     } else if (filter.method == "edgeR") {
       cp.filtered <- edgeR::filterByExpr(cp)
     } else {
@@ -217,9 +223,8 @@ annotatePeaks <-
     colnames(bed) <- c("CHR", "Start", "End")
     bed.GRanges <- GenomicRanges::GRanges(bed)
 
-    if (is.null(reference.genome)) {
-      warning("'reference.genome' is not set, therefore hg38 will be used!")
 
+    if (reference.genome == "hg38") {
       if (!requireNamespace("TxDb.Hsapiens.UCSC.hg38.knownGene", quietly = TRUE)) {
         stop(
           "Package \"TxDb.Hsapiens.UCSC.hg38.knownGene\" needed for this
@@ -230,17 +235,7 @@ annotatePeaks <-
       txdb <-
         TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene
       genome <- annotables::grch38
-    } else if (reference.genome == "hg38") {
-      if (!requireNamespace("TxDb.Hsapiens.UCSC.hg38.knownGene", quietly = TRUE)) {
-        stop(
-          "Package \"TxDb.Hsapiens.UCSC.hg38.knownGene\" needed for this
-             function to work. Please install it.",
-          call. = FALSE
-        )
-      }
-      txdb <-
-        TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene
-      genome <- annotables::grch38
+      reference.genome <- "hg38"
     } else if (reference.genome == "hg19") {
       if (!requireNamespace("TxDb.Hsapiens.UCSC.hg19.knownGene", quietly = TRUE)) {
         stop(
@@ -323,7 +318,7 @@ differentialAnalyses <- function(final.peaks,
   cp.meta <- final.peaks[, 1:15]
   cp.metaless <- final.peaks[, 16:ncol(final.peaks)]
 
-  design <- stats::model.matrix( ~ 0 + contrasts)
+  design <- stats::model.matrix(~ 0 + contrasts)
 
   if (batch.correction) {
     if (is.null(batch.information)) {
@@ -333,7 +328,7 @@ differentialAnalyses <- function(final.peaks,
       cat(">> Running SVA for batch correction...\n")
 
       cp.metaless.normalized <- normalizeConsensus(cp.metaless)
-      mod  <- stats::model.matrix( ~ 0 + contrasts)
+      mod  <- stats::model.matrix(~ 0 + contrasts)
       mod0 <- cbind(rep(1, length(contrasts)))
 
       # calculate the batch effects
@@ -430,7 +425,7 @@ differentialAnalyses <- function(final.peaks,
       # ifelse does not return the dataframe for some reason,
       # therefore, implemented this check explicitly
       if (nrow(top.table) > 0) {
-        top.table <- top.table[abs(top.table$logFC) >= DA.lfc.threshold, ]
+        top.table <- top.table[abs(top.table$logFC) >= DA.lfc.threshold,]
         # Refactor to uniformize DA results
         top.table <- top.table[, c(1:17, 21)]
         DA.peaks[[contrast.name]] <- top.table
@@ -551,7 +546,7 @@ differentialAnalyses <- function(final.peaks,
           tidy = T
         )
       rownames(res) <- res$row
-      res.ordered <- res[order(res$pvalue),]
+      res.ordered <- res[order(res$pvalue), ]
       res.significant <-
         subset(res.ordered,
                padj <= DA.fdr.threshold &

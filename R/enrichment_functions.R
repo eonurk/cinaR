@@ -113,7 +113,6 @@ run_enrichment <- function (
     message(">> enrichment.method` is not selected. Hyper-geometric p-value (HPEA) will be used!")
     enrichment.method <- "HPEA"
   }
-
   # Convert mice gene symbols to human's
   if (reference.genome == "mm10") {
     all.genes <- sapply(results, function(x) {

@@ -9,10 +9,16 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/"
+  
 )
 ```
 
 # cinaR <img src="man/logo/cinaR.png" align="right" alt="" width="120" />
+
+<!-- badges: start -->
+[![Build Status](https://travis-ci.com/eonurk/cinaR.svg?branch=master)](https://travis-ci.com/eonurk/cinaR)
+<!-- badges: end -->
+
 `cinaR` is a single wrapper function for end-to-end computational analyses of 
 bulk ATAC-seq profiles. It starts from a consensus peak file and outputs
 Differentially Accessible (DA) peaks and Enrichment Analyses results.
@@ -23,3 +29,17 @@ Differentially Accessible (DA) peaks and Enrichment Analyses results.
 library(devtools)
 install_github("eonurk/cinaR")
 ```
+
+## Quick Start
+```{r dpi=300}
+library(cinaR)
+data("atac_seq_consensus_bm")
+
+contrasts<- c("B6", "B6", "B6", "B6", "B6", "NZO", "NZO", "NZO", "NZO", "NZO", "NZO", 
+              "B6", "B6", "B6", "B6", "B6", "NZO", "NZO", "NZO", "NZO", "NZO", "NZO")
+
+results <- cinaR(bed, contrasts, reference.genome = "mm10")
+
+dot_plot(results)
+```
+
