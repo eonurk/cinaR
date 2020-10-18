@@ -1,10 +1,17 @@
 Package: cinaR
 Type: Package
 Title: Computational pipelINe for Atac-seq in R (cinaR)
-Version: 1.0.1
-Author: Onur Karakaslar [aut, cre],
-        Duygu Ucar [aut]
-Maintainer: Onur Karakaslar <onurkara3594@gmail.com>
+Version: 0.0.2
+Authors@R: 
+    c(person(given = "Onur",
+             family = "Karakaslar",
+             role = c("aut", "cre"),
+             email = "eonurkara@gmail.com"),
+      person(given = "Duygu",
+             family = "Ucar",
+             role = "aut",
+             comment = c(ORCID = "0000-0002-9772-3066"))
+      )
 Description: Differential analyses and Enrichment pipeline for ATAC-seq data
   analyses. This package combines different packages to have an ultimate package
   for both data analyses and visualization of ATAC-seq data.

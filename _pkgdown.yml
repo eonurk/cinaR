@@ -2,3 +2,7 @@ destination: docs
 template:
   params:
     bootswatch: sandstone
+
+authors:
+  Kirill Müller:
+    href: http://krlmlr.info

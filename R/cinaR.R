@@ -71,6 +71,7 @@ cinaR <-
            enrichment.FDR.cutoff = 1,
            background.genes.size = 20e3,
            geneset = NULL) {
+
     if (length(contrasts) != (ncol(consensus.peaks) - 3)) {
       stop("Length of 'contrasts' must be equal to number of samples in 'consensus.peaks'")
     }
