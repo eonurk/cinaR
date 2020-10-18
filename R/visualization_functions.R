@@ -11,8 +11,6 @@
 #' @export
 dot_plot <- function(object, fdr.cutoff = 0.1, filter.pathways = FALSE){
 
-  source("R/color_values.R")
-
   if(is.null (object[["Enrichment.Results"]])){
     stop("Did you run the enrichment pipeline in cinaR? For more info ?cinaR")
   }

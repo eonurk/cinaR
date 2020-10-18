@@ -1,0 +1,25 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/"
+)
+```
+
+# cinaR <img src="man/logo/cinaR.png" align="right" alt="" width="120" />
+`cinaR` is a single wrapper function for end-to-end computational analyses of 
+bulk ATAC-seq profiles. It starts from a consensus peak file and outputs
+Differentially Accessible (DA) peaks and Enrichment Analyses results.
+
+## Installation
+
+```{r eval=FALSE}
+library(devtools)
+install_github("eonurk/cinaR")
+```

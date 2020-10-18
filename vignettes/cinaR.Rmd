@@ -1,35 +1,24 @@
 ---
-output: github_document
----
+title: "Introduction to cinaR"
+author: "E Onur Karakaslar"
+date: "`r format(Sys.Date(), '%m/%d/%Y')`"
+output:
+  rmarkdown::html_document:
+    highlight: pygments
+    toc: true
+    fig_width: 5
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
+vignette: >
+  %\VignetteIndexEntry{cinaR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  warning =  FALSE,
-  message = FALSE
+  comment = "#>"
 )
-library(knitr)
-library(kableExtra)
-```
-
-# cinaR
-
-<img align="left" width="125" height="125" src="../logo/cinaR.png">
-
-\ \
-`cinaR` is a single wrapper function for end-to-end computational analyses of 
-bulk ATAC-seq profiles. It starts from a consensus peak file and outputs
-Differentially Accessible (DA) peaks and Enrichment Analyses results.
-
-<br/>
-
-## Installation
-
-```{r eval=FALSE}
-library(devtools)
-install_github("eonurk/cinaR")
 ```
 
 
@@ -231,6 +220,3 @@ I occasionally mess up, so all comments are appreciated!
 
 - Ritchie ME, Phipson B, Wu D, Hu Y, Law CW, Shi W, Smyth GK (2015). “limma powers differential expression analyses for RNA-sequencing and microarray studies.” Nucleic Acids Research, 43(7), e47.
 - Love, M.I., Huber, W., Anders, S. (2014) Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2. Genome Biology, 15:550. 10.1186/s13059-014-0550-8
-
-
-

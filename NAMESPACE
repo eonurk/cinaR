@@ -3,6 +3,7 @@
 export(GSEA)
 export(annotatePeaks)
 export(cinaR)
+export(color_values)
 export(differentialAnalyses)
 export(dot_plot)
 export(filterConsensus)
