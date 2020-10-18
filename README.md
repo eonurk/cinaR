@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# cinaR <a href='https://eonurk.github.io/cinaR'><img src='man/logo/cinaR.png' align="right" height="139" /></a>
+# cinaR <a href='https://eonurk.github.io/cinaR'><img src='man/figures/cinaR.png' align="right" height="139" /></a>
 
 <!-- badges: start -->
 
@@ -36,12 +36,12 @@ contrasts<- c("B6", "B6", "B6", "B6", "B6", "NZO", "NZO", "NZO", "NZO", "NZO", "
 
 results <- cinaR(bed, contrasts, reference.genome = "mm10")
 #> 
-#> >> preparing features information...      2020-10-17 23:44:39 
-#> >> identifying nearest features...        2020-10-17 23:44:41 
-#> >> calculating distance from peak to TSS...   2020-10-17 23:44:43 
-#> >> assigning genomic annotation...        2020-10-17 23:44:43 
-#> >> assigning chromosome lengths           2020-10-17 23:45:09 
-#> >> done...                    2020-10-17 23:45:09 
+#> >> preparing features information...      2020-10-17 23:53:26 
+#> >> identifying nearest features...        2020-10-17 23:53:28 
+#> >> calculating distance from peak to TSS...   2020-10-17 23:53:29 
+#> >> assigning genomic annotation...        2020-10-17 23:53:29 
+#> >> assigning chromosome lengths           2020-10-17 23:53:56 
+#> >> done...                    2020-10-17 23:53:56 
 #> >> Method: edgeR
 #>  FDR: 0.05 & abs(logFC)< 0 
 #> >> Estimating dispersion...
