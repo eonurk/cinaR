@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">cinaR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -73,56 +73,15 @@
   <div class="contents col-md-9">
 <div id="cinar-" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#cinar-" class="anchor"></a>cinaR <a href="https://eonurk.github.io/cinaR"><img src="reference/figures/cinaR.png" align="right" height="139"></a>
+<a href="#cinar-" class="anchor"></a>cinaR <img src="man/logo/cinaR.png" align="right" alt="" width="120">
 </h1></div>
-<!-- badges: start -->
-
-<div id="overview" class="section level2">
-<h2 class="hasAnchor">
-<a href="#overview" class="anchor"></a>Overview</h2>
 <p><code>cinaR</code> is a single wrapper function for end-to-end computational analyses of bulk ATAC-seq profiles. It starts from a consensus peak file and outputs Differentially Accessible (DA) peaks and Enrichment Analyses results.</p>
-</div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">devtools</span><span class="op">)</span>
-<span class="fu">install_github</span><span class="op">(</span><span class="st">"eonurk/cinaR"</span><span class="op">)</span></pre></div>
-</div>
-<div id="quick-start" class="section level2">
-<h2 class="hasAnchor">
-<a href="#quick-start" class="anchor"></a>Quick Start</h2>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/eonurk/cinaR">cinaR</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"atac_seq_consensus_bm"</span><span class="op">)</span>
-
-<span class="va">contrasts</span><span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, 
-              <span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span><span class="op">)</span>
-
-<span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">bed</span>, <span class="va">contrasts</span>, reference.genome <span class="op">=</span> <span class="st">"mm10"</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; &gt;&gt; preparing features information...      2020-10-17 23:53:26 </span>
-<span class="co">#&gt; &gt;&gt; identifying nearest features...        2020-10-17 23:53:28 </span>
-<span class="co">#&gt; &gt;&gt; calculating distance from peak to TSS...   2020-10-17 23:53:29 </span>
-<span class="co">#&gt; &gt;&gt; assigning genomic annotation...        2020-10-17 23:53:29 </span>
-<span class="co">#&gt; &gt;&gt; assigning chromosome lengths           2020-10-17 23:53:56 </span>
-<span class="co">#&gt; &gt;&gt; done...                    2020-10-17 23:53:56 </span>
-<span class="co">#&gt; &gt;&gt; Method: edgeR</span>
-<span class="co">#&gt;  FDR: 0.05 &amp; abs(logFC)&lt; 0 </span>
-<span class="co">#&gt; &gt;&gt; Estimating dispersion...</span>
-<span class="co">#&gt; &gt;&gt; Fitting GLM...</span>
-<span class="co">#&gt; &gt;&gt; DA peaks are found!</span>
-<span class="co">#&gt; &gt;&gt; No `geneset` is specified so immune modules (Chaussabel, 2008) will be used!</span>
-<span class="co">#&gt; &gt;&gt; enrichment.method` is not selected. Hyper-geometric p-value (HPEA) will be used!</span>
-<span class="co">#&gt; &gt;&gt; Converting mouse genes to human...</span>
-<span class="co">#&gt; &gt;&gt; Mouse to human mapping is created for all genes!</span>
-<span class="co">#&gt; &gt;&gt; Human gene symbols are converted to mice!</span>
-<span class="co">#&gt; &gt;&gt; Enrichment results are ready...</span>
-<span class="co">#&gt; &gt;&gt; Done!</span>
-
-<span class="fu"><a href="reference/dot_plot.html">dot_plot</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span>
-<span class="co">#&gt; Warning: Removed 54 rows containing missing values (geom_point).</span></pre></div>
-<p><img src="reference/figures/unnamed-chunk-3-1.png" width="100%"></p>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/">devtools</a></span><span class="op">)</span>
+<span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"eonurk/cinaR"</span><span class="op">)</span></pre></div>
 </div>
 </div>
   </div>
@@ -150,14 +109,7 @@
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
-<ul class="list-unstyled">
-<li><a href="https://travis-ci.com/eonurk/cinaR"><img src="https://travis-ci.com/eonurk/cinaR.svg?branch=master" alt="Build Status"></a></li>
-<li><a href="https://github.com/eonurk/cinaR/actions"><img src="https://github.com/eonurk/cinaR/workflows/R-CMD-check/badge.svg" alt="R build status"></a></li>
-</ul>
-</div>
-</div>
+  </div>
 </div>
 
 
