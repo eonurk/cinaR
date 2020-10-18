@@ -1,7 +1,7 @@
 Package: cinaR
 Type: Package
 Title: Computational pipelINe for Atac-seq in R (cinaR)
-Version: 1.0.0
+Version: 1.0.1
 Author: Onur Karakaslar [aut, cre],
         Duygu Ucar [aut]
 Maintainer: Onur Karakaslar <onurkara3594@gmail.com>
