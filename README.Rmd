@@ -4,21 +4,23 @@ output: github_document
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-```{r, echo = FALSE}
+```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "man/figures/"
-  
+  fig.path = "man/figures/",
+  out.width = "100%"
 )
 ```
+# cinaR <a href='https://eonurk.github.io/cinaR'><img src='man/logo/cinaR.png' align="right" height="139" /></a>
 
-# cinaR <img src="man/logo/cinaR.png" align="right" alt="" width="120" />
 
 <!-- badges: start -->
 [![Build Status](https://travis-ci.com/eonurk/cinaR.svg?branch=master)](https://travis-ci.com/eonurk/cinaR)
+[![R build status](https://github.com/eonurk/cinaR/workflows/R-CMD-check/badge.svg)](https://github.com/eonurk/cinaR/actions)
 <!-- badges: end -->
 
+## Overview
 `cinaR` is a single wrapper function for end-to-end computational analyses of 
 bulk ATAC-seq profiles. It starts from a consensus peak file and outputs
 Differentially Accessible (DA) peaks and Enrichment Analyses results.
