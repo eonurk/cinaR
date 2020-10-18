@@ -1,4 +1,7 @@
 language: r
+r: bioc-devel
+bioc_check: true
+sudo: false
 cache: packages
 
 # Set one of you dependencies from github
