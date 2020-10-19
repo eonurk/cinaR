@@ -73,7 +73,7 @@
       <h1 data-toc-skip>Introduction to cinaR</h1>
                         <h4 class="author">E Onur Karakaslar</h4>
             
-            <h4 class="date">10/19/2020</h4>
+            <h4 class="date">10/18/2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/eonurk/cinaR/blob/master/vignettes/cinaR.Rmd"><code>vignettes/cinaR.Rmd</code></a></small>
       <div class="hidden name"><code>cinaR.Rmd</code></div>
@@ -112,12 +112,12 @@
 <span class="co"># If reference genome is not set hg38 will be used!</span>
 <span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">bed</span>, <span class="va">contrasts</span>, reference.genome <span class="op">=</span> <span class="st">"mm10"</span><span class="op">)</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; &gt;&gt; preparing features information...      2020-10-19 01:18:46 </span>
-<span class="co">#&gt; &gt;&gt; identifying nearest features...        2020-10-19 01:18:48 </span>
-<span class="co">#&gt; &gt;&gt; calculating distance from peak to TSS...   2020-10-19 01:18:49 </span>
-<span class="co">#&gt; &gt;&gt; assigning genomic annotation...        2020-10-19 01:18:49 </span>
-<span class="co">#&gt; &gt;&gt; assigning chromosome lengths           2020-10-19 01:19:11 </span>
-<span class="co">#&gt; &gt;&gt; done...                    2020-10-19 01:19:11 </span>
+<span class="co">#&gt; &gt;&gt; preparing features information...      2020-10-17 20:39:16 </span>
+<span class="co">#&gt; &gt;&gt; identifying nearest features...        2020-10-17 20:39:17 </span>
+<span class="co">#&gt; &gt;&gt; calculating distance from peak to TSS...   2020-10-17 20:39:18 </span>
+<span class="co">#&gt; &gt;&gt; assigning genomic annotation...        2020-10-17 20:39:18 </span>
+<span class="co">#&gt; &gt;&gt; assigning chromosome lengths           2020-10-17 20:39:43 </span>
+<span class="co">#&gt; &gt;&gt; done...                    2020-10-17 20:39:43 </span>
 <span class="co">#&gt; &gt;&gt; Method: edgeR</span>
 <span class="co">#&gt;  FDR: 0.05 &amp; abs(logFC)&lt; 0 </span>
 <span class="co">#&gt; &gt;&gt; Estimating dispersion...</span>
@@ -159,12 +159,12 @@
 <div class="sourceCode" id="cb9"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">Enrichment.Results</span><span class="op">$</span><span class="va">B6_NZO</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"overlapping.genes"</span>, <span class="st">"adj.p"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>
 <span class="co">#&gt;                     overlapping.genes      adj.p</span>
-<span class="co">#&gt; 1 PLXNC1,GM2A,AGTPBP1,CTSB,TFEB,FBXL5 0.06455975</span>
-<span class="co">#&gt; 2             PECAM1,GM2A,CTSB,SLC2A6 0.06455975</span>
-<span class="co">#&gt; 3     PTPRC,MAP4K4,PIK3R1,PAQR3,UBE3A 0.35904401</span>
-<span class="co">#&gt; 4                  PTPRC,PIK3R1,IREB2 0.38443203</span>
-<span class="co">#&gt; 5              RUNX1,RUNX1,ETS2,CCNG2 0.38443203</span>
-<span class="co">#&gt; 6                          RPS6,RPS19 0.57910579</span></pre></div>
+<span class="co">#&gt; 1 PLXNC1,GM2A,AGTPBP1,CTSB,TFEB,FBXL5 0.06091435</span>
+<span class="co">#&gt; 2             PECAM1,GM2A,CTSB,SLC2A6 0.06091435</span>
+<span class="co">#&gt; 3     PTPRC,MAP4K4,PIK3R1,PAQR3,UBE3A 0.33826666</span>
+<span class="co">#&gt; 4                  PTPRC,PIK3R1,IREB2 0.36655302</span>
+<span class="co">#&gt; 5              RUNX1,RUNX1,ETS2,CCNG2 0.36655302</span>
+<span class="co">#&gt; 6                          RPS6,RPS19 0.56382267</span></pre></div>
 <p>You can plot your enrichment results using:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit">
 <span class="fu"><a href="../reference/dot_plot.html">dot_plot</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span>
