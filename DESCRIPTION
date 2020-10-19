@@ -1,6 +1,6 @@
 Package: cinaR
 Type: Package
-Title: Computational Pipeline for ATAC-seq in R
+Title: Computational Pipeline for ATAC-Seq in R
 Version: 0.0.2
 Authors@R: 
     c(person(given = "Onur",
