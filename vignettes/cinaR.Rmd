@@ -61,6 +61,7 @@ names(results)
 
 Inside `DA.results`, you have the consensus peaks (cp) and differentially accessible (DA) peaks.
 If batch correction was run, then `cp` will be a batch-corrected consensus matrix, otherwise it is the original one you provided.
+
 ```{r}
 names(results$DA.results)
 ```

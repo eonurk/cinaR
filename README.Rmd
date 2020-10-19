@@ -41,7 +41,14 @@ contrasts<- c("B6", "B6", "B6", "B6", "B6", "NZO", "NZO", "NZO", "NZO", "NZO", "
               "B6", "B6", "B6", "B6", "B6", "NZO", "NZO", "NZO", "NZO", "NZO", "NZO")
 
 results <- cinaR(bed, contrasts, reference.genome = "mm10")
+```
 
+```{r dpi=300}
+pca_plot(results, contrasts, show.names = F)
+```
+
+
+```{r dpi=300}
 dot_plot(results)
 ```
 

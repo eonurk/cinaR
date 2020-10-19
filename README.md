@@ -36,12 +36,12 @@ contrasts<- c("B6", "B6", "B6", "B6", "B6", "NZO", "NZO", "NZO", "NZO", "NZO", "
 
 results <- cinaR(bed, contrasts, reference.genome = "mm10")
 #> 
-#> >> preparing features information...      2020-10-17 23:53:26 
-#> >> identifying nearest features...        2020-10-17 23:53:28 
-#> >> calculating distance from peak to TSS...   2020-10-17 23:53:29 
-#> >> assigning genomic annotation...        2020-10-17 23:53:29 
-#> >> assigning chromosome lengths           2020-10-17 23:53:56 
-#> >> done...                    2020-10-17 23:53:56 
+#> >> preparing features information...      2020-10-19 16:42:44 
+#> >> identifying nearest features...        2020-10-19 16:42:46 
+#> >> calculating distance from peak to TSS...   2020-10-19 16:42:47 
+#> >> assigning genomic annotation...        2020-10-19 16:42:47 
+#> >> assigning chromosome lengths           2020-10-19 16:43:19 
+#> >> done...                    2020-10-19 16:43:19 
 #> >> Method: edgeR
 #>  FDR: 0.05 & abs(logFC)< 0 
 #> >> Estimating dispersion...
@@ -54,9 +54,17 @@ results <- cinaR(bed, contrasts, reference.genome = "mm10")
 #> >> Human gene symbols are converted to mice!
 #> >> Enrichment results are ready...
 #> >> Done!
+```
 
+``` r
+pca_plot(results, contrasts, show.names = F)
+```
+
+<img src="man/figures/unnamed-chunk-4-1.png" width="100%" />
+
+``` r
 dot_plot(results)
 #> Warning: Removed 54 rows containing missing values (geom_point).
 ```
 
-<img src="man/figures/unnamed-chunk-3-1.png" width="100%" />
+<img src="man/figures/unnamed-chunk-5-1.png" width="100%" />
