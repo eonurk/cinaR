@@ -23,3 +23,33 @@
 #' (\href{https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2727981/}{PubMed})
 #'
 "vp2008"
+
+
+#' Grch38
+#'
+#' @docType data
+#'
+#' @usage data(grch38)
+#'
+#'
+#' @keywords datasets
+#'
+"grch38"
+
+#' Grch37
+#'
+#' @docType data
+#'
+#' @usage data(grch37)
+#' @keywords datasets
+#'
+"grch37"
+
+
+#' Grcm38
+#'
+#' @docType data
+#' @usage data(grcm38)
+#' @keywords datasets
+#'
+"grcm38"

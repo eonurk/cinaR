@@ -4,9 +4,6 @@ bioc_check: true
 sudo: false
 cache: packages
 
-# Set one of you dependencies from github
-r_github_packages: stephenturner/annotables
-
 after_success:
   - Rscript -e 'pkgdown::build_site()'
 

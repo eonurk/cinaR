@@ -235,7 +235,7 @@ annotatePeaks <-
       }
       txdb <-
         TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene
-      genome <- annotables::grch38
+      genome <- cinaR::grch38
       reference.genome <- "hg38"
     } else if (reference.genome == "hg19") {
       if (!requireNamespace("TxDb.Hsapiens.UCSC.hg19.knownGene", quietly = TRUE)) {
@@ -247,7 +247,7 @@ annotatePeaks <-
       }
       txdb <-
         TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
-      genome <- annotables::grch37
+      genome <- cinaR::grch37
     } else if (reference.genome == "mm10") {
       if (!requireNamespace("TxDb.Mmusculus.UCSC.mm10.knownGene", quietly = TRUE)) {
         stop(
@@ -258,13 +258,13 @@ annotatePeaks <-
       }
       txdb <-
         TxDb.Mmusculus.UCSC.mm10.knownGene::TxDb.Mmusculus.UCSC.mm10.knownGene
-      genome <- annotables::grcm38
+      genome <- cinaR::grcm38
     } else {
       stop ("reference.genome should be 'hg38', 'hg19' or 'mm10'")
     }
 
     # annotate peaks
-    annoPeaks <- ChIPseeker::annotatePeak(bed.GRanges, TxDb = txdb)
+    annoPeaks <- ChIPseeker::annotatePeak(bed.GRanges, TxDb = txdb, assignGenomicAnnotation = T)
 
     if (show.annotation.pie) {
       ChIPseeker::plotAnnoPie(annoPeaks)
