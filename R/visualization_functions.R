@@ -15,6 +15,11 @@ dot_plot <- function(results, fdr.cutoff = 0.1, filter.pathways = FALSE){
     stop("Did you run the enrichment pipeline in cinaR? For more info ?cinaR")
   }
 
+  #silence build NOTES
+  adj.p <- column_label <-
+    log2FoldChange <- module.name <- padj <-
+    prcomp <- status <- NULL
+
   results <- results[["Enrichment.Results"]]
 
   # add list names as a column
@@ -71,6 +76,9 @@ dot_plot <- function(results, fdr.cutoff = 0.1, filter.pathways = FALSE){
 #' @export
 pca_plot <- function(results, overlaid.info, sample.names = NULL, show.names = TRUE){
 
+  #silence CRAN build NOTES
+  PC1 <- PC2 <- NULL
+
   # extract consensus peaks
   cp <- results[["DA.results"]][["cp"]]
 
@@ -86,7 +94,7 @@ pca_plot <- function(results, overlaid.info, sample.names = NULL, show.names = T
   # log option is set TRUE to have a better variance-stabilization.
   cp <- normalizeConsensus(cp, log.option = TRUE)
 
-  pca <- prcomp(t(cp), center = TRUE)
+  pca <- stats::prcomp(t(cp), center = TRUE)
 
   d  <- round(pca$sdev^2/sum(pca$sdev^2)*100, digits=1)
   xl <- sprintf("PC 1: %.1f %%", d[1])

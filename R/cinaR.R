@@ -188,7 +188,7 @@ filterConsensus <-
 #'
 #' @param cp bed formatted consensus peak matrix: CHR, START, STOP and raw peak counts (peaks by 3+samples)
 #' @param norm.method normalization method for consensus peaks
-#' @param logical, log option for cpm function in edgeR
+#' @param log.option logical, log option for cpm function in edgeR
 #' @return Normalized consensus peaks
 #'
 #' @export
@@ -316,6 +316,10 @@ differentialAnalyses <- function(final.peaks,
                                  DA.peaks.path,
                                  batch.correction,
                                  batch.information) {
+
+  # silence build notes
+  log2FoldChange <- padj <- NULL
+
   cp.meta <- final.peaks[, 1:15]
   cp.metaless <- final.peaks[, 16:ncol(final.peaks)]
 

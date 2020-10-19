@@ -11,7 +11,7 @@ normalizeConsensus(cp, norm.method = "cpm", log.option = FALSE)
 
 \item{norm.method}{normalization method for consensus peaks}
 
-\item{logical, }{log option for cpm function in edgeR}
+\item{log.option}{logical, log option for cpm function in edgeR}
 }
 \value{
 Normalized consensus peaks
