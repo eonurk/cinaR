@@ -99,6 +99,10 @@ run_enrichment <- function (
   enrichment.FDR.cutoff = 0.05,
   background.genes.size = 20e3
 ) {
+
+  # adjustment due to change in pipeline
+  results <- results[["DA.peaks"]]
+
   # If no geneset is specified use VP2008
   if (is.null(geneset)) {
     message(">> No `geneset` is specified so immune modules (Chaussabel, 2008) will be used!")

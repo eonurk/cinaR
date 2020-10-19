@@ -40,7 +40,7 @@ argument should be provided by user.}
 \item{batch.information}{character vector, given by user.}
 }
 \value{
-DApeaks returns DA peaks
+returns consensus peaks (batch corrected version if enabled) and DA peaks
 }
 \description{
 Runs differential analyses pipeline of choice on consensus peaks

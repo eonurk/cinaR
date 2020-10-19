@@ -57,24 +57,54 @@ results <- cinaR(bed, contrasts, reference.genome = "mm10")
 Now, you can access differential accessibility (DA) and enrichment results.
 ```{r}
 names(results)
-```
+````
 
-There are many information `cinaR` provides such as adjusted p value, 
-log fold-changes, gene names etc for DA results:
+Inside `DA.results`, you have the consensus peaks (cp) and differentially accessible (DA) peaks.
+If batch correction was run, then `cp` will be a batch-corrected consensus matrix, otherwise it is the original one you provided.
 ```{r}
-colnames(results$DA.results$B6_NZO)
+names(results$DA.results)
+```
+There are many information `cinaR` provides such as adjusted p value, 
+log fold-changes, gene names etc for each peak:
+```{r}
+colnames(results$DA.results$DA.peaks$B6_NZO)
 ```
 
-Here is an overview of the DA results:
+
+Here is an overview of those DA peaks:
 ```{r }
-head(results$DA.results$B6_NZO[,1:5])
+head(results$DA.results$DA.peaks$B6_NZO[,1:5])
 ```
 > Since the comparison is `B6_NZO`, if fold-changes are positive it means they are more accesible in B6 compared to NZO and vice versa for negative values!
 
 and here is a little overview for enrichment analyses results:
 ```{r}
-head(results$Enrichment.Results$B6_NZO[,c("overlapping.genes", "adj.p")])
+head(results$Enrichment.Results$B6_NZO[,c("module.name","overlapping.genes", "adj.p")])
 ```
+You can easily get the PCA plots of the samples:
+```{r dpi=300}
+pca_plot(results, contrasts, show.names = F)
+```
+
+You can overlay different information onto PCA plots as well!
+```{r}
+# Overlaid information
+overlaid.info <- c("B6-18mo", "B6-18mo", "B6-18mo", "B6-18mo", "B6-18mo", 
+                   "NZO-18mo", "NZO-18mo", "NZO-18mo", "NZO-18mo", "NZO-18mo", "NZO-18mo", 
+                   "B6-3mo", "B6-3mo", "B6-3mo", "B6-3mo", "B6-3mo", 
+                   "NZO-3mo", "NZO-3mo", "NZO-3mo", "NZO-3mo", "NZO-3mo", "NZO-3mo")
+# Sample IDs
+sample.names <- c("GT18-01783", "GT18-01780", "GT18-01781", "GT18-01778", "GT18-01779", 
+"GT18-03804", "GT18-03805", "GT18-03806", "GT18-03807", "GT18-03808", 
+"GT18-03809", "GT18-04678", "GT18-04679", "GT18-04680", "GT18-04681", 
+"GT18-04682", "GT18-10918", "GT18-10916", "GT18-10919", "GT18-10921", 
+"GT18-10917", "GT18-10920")
+```
+```{r dpi=300}
+pca_plot(results, overlaid.info, sample.names)
+```
+
+
 You can plot your enrichment results using:
 ```{r dpi=300}
 dot_plot(results)

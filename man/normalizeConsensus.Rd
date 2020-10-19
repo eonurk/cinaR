@@ -4,12 +4,14 @@
 \alias{normalizeConsensus}
 \title{normalizeConsensus}
 \usage{
-normalizeConsensus(cp, norm.method = "cpm")
+normalizeConsensus(cp, norm.method = "cpm", log.option = FALSE)
 }
 \arguments{
 \item{cp}{bed formatted consensus peak matrix: CHR, START, STOP and raw peak counts (peaks by 3+samples)}
 
 \item{norm.method}{normalization method for consensus peaks}
+
+\item{logical, }{log option for cpm function in edgeR}
 }
 \value{
 Normalized consensus peaks

@@ -4,10 +4,10 @@
 \alias{dot_plot}
 \title{dot_plot}
 \usage{
-dot_plot(object, fdr.cutoff = 0.1, filter.pathways = FALSE)
+dot_plot(results, fdr.cutoff = 0.1, filter.pathways = FALSE)
 }
 \arguments{
-\item{object}{cinaR result object}
+\item{results}{cinaR result object}
 
 \item{fdr.cutoff}{Pathways with smaller fdr values than the cut-off
 will be shown as dots.}

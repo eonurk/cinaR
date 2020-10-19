@@ -106,8 +106,8 @@ cinaR <-
 
     if (!is.null(enrichment.method)) {
       if (enrichment.method == "GSEA" & run.enrichment == TRUE) {
-        warning(
-          "Setting `DA.fdr.threshold = 1` and `DA.lfc.threshold = 0`
+        message(
+          ">> Setting `DA.fdr.threshold = 1` and `DA.lfc.threshold = 0`
               since GSEA is chosen for enrichment method!"
         )
 
@@ -188,14 +188,14 @@ filterConsensus <-
 #'
 #' @param cp bed formatted consensus peak matrix: CHR, START, STOP and raw peak counts (peaks by 3+samples)
 #' @param norm.method normalization method for consensus peaks
-#'
+#' @param logical, log option for cpm function in edgeR
 #' @return Normalized consensus peaks
 #'
 #' @export
 normalizeConsensus <-
-  function(cp, norm.method = "cpm") {
+  function(cp, norm.method = "cpm", log.option = FALSE) {
     if (norm.method == "cpm") {
-      cp.norm <- edgeR::cpm(cp, log = F)
+      cp.norm <- edgeR::cpm(cp, log = log.option)
     } else if (norm.method == "quantile") {
       cp.norm <- preprocessCore::normalize.quantiles(cp)
     } else {
@@ -304,7 +304,7 @@ annotatePeaks <-
 #' argument should be provided by user.
 #' @param batch.information character vector, given by user.
 #'
-#' @return DApeaks returns DA peaks
+#' @return returns consensus peaks (batch corrected version if enabled) and DA peaks
 #'
 #' @export
 differentialAnalyses <- function(final.peaks,
@@ -346,6 +346,9 @@ differentialAnalyses <- function(final.peaks,
       design <-
         cbind(design, add.batch)
 
+      # batch corrected consensus peaks created for PCA/Heatmaps
+      cp.batch.corrected <- limma::removeBatchEffect(cp.metaless, covariates = add.batch)
+
     } else {
       # if there is batch information available
       cat(">> Adding batch information to design matrix...\n")
@@ -355,6 +358,9 @@ differentialAnalyses <- function(final.peaks,
       }
 
       design <- cbind(design, BatchInfo = batch.information)
+
+      # batch corrected consensus peaks created for PCA/Heatmaps
+      cp.batch.corrected <- limma::removeBatchEffect(cp.metaless, batch = batch.information)
     }
   }
 
@@ -575,5 +581,9 @@ differentialAnalyses <- function(final.peaks,
       writexl::write_xlsx(x = DA.peaks, path = DA.peaks.path)
     }
   }
-  return(DA.peaks)
+
+  if (batch.correction){
+    return(list (cp = cp.batch.corrected, DA.peaks = DA.peaks))
+  }
+  return(list (cp = cp.metaless, DA.peaks = DA.peaks))
 }
