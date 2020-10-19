@@ -9,9 +9,11 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/",
-  out.width = "100%"
+  out.width = "100%",
+  fig.dpi = 96
 )
 ```
+
 # cinaR <a href='https://eonurk.github.io/cinaR'><img src='man/figures/cinaR.png' align="right" height="139" /></a>
 
 
@@ -33,7 +35,7 @@ install_github("eonurk/cinaR")
 ```
 
 ## Quick Start
-```{r dpi=300}
+```{r}
 library(cinaR)
 data("atac_seq_consensus_bm")
 
@@ -43,12 +45,12 @@ contrasts<- c("B6", "B6", "B6", "B6", "B6", "NZO", "NZO", "NZO", "NZO", "NZO", "
 results <- cinaR(bed, contrasts, reference.genome = "mm10")
 ```
 
-```{r dpi=300}
+```{r}
 pca_plot(results, contrasts, show.names = F)
 ```
 
 
-```{r dpi=300}
+```{r}
 dot_plot(results)
 ```
 

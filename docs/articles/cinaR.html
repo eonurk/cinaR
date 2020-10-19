@@ -90,91 +90,88 @@
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"atac_seq_consensus_bm"</span><span class="op">)</span></pre></div>
 <p>Bed formatted consensus matrix (chr, start, end and samples)</p>
 <div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">bed</span><span class="op">)</span>
-<span class="co">#&gt; [1] 1000   25</span></pre></div>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="co"># bed formatted file</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">bed</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span>
-<span class="co">#&gt;         Chr     Start       End B6-18mo-M-BM-47-GT18-01783</span>
-<span class="co">#&gt; 52834  chr5  24841478  24845196                       1592</span>
-<span class="co">#&gt; 29780 chr17   8162955   8164380                        109</span>
-<span class="co">#&gt; 67290  chr8  40577584  40578029                         72</span>
-<span class="co">#&gt; 51295  chr4 145277698 145278483                        110</span>
-<span class="co">#&gt; 4267   chr1 180808752 180815472                       2452</span>
-<span class="co">#&gt; 45102  chr3  88732151  88732652                         49</span></pre></div>
-<p>Create the contrasts you want to compare, here we create contrasts for 22 mice samples from different strains.</p>
+<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">bed</span><span class="op">)</span></pre></div>
+<pre><code>## [1] 1000   25</code></pre>
 <div class="sourceCode" id="cb4"><pre class="downlit">
+<span class="co"># bed formatted file</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">bed</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span></pre></div>
+<pre><code>##         Chr     Start       End B6-18mo-M-BM-47-GT18-01783
+## 52834  chr5  24841478  24845196                       1592
+## 29780 chr17   8162955   8164380                        109
+## 67290  chr8  40577584  40578029                         72
+## 51295  chr4 145277698 145278483                        110
+## 4267   chr1 180808752 180815472                       2452
+## 45102  chr3  88732151  88732652                         49</code></pre>
+<p>Create the contrasts you want to compare, here we create contrasts for 22 mice samples from different strains.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit">
 <span class="co"># create contrast vector which will be compared.</span>
 <span class="va">contrasts</span><span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, 
               <span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span><span class="op">)</span></pre></div>
 <p><code>cinaR</code> function directly computes the differentially accessible peaks.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="co"># If reference genome is not set hg38 will be used!</span>
-<span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">bed</span>, <span class="va">contrasts</span>, reference.genome <span class="op">=</span> <span class="st">"mm10"</span><span class="op">)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; &gt;&gt; preparing features information...      2020-10-19 17:45:43 </span>
-<span class="co">#&gt; &gt;&gt; identifying nearest features...        2020-10-19 17:45:44 </span>
-<span class="co">#&gt; &gt;&gt; calculating distance from peak to TSS...   2020-10-19 17:45:46 </span>
-<span class="co">#&gt; &gt;&gt; assigning genomic annotation...        2020-10-19 17:45:46 </span>
-<span class="co">#&gt; &gt;&gt; assigning chromosome lengths           2020-10-19 17:46:14 </span>
-<span class="co">#&gt; &gt;&gt; done...                    2020-10-19 17:46:14 </span>
-<span class="co">#&gt; &gt;&gt; Method: edgeR</span>
-<span class="co">#&gt;  FDR: 0.05 &amp; abs(logFC)&lt; 0 </span>
-<span class="co">#&gt; &gt;&gt; Estimating dispersion...</span>
-<span class="co">#&gt; &gt;&gt; Fitting GLM...</span>
-<span class="co">#&gt; &gt;&gt; DA peaks are found!</span>
-<span class="co">#&gt; &gt;&gt; No `geneset` is specified so immune modules (Chaussabel, 2008) will be used!</span>
-<span class="co">#&gt; &gt;&gt; enrichment.method` is not selected. Hyper-geometric p-value (HPEA) will be used!</span>
-<span class="co">#&gt; &gt;&gt; Converting mouse genes to human...</span>
-<span class="co">#&gt; &gt;&gt; Mouse to human mapping is created for all genes!</span>
-<span class="co">#&gt; &gt;&gt; Human gene symbols are converted to mice!</span>
-<span class="co">#&gt; &gt;&gt; Enrichment results are ready...</span>
-<span class="co">#&gt; &gt;&gt; Done!</span></pre></div>
-<p>Now, you can access differential accessibility (DA) and enrichment results.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span>
-<span class="co">#&gt; [1] "DA.results"         "Enrichment.Results"</span></pre></div>
-<p>Inside <code>DA.results</code>, you have the consensus peaks (cp) and differentially accessible (DA) peaks. If batch correction was run, then <code>cp</code> will be a batch-corrected consensus matrix, otherwise it is the original one you provided.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">DA.results</span><span class="op">)</span>
-<span class="co">#&gt; [1] "cp"       "DA.peaks"</span></pre></div>
-<p>There are many information <code>cinaR</code> provides such as adjusted p value, log fold-changes, gene names etc for each peak:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">DA.results</span><span class="op">$</span><span class="va">DA.peaks</span><span class="op">$</span><span class="va">B6_NZO</span><span class="op">)</span>
-<span class="co">#&gt;  [1] "Row.names"     "seqnames"      "start"         "end"          </span>
-<span class="co">#&gt;  [5] "width"         "strand"        "annotation"    "geneChr"      </span>
-<span class="co">#&gt;  [9] "geneStart"     "geneEnd"       "geneLength"    "geneStrand"   </span>
-<span class="co">#&gt; [13] "geneId"        "transcriptId"  "distanceToTSS" "gene_name"    </span>
-<span class="co">#&gt; [17] "logFC"         "FDR"</span></pre></div>
-<p>Here is an overview of those DA peaks:</p>
+<span class="co"># If reference genome is not set hg38 will be used!</span>
+<span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">bed</span>, <span class="va">contrasts</span>, reference.genome <span class="op">=</span> <span class="st">"mm10"</span><span class="op">)</span></pre></div>
+<pre><code>## &gt;&gt; preparing features information...      2020-10-19 18:38:13 
+## &gt;&gt; identifying nearest features...        2020-10-19 18:38:15 
+## &gt;&gt; calculating distance from peak to TSS...   2020-10-19 18:38:16 
+## &gt;&gt; assigning genomic annotation...        2020-10-19 18:38:16 
+## &gt;&gt; assigning chromosome lengths           2020-10-19 18:38:44 
+## &gt;&gt; done...                    2020-10-19 18:38:44 
+## &gt;&gt; Method: edgeR
+##  FDR: 0.05 &amp; abs(logFC)&lt; 0 
+## &gt;&gt; Estimating dispersion...
+## &gt;&gt; Fitting GLM...
+## &gt;&gt; DA peaks are found!
+## &gt;&gt; Converting mouse genes to human...
+## &gt;&gt; Mouse to human mapping is created for all genes!
+## &gt;&gt; Human gene symbols are converted to mice!
+## &gt;&gt; Enrichment results are ready...
+## &gt;&gt; Done!</code></pre>
+<p>Now, you can access differential accessibility (DA) and enrichment results.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">DA.results</span><span class="op">$</span><span class="va">DA.peaks</span><span class="op">$</span><span class="va">B6_NZO</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span><span class="op">)</span>
-<span class="co">#&gt;                  Row.names seqnames     start       end width</span>
-<span class="co">#&gt; 1 chr1_134559439_134560787     chr1 134559439 134560787  1349</span>
-<span class="co">#&gt; 2 chr1_138158514_138159483     chr1 138158514 138159483   970</span>
-<span class="co">#&gt; 3 chr1_164247654_164251852     chr1 164247654 164251852  4199</span>
-<span class="co">#&gt; 4 chr1_171631196_171631780     chr1 171631196 171631780   585</span>
-<span class="co">#&gt; 5 chr1_173954537_173955745     chr1 173954537 173955745  1209</span>
-<span class="co">#&gt; 6 chr1_177935969_177936852     chr1 177935969 177936852   884</span></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></pre></div>
+<pre><code>## [1] "DA.results"         "Enrichment.Results"</code></pre>
+<p>Inside <code>DA.results</code>, you have the consensus peaks (cp) and differentially accessible (DA) peaks. If batch correction was run, then <code>cp</code> will be a batch-corrected consensus matrix, otherwise it is the original one you provided.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">DA.results</span><span class="op">)</span></pre></div>
+<pre><code>## [1] "cp"       "DA.peaks"</code></pre>
+<p>There are many information <code>cinaR</code> provides such as adjusted p value, log fold-changes, gene names etc for each peak:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">DA.results</span><span class="op">$</span><span class="va">DA.peaks</span><span class="op">$</span><span class="va">B6_NZO</span><span class="op">)</span></pre></div>
+<pre><code>##  [1] "Row.names"     "seqnames"      "start"         "end"          
+##  [5] "width"         "strand"        "annotation"    "geneChr"      
+##  [9] "geneStart"     "geneEnd"       "geneLength"    "geneStrand"   
+## [13] "geneId"        "transcriptId"  "distanceToTSS" "gene_name"    
+## [17] "logFC"         "FDR"</code></pre>
+<p>Here is an overview of those DA peaks:</p>
+<div class="sourceCode" id="cb15"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">DA.results</span><span class="op">$</span><span class="va">DA.peaks</span><span class="op">$</span><span class="va">B6_NZO</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span><span class="op">)</span></pre></div>
+<pre><code>##                  Row.names seqnames     start       end width
+## 1 chr1_134559439_134560787     chr1 134559439 134560787  1349
+## 2 chr1_138158514_138159483     chr1 138158514 138159483   970
+## 3 chr1_164247654_164251852     chr1 164247654 164251852  4199
+## 4 chr1_171631196_171631780     chr1 171631196 171631780   585
+## 5 chr1_173954537_173955745     chr1 173954537 173955745  1209
+## 6 chr1_177935969_177936852     chr1 177935969 177936852   884</code></pre>
 <blockquote>
 <p>Since the comparison is <code>B6_NZO</code>, if fold-changes are positive it means they are more accesible in B6 compared to NZO and vice versa for negative values!</p>
 </blockquote>
 <p>and here is a little overview for enrichment analyses results:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">Enrichment.Results</span><span class="op">$</span><span class="va">B6_NZO</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"module.name"</span>,<span class="st">"overlapping.genes"</span>, <span class="st">"adj.p"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>
-<span class="co">#&gt;                 module.name                   overlapping.genes      adj.p</span>
-<span class="co">#&gt; 1         Myeloid lineage 1 PLXNC1,GM2A,AGTPBP1,CTSB,TFEB,FBXL5 0.06455975</span>
-<span class="co">#&gt; 2  U_metabolism/replication             PECAM1,GM2A,CTSB,SLC2A6 0.06455975</span>
-<span class="co">#&gt; 3  U_mitochondrial proteins     PTPRC,MAP4K4,PIK3R1,PAQR3,UBE3A 0.35904401</span>
-<span class="co">#&gt; 4 U_proteasome/ubiquitin cx                  PTPRC,PIK3R1,IREB2 0.38443203</span>
-<span class="co">#&gt; 5   U_cAMP/NF-KB activation              RUNX1,RUNX1,ETS2,CCNG2 0.38443203</span>
-<span class="co">#&gt; 6   U_Immunity/cytoskeleton                          RPS6,RPS19 0.57910579</span></pre></div>
+<div class="sourceCode" id="cb17"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">Enrichment.Results</span><span class="op">$</span><span class="va">B6_NZO</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"module.name"</span>,<span class="st">"overlapping.genes"</span>, <span class="st">"adj.p"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></pre></div>
+<pre><code>##                 module.name                   overlapping.genes      adj.p
+## 1         Myeloid lineage 1 PLXNC1,GM2A,AGTPBP1,CTSB,TFEB,FBXL5 0.06455975
+## 2  U_metabolism/replication             PECAM1,GM2A,CTSB,SLC2A6 0.06455975
+## 3  U_mitochondrial proteins     PTPRC,MAP4K4,PIK3R1,PAQR3,UBE3A 0.35904401
+## 4 U_proteasome/ubiquitin cx                  PTPRC,PIK3R1,IREB2 0.38443203
+## 5   U_cAMP/NF-KB activation              RUNX1,RUNX1,ETS2,CCNG2 0.38443203
+## 6   U_Immunity/cytoskeleton                          RPS6,RPS19 0.57910579</code></pre>
 <p>You can easily get the PCA plots of the samples:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit">
+<div class="sourceCode" id="cb19"><pre class="downlit">
 <span class="fu"><a href="../reference/pca_plot.html">pca_plot</a></span><span class="op">(</span><span class="va">results</span>, <span class="va">contrasts</span>, show.names <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></pre></div>
-<p><img src="cinaR_files/figure-html/unnamed-chunk-12-1.png" width="2187.5"></p>
+<p><img src="cinaR_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
 <p>You can overlay different information onto PCA plots as well!</p>
-<div class="sourceCode" id="cb12"><pre class="downlit">
+<div class="sourceCode" id="cb20"><pre class="downlit">
 <span class="co"># Overlaid information</span>
 <span class="va">overlaid.info</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"B6-18mo"</span>, <span class="st">"B6-18mo"</span>, <span class="st">"B6-18mo"</span>, <span class="st">"B6-18mo"</span>, <span class="st">"B6-18mo"</span>, 
                    <span class="st">"NZO-18mo"</span>, <span class="st">"NZO-18mo"</span>, <span class="st">"NZO-18mo"</span>, <span class="st">"NZO-18mo"</span>, <span class="st">"NZO-18mo"</span>, <span class="st">"NZO-18mo"</span>, 
@@ -186,43 +183,43 @@
 <span class="st">"GT18-03809"</span>, <span class="st">"GT18-04678"</span>, <span class="st">"GT18-04679"</span>, <span class="st">"GT18-04680"</span>, <span class="st">"GT18-04681"</span>, 
 <span class="st">"GT18-04682"</span>, <span class="st">"GT18-10918"</span>, <span class="st">"GT18-10916"</span>, <span class="st">"GT18-10919"</span>, <span class="st">"GT18-10921"</span>, 
 <span class="st">"GT18-10917"</span>, <span class="st">"GT18-10920"</span><span class="op">)</span></pre></div>
-<div class="sourceCode" id="cb13"><pre class="downlit">
+<div class="sourceCode" id="cb21"><pre class="downlit">
 <span class="fu"><a href="../reference/pca_plot.html">pca_plot</a></span><span class="op">(</span><span class="va">results</span>, <span class="va">overlaid.info</span>, <span class="va">sample.names</span><span class="op">)</span></pre></div>
-<p><img src="cinaR_files/figure-html/unnamed-chunk-14-1.png" width="2187.5"></p>
+<p><img src="cinaR_files/figure-html/unnamed-chunk-13-1.png" width="700"></p>
 <p>You can plot your enrichment results using:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit">
-<span class="fu"><a href="../reference/dot_plot.html">dot_plot</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span>
-<span class="co">#&gt; Warning: Removed 54 rows containing missing values (geom_point).</span></pre></div>
-<p><img src="cinaR_files/figure-html/unnamed-chunk-15-1.png" width="2187.5"></p>
+<div class="sourceCode" id="cb22"><pre class="downlit">
+<span class="fu"><a href="../reference/dot_plot.html">dot_plot</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></pre></div>
+<pre><code>## Warning: Removed 54 rows containing missing values (geom_point).</code></pre>
+<p><img src="cinaR_files/figure-html/unnamed-chunk-14-1.png" width="700"></p>
 <p>if it gets too crowded, you can get rid of the irrelevant pathways as well:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit">
+<div class="sourceCode" id="cb24"><pre class="downlit">
 <span class="fu"><a href="../reference/dot_plot.html">dot_plot</a></span><span class="op">(</span><span class="va">results</span>, filter.pathways <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></pre></div>
-<p><img src="cinaR_files/figure-html/unnamed-chunk-16-1.png" width="2187.5"></p>
+<p><img src="cinaR_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
 </div>
 <div id="creating-different-contrasts" class="section level2">
 <h2 class="hasAnchor">
 <a href="#creating-different-contrasts" class="anchor"></a>Creating different contrasts</h2>
 <p>Note that you can further divide the resolution of contrasts, for instance this is also a valid vector</p>
-<div class="sourceCode" id="cb16"><pre class="downlit">
+<div class="sourceCode" id="cb25"><pre class="downlit">
 <span class="va">contrasts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strsplit.html">strsplit</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">bed</span><span class="op">)</span>, split <span class="op">=</span> <span class="st">"-"</span>, fixed <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>, 
                     <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>, collapse <span class="op">=</span> <span class="st">"-"</span><span class="op">)</span><span class="op">}</span><span class="op">)</span><span class="op">[</span><span class="fl">4</span><span class="op">:</span><span class="fl">25</span><span class="op">]</span>
-<span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">contrasts</span><span class="op">)</span>
-<span class="co">#&gt; [1] "B6-18mo-M-BM"  "B6-18mo-F-BM"  "NZO-18mo-F-BM" "NZO-18mo-M-BM"</span>
-<span class="co">#&gt; [5] "B6-3mo-F-BM"   "B6-3mo-M-BM"   "NZO-3mo-F-BM"  "NZO-3mo-M-BM"</span></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">contrasts</span><span class="op">)</span></pre></div>
+<pre><code>## [1] "B6-18mo-M-BM"  "B6-18mo-F-BM"  "NZO-18mo-F-BM" "NZO-18mo-M-BM"
+## [5] "B6-3mo-F-BM"   "B6-3mo-M-BM"   "NZO-3mo-F-BM"  "NZO-3mo-M-BM"</code></pre>
 <p>in this case, each of them will be compared to each other which will result in 28 different comparisons.</p>
 </div>
 <div id="running-enrichment-with-different-dataset" class="section level2">
 <h2 class="hasAnchor">
 <a href="#running-enrichment-with-different-dataset" class="anchor"></a>Running enrichment with different dataset</h2>
 <p>You can run the enrichment analyses with a custom geneset:</p>
-<div class="sourceCode" id="cb17"><pre class="downlit">
+<div class="sourceCode" id="cb27"><pre class="downlit">
 <span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, geneset <span class="op">=</span> <span class="va">new_geneset</span><span class="op">)</span></pre></div>
 <p><code>geneset</code> must be a <code>.gmt</code> formatted symbol file. You can download different genesets from this <a href="https://www.gsea-msigdb.org/gsea/downloads.jsp">site</a>.</p>
 <blockquote>
 <p>You can use <code>read.gmt</code> function from <code>qusage</code> package to read genesets into your current environment.</p>
 </blockquote>
 <p>Also, you can familarize yourself with the format by checking out :</p>
-<div class="sourceCode" id="cb18"><pre class="downlit">
+<div class="sourceCode" id="cb28"><pre class="downlit">
 <span class="co"># default geneset to be used</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"VP2008"</span><span class="op">)</span></pre></div>
 </div>
@@ -241,10 +238,10 @@
 <h2 class="hasAnchor">
 <a href="#batch-effect-correction" class="anchor"></a>Batch Effect Correction</h2>
 <p>If you suspect your data have unknown batch effects, you can use:</p>
-<div class="sourceCode" id="cb19"><pre class="downlit">
+<div class="sourceCode" id="cb29"><pre class="downlit">
 <span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, batch.correction <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></pre></div>
 <p>This option will run <a href="http://bioconductor.org/packages/release/bioc/html/sva.html">Surrogate Variable Analysis</a> (SVA) and try to adjust your data for unknown batch effects. If however, you already know the batches of the samples, you can simply set the <code>batch.information</code> argument as well:</p>
-<div class="sourceCode" id="cb20"><pre class="downlit">
+<div class="sourceCode" id="cb30"><pre class="downlit">
 <span class="co"># batch information should be number a vector where</span>
 <span class="co"># the length of it equals to the number of samples.</span>
 <span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, batch.correction <span class="op">=</span> <span class="cn">T</span>, batch.information <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">11</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">11</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></pre></div>
@@ -257,7 +254,7 @@
 <a href="#saving-da-peaks-to-excel" class="anchor"></a>Saving DA peaks to excel</h2>
 <p>Setting <code>save.DA.peaks = TRUE</code> in <code>cinaR</code> function will create a <code>DApeaks.xlsx</code> file in the current directory. This file includes all the comparisons in different tabs. Additionally, you can set the path/name of the file using <code>DA.peaks.path</code> argument after setting <code>save.DA.peaks = TRUE</code>.</p>
 <p>For instance,</p>
-<div class="sourceCode" id="cb21"><pre class="downlit">
+<div class="sourceCode" id="cb31"><pre class="downlit">
 <span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, save.DA.peaks <span class="op">=</span> <span class="cn">T</span>, DA.peaks.path <span class="op">=</span> <span class="st">"./Peaks_mice.xlsx"</span><span class="op">)</span></pre></div>
 <p>will create an excel file with name <code>Peaks_mice.xlsx</code> in the current directory.</p>
 </div>
@@ -276,7 +273,7 @@
 <div id="some-useful-arguments" class="section level2">
 <h2 class="hasAnchor">
 <a href="#some-useful-arguments" class="anchor"></a>Some useful arguments</h2>
-<div class="sourceCode" id="cb22"><pre class="downlit">
+<div class="sourceCode" id="cb32"><pre class="downlit">
 <span class="co"># new FDR threshold for DA peaks</span>
 <span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, DA.fdr.threshold <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span>
 

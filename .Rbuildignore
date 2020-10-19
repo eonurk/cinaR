@@ -2,7 +2,9 @@
 ^\.Rproj\.user$
 ^_pkgdown\.yml$
 ^docs$
+^doc$
 ^pkgdown$
 ^\.github$
 ^\.travis\.yml$
 ^README.Rmd
+/vignettes/cinaR_cache

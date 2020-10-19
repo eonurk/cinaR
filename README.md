@@ -36,12 +36,12 @@ contrasts<- c("B6", "B6", "B6", "B6", "B6", "NZO", "NZO", "NZO", "NZO", "NZO", "
 
 results <- cinaR(bed, contrasts, reference.genome = "mm10")
 #> 
-#> >> preparing features information...      2020-10-19 16:42:44 
-#> >> identifying nearest features...        2020-10-19 16:42:46 
-#> >> calculating distance from peak to TSS...   2020-10-19 16:42:47 
-#> >> assigning genomic annotation...        2020-10-19 16:42:47 
-#> >> assigning chromosome lengths           2020-10-19 16:43:19 
-#> >> done...                    2020-10-19 16:43:19 
+#> >> preparing features information...      2020-10-19 18:39:09 
+#> >> identifying nearest features...        2020-10-19 18:39:11 
+#> >> calculating distance from peak to TSS...   2020-10-19 18:39:12 
+#> >> assigning genomic annotation...        2020-10-19 18:39:12 
+#> >> assigning chromosome lengths           2020-10-19 18:39:43 
+#> >> done...                    2020-10-19 18:39:43 
 #> >> Method: edgeR
 #>  FDR: 0.05 & abs(logFC)< 0 
 #> >> Estimating dispersion...
