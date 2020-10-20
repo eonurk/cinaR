@@ -36,12 +36,12 @@ contrasts<- c("B6", "B6", "B6", "B6", "B6", "NZO", "NZO", "NZO", "NZO", "NZO", "
 
 results <- cinaR(bed, contrasts, reference.genome = "mm10")
 #> 
-#> >> preparing features information...      2020-10-19 18:39:09 
-#> >> identifying nearest features...        2020-10-19 18:39:11 
-#> >> calculating distance from peak to TSS...   2020-10-19 18:39:12 
-#> >> assigning genomic annotation...        2020-10-19 18:39:12 
-#> >> assigning chromosome lengths           2020-10-19 18:39:43 
-#> >> done...                    2020-10-19 18:39:43 
+#> >> preparing features information...      2020-10-20 13:23:33 
+#> >> identifying nearest features...        2020-10-20 13:23:35 
+#> >> calculating distance from peak to TSS...   2020-10-20 13:23:36 
+#> >> assigning genomic annotation...        2020-10-20 13:23:36 
+#> >> assigning chromosome lengths           2020-10-20 13:24:03 
+#> >> done...                    2020-10-20 13:24:03 
 #> >> Method: edgeR
 #>  FDR: 0.05 & abs(logFC)< 0 
 #> >> Estimating dispersion...
@@ -63,8 +63,57 @@ pca_plot(results, contrasts, show.names = F)
 <img src="man/figures/unnamed-chunk-4-1.png" width="100%" />
 
 ``` r
+heatmap_plot(results)
+```
+
+<img src="man/figures/unnamed-chunk-5-1.png" width="100%" />
+
+``` r
 dot_plot(results)
 #> Warning: Removed 54 rows containing missing values (geom_point).
 ```
 
-<img src="man/figures/unnamed-chunk-5-1.png" width="100%" />
+<img src="man/figures/unnamed-chunk-6-1.png" width="100%" />
+
+## Contribution
+
+You can send pull requests to make your contributions.
+
+I occasionally mess up, so all comments are appreciated\!
+
+## Future work
+
+1.  ~~Add enrichment pipeline~~
+
+<!-- end list -->
+
+  - ~~hyper-geometric p-value~~
+  - ~~geneset enrichment analyses~~
+  - ~~make it compitable with `.gmt` format~~
+
+<!-- end list -->
+
+2.  Visualization of Enrichment Results
+
+<!-- end list -->
+
+  - ~~Dot plot~~
+  - Network plot
+
+<!-- end list -->
+
+3.  Small improvements
+
+<!-- end list -->
+
+  - save enrichment files to excel
+  - ~~make SV number an argument~~
+  - pass `...` into several functions
+
+## Author
+
+  - [E Onur Karakaslar](https://eonurk.github.io)
+
+## License
+
+  - GNU General Public License v3.0
