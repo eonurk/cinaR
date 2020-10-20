@@ -4,14 +4,19 @@
 \alias{heatmap_plot}
 \title{heatmap_plot}
 \usage{
-heatmap_plot(results)
+heatmap_plot(results, heatmap.peak.count = 100, ...)
 }
 \arguments{
 \item{results}{cinaR result object}
+
+\item{heatmap.peak.count}{number of peaks to be plotted.
+If number of peaks are less than k then all peaks will be used.}
+
+\item{...}{additional arguments for heatmap function, for more info `?pheatmap`}
 }
 \value{
 ggplot object, pca plot
 }
 \description{
-heatmap_plot
+plot most variable k peaks (default k = 100) among all samples
 }

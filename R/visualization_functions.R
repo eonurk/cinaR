@@ -94,7 +94,9 @@ pca_plot <- function(results, overlaid.info, sample.names = NULL, show.names = T
   # log option is set TRUE to have a better variance-stabilization.
   cp <- normalizeConsensus(cp, log.option = TRUE)
 
-  pca <- stats::prcomp(t(cp), center = TRUE)
+
+  # eliminate NaN values before-hand if there is any.
+  pca <- stats::prcomp(t(stats::na.omit(cp)), center = TRUE)
 
   d  <- round(pca$sdev^2/sum(pca$sdev^2)*100, digits=1)
   xl <- sprintf("PC 1: %.1f %%", d[1])
@@ -129,12 +131,48 @@ pca_plot <- function(results, overlaid.info, sample.names = NULL, show.names = T
 
 #' heatmap_plot
 #'
+#' plot most variable k peaks (default k = 100) among all samples
+#'
 #' @param results cinaR result object
+#' @param heatmap.peak.count number of peaks to be plotted.
+#' If number of peaks are less than k then all peaks will be used.
+#' @param ... additional arguments for heatmap function, for more info `?pheatmap`
 #' @return ggplot object, pca plot
 #'
 #' @export
-heatmap_plot <- function(results){
+heatmap_plot <- function(results, heatmap.peak.count = 100, ...){
+  cp <- results[["DA.results"]][["cp"]]
 
+  # consensus peaks are normalized before pca.
+  # log option is set TRUE to have a better variance-stabilization.
+  # NOTE: This is done because of the library depth differences, it does not
+  # account for peak-peak differences
+  cp <- normalizeConsensus(cp, log.option = TRUE)
+
+  cp <- stats::na.omit(cp)
+
+  # Remove possible na's from data and
+  # reorder peak according to their standard deviation in decreasing order
+  cp <- cp [rev(order(apply(cp, 1, stats::sd))),]
+
+  mat.heatmap <- cp[1:min(nrow(cp),heatmap.peak.count),]
+
+  # pheatmap normalization function
+  scale_rows <- function(x){
+    m = apply(x, 1, mean, na.rm = T)
+    s = apply(x, 1, stats::sd, na.rm = T)
+    return((x - m) / s)
+  }
+
+  # normalize peak distributions
+  mat.heatmap <- scale_rows(mat.heatmap)
+
+  breaksList = seq(min(mat.heatmap), max(mat.heatmap), by = .01)
+  plot.pheatmap <- pheatmap::pheatmap(mat.heatmap,
+                     color = grDevices::colorRampPalette(rev(RColorBrewer::brewer.pal(n=7,"RdBu")))(length(breaksList)),
+                     show_rownames = F,
+                     ... = ...)
+  return(plot.pheatmap)
 }
 
 

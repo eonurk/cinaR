@@ -49,8 +49,42 @@ results <- cinaR(bed, contrasts, reference.genome = "mm10")
 pca_plot(results, contrasts, show.names = F)
 ```
 
+```{r}
+heatmap_plot(results)
+```
+
 
 ```{r}
 dot_plot(results)
 ```
 
+
+## Contribution
+
+You can send pull requests to make your contributions.
+
+I occasionally mess up, so all comments are appreciated!
+
+## Future work
+1. ~~Add enrichment pipeline~~
+  + ~~hyper-geometric p-value~~
+  + ~~geneset enrichment analyses~~
+  + ~~make it compitable with `.gmt` format~~
+
+2. Visualization of Enrichment Results
+  + ~~Dot plot~~
+  + Network plot
+
+3. Small improvements
+  + save enrichment files to excel
+  + ~~make SV number an argument~~
+  + pass `...` into several functions
+
+
+## Author
+
+- [E Onur Karakaslar](https://eonurk.github.io)
+
+## License
+
+- GNU General Public License v3.0

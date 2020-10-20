@@ -195,7 +195,7 @@ filterConsensus <-
 normalizeConsensus <-
   function(cp, norm.method = "cpm", log.option = FALSE) {
     if (norm.method == "cpm") {
-      cp.norm <- edgeR::cpm(cp, log = log.option)
+      cp.norm <- edgeR::cpm(cp, log = log.option, prior.count = 5)
     } else if (norm.method == "quantile") {
       cp.norm <- preprocessCore::normalize.quantiles(cp)
     } else {
