@@ -5,7 +5,7 @@
 \alias{grcm38}
 \title{Grcm38}
 \format{
-An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 56597 rows and 3 columns.
+An object of class \code{data.frame} with 25350 rows and 4 columns.
 }
 \usage{
 data(grcm38)

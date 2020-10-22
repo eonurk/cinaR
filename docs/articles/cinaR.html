@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">cinaR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
       </span>
     </div>
 
@@ -73,7 +73,7 @@
       <h1 data-toc-skip>Introduction to cinaR</h1>
                         <h4 class="author">E Onur Karakaslar</h4>
             
-            <h4 class="date">10/20/2020</h4>
+            <h4 class="date">10/22/2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/eonurk/cinaR/blob/master/vignettes/cinaR.Rmd"><code>vignettes/cinaR.Rmd</code></a></small>
       <div class="hidden name"><code>cinaR.Rmd</code></div>
@@ -111,19 +111,17 @@
 <div class="sourceCode" id="cb7"><pre class="downlit">
 <span class="co"># If reference genome is not set hg38 will be used!</span>
 <span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">bed</span>, <span class="va">contrasts</span>, reference.genome <span class="op">=</span> <span class="st">"mm10"</span><span class="op">)</span></pre></div>
-<pre><code>## &gt;&gt; preparing features information...      2020-10-20 13:26:04 
-## &gt;&gt; identifying nearest features...        2020-10-20 13:26:05 
-## &gt;&gt; calculating distance from peak to TSS...   2020-10-20 13:26:07 
-## &gt;&gt; assigning genomic annotation...        2020-10-20 13:26:07 
-## &gt;&gt; assigning chromosome lengths           2020-10-20 13:26:31 
-## &gt;&gt; done...                    2020-10-20 13:26:31 
+<pre><code>## &gt;&gt; preparing features information...      2020-10-22 11:42:47 
+## &gt;&gt; identifying nearest features...        2020-10-22 11:42:49 
+## &gt;&gt; calculating distance from peak to TSS...   2020-10-22 11:42:49 
+## &gt;&gt; assigning genomic annotation...        2020-10-22 11:42:49 
+## &gt;&gt; assigning chromosome lengths           2020-10-22 11:43:14 
+## &gt;&gt; done...                    2020-10-22 11:43:14 
 ## &gt;&gt; Method: edgeR
 ##  FDR: 0.05 &amp; abs(logFC)&lt; 0 
 ## &gt;&gt; Estimating dispersion...
 ## &gt;&gt; Fitting GLM...
 ## &gt;&gt; DA peaks are found!
-## &gt;&gt; Converting mouse genes to human...
-## &gt;&gt; Mouse to human mapping is created for all genes!
 ## &gt;&gt; Human gene symbols are converted to mice!
 ## &gt;&gt; Enrichment results are ready...
 ## &gt;&gt; Done!</code></pre>
