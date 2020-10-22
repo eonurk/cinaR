@@ -1,6 +1,6 @@
 Package: cinaR
 Type: Package
-Title: Computational Pipeline for Atac-Seq in R
+Title: Computational Pipeline for 'ATAC-Seq' in R
 Version: 0.1.0
 Authors@R: 
     c(person(given = "Onur",
@@ -12,14 +12,14 @@ Authors@R:
              role = "aut",
              comment = c(ORCID = "0000-0002-9772-3066"))
       )
-Description: Differential analyses and Enrichment pipeline for ATAC-seq data
+Description: Differential analyses and Enrichment pipeline for 'ATAC-seq' data
   analyses. This package combines different packages to have an ultimate package
-  for both data analyses and visualization of ATAC-seq data.
+  for both data analyses and visualization of 'ATAC-seq' data.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
 URL: https://github.com/eonurk/cinaR/
-BugReports: https://github.com/eonurk/cinaR/issues
+BugReports: https://github.com/eonurk/cinaR/issues/
 biocViews:
 Depends: R (>= 3.5.0)
 Imports: ChIPseeker, 

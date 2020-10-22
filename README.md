@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# cinaR <a href='https://eonurk.github.io/cinaR'><img src='man/figures/cinaR.png' align="right" height="139" /></a>
+# cinaR <a href='https://eonurk.github.io/cinaR/'><img src='man/figures/cinaR.png' align="right" height="139" /></a>
 
 <!-- badges: start -->
 
@@ -36,12 +36,12 @@ contrasts<- c("B6", "B6", "B6", "B6", "B6", "NZO", "NZO", "NZO", "NZO", "NZO", "
 
 results <- cinaR(bed, contrasts, reference.genome = "mm10")
 #> 
-#> >> preparing features information...      2020-10-20 13:23:33 
-#> >> identifying nearest features...        2020-10-20 13:23:35 
-#> >> calculating distance from peak to TSS...   2020-10-20 13:23:36 
-#> >> assigning genomic annotation...        2020-10-20 13:23:36 
-#> >> assigning chromosome lengths           2020-10-20 13:24:03 
-#> >> done...                    2020-10-20 13:24:03 
+#> >> preparing features information...      2020-10-22 12:26:39 
+#> >> identifying nearest features...        2020-10-22 12:26:41 
+#> >> calculating distance from peak to TSS...   2020-10-22 12:26:41 
+#> >> assigning genomic annotation...        2020-10-22 12:26:41 
+#> >> assigning chromosome lengths           2020-10-22 12:27:12 
+#> >> done...                    2020-10-22 12:27:12 
 #> >> Method: edgeR
 #>  FDR: 0.05 & abs(logFC)< 0 
 #> >> Estimating dispersion...
@@ -49,8 +49,6 @@ results <- cinaR(bed, contrasts, reference.genome = "mm10")
 #> >> DA peaks are found!
 #> >> No `geneset` is specified so immune modules (Chaussabel, 2008) will be used!
 #> >> enrichment.method` is not selected. Hyper-geometric p-value (HPEA) will be used!
-#> >> Converting mouse genes to human...
-#> >> Mouse to human mapping is created for all genes!
 #> >> Human gene symbols are converted to mice!
 #> >> Enrichment results are ready...
 #> >> Done!
@@ -112,7 +110,7 @@ I occasionally mess up, so all comments are appreciated\!
 
 ## Author
 
-  - [E Onur Karakaslar](https://eonurk.github.io)
+  - [E Onur Karakaslar](https://eonurk.github.io/)
 
 ## License
 
