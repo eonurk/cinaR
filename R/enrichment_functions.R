@@ -119,18 +119,20 @@ run_enrichment <- function (
   }
   # Convert mice gene symbols to human's
   if (reference.genome == "mm10") {
-    all.genes <- sapply(results, function(x) {
-      x["gene_name"]
-    })
-    all.genes <- unlist(all.genes)
-    all.genes <- unique(all.genes)
+    # all.genes <- sapply(results, function(x) {
+    #   x["gene_name"]
+    # })
+    # all.genes <- unlist(all.genes)
+    # all.genes <- unique(all.genes)
+    #
+    # # Create mapping for all mice genes
+    # mice2humanMap <- cinaR::mouse2human(genes = all.genes)
 
-    # Create mapping for all mice genes
-    mice2humanMap <- cinaR::mouse2human(genes = all.genes)
+    mice2humanMap <- cinaR::grcm38
 
     # Convert to human homologs for enrichment analyses
     results <- lapply(results, function(x) {
-      m <- match(x[, "gene_name"], mice2humanMap[, "MGI.symbol"])
+      m <- match(x[, "gene_name"], mice2humanMap[, "symbol"])
       mapped.genes <- mice2humanMap[, "HGNC.symbol"][m]
 
       ## Careful: some genes may not be mappable!
