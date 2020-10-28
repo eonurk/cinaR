@@ -2,7 +2,14 @@ destination: docs
 template:
   params:
     bootswatch: sandstone
+    ganalytics: UA-116646865-1
 
 authors:
-  Kirill Müller:
-    href: http://krlmlr.info
+  Onur Karakaslar:
+    href: http://eonurk.github.io
+
+navbar:
+  components:
+    twitter:
+      icon: "fab fa-twitter fa-lg"
+      href: https://twitter.com/eonurkara
