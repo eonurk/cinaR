@@ -7,9 +7,3 @@ template:
 authors:
   Onur Karakaslar:
     href: http://eonurk.github.io
-
-navbar:
-  components:
-    twitter:
-      icon: "fab fa-twitter fa-lg"
-      href: https://twitter.com/eonurkara
