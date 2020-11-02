@@ -55,6 +55,16 @@
 <![endif]-->
 
 
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-116646865-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-116646865-1');
+</script>
+
 
   </head>
 
@@ -143,6 +153,102 @@ calculations. Default is 20,000.</p></td>
     </table>
 
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/eonurk/cinaR/'>cinaR</a></span><span class='op'>)</span>
+
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"VP2008"</span><span class='op'>)</span>
+<span class='va'>genes.to.test</span> <span class='op'>&lt;-</span> <span class='va'>vp2008</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span><span class='op'>]</span>
+<span class='fu'>HPEA</span><span class='op'>(</span><span class='va'>genes.to.test</span>,<span class='va'>vp2008</span>, background.genes.size <span class='op'>=</span> <span class='fl'>20e3</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;                                                       module.name        p.val
+#&gt; Plasma cells                                         Plasma cells 1.853276e-26
+#&gt; Erythrocytes                                         Erythrocytes 1.251584e-04
+#&gt; Platelets                                               Platelets 1.000000e+00
+#&gt; B cells                                                   B cells 1.000000e+00
+#&gt; U_cAMP/NF-KB activation                   U_cAMP/NF-KB activation 1.000000e+00
+#&gt; Myeloid lineage 1                               Myeloid lineage 1 1.000000e+00
+#&gt; U_P53 signaling                                   U_P53 signaling 1.000000e+00
+#&gt; MHC/Ribosomal proteins                     MHC/Ribosomal proteins 1.000000e+00
+#&gt; U_metabolism/replication                 U_metabolism/replication 1.000000e+00
+#&gt; Cytotoxic cells                                   Cytotoxic cells 1.000000e+00
+#&gt; Neutrophils                                           Neutrophils 1.000000e+00
+#&gt; Ribosomal proteins                             Ribosomal proteins 1.000000e+00
+#&gt; U_Immunity/cytoskeleton                   U_Immunity/cytoskeleton 1.000000e+00
+#&gt; Myeloid lineage 2                               Myeloid lineage 2 1.000000e+00
+#&gt; Unknown                                                   Unknown 1.000000e+00
+#&gt; T Cells                                                   T Cells 1.000000e+00
+#&gt; U_T cells/cytoskeleton                     U_T cells/cytoskeleton 1.000000e+00
+#&gt; U_Immsurface/cytokines/signaling U_Immsurface/cytokines/signaling 1.000000e+00
+#&gt; U_RAS/kinases                                       U_RAS/kinases 1.000000e+00
+#&gt; Interferon-inducible                         Interferon-inducible 1.000000e+00
+#&gt; Inflammation I                                     Inflammation I 1.000000e+00
+#&gt; Inflammation II                                   Inflammation II 1.000000e+00
+#&gt; U_protphosphatases/PI3K                   U_protphosphatases/PI3K 1.000000e+00
+#&gt; U_hemoglobin                                         U_hemoglobin 1.000000e+00
+#&gt; U_mitochondrial proteins                 U_mitochondrial proteins 1.000000e+00
+#&gt; U_proteasome/ubiquitin cx               U_proteasome/ubiquitin cx 1.000000e+00
+#&gt; U_enzymes                                               U_enzymes 1.000000e+00
+#&gt; U_kinases/phosphatases                     U_kinases/phosphatases 1.000000e+00
+#&gt;                                                                                   overlapping.genes
+#&gt; Plasma cells                     IGHD,PLEKHG1,C13orf18,ZDHHC23,HLA-DOA,MS4A1,TCF4,HTPAP,SMC6L1,IGHM
+#&gt; Erythrocytes                                                                              IGHD,IGHM
+#&gt; Platelets                                                                                          
+#&gt; B cells                                                                                            
+#&gt; U_cAMP/NF-KB activation                                                                            
+#&gt; Myeloid lineage 1                                                                                  
+#&gt; U_P53 signaling                                                                                    
+#&gt; MHC/Ribosomal proteins                                                                             
+#&gt; U_metabolism/replication                                                                           
+#&gt; Cytotoxic cells                                                                                    
+#&gt; Neutrophils                                                                                        
+#&gt; Ribosomal proteins                                                                                 
+#&gt; U_Immunity/cytoskeleton                                                                            
+#&gt; Myeloid lineage 2                                                                                  
+#&gt; Unknown                                                                                            
+#&gt; T Cells                                                                                            
+#&gt; U_T cells/cytoskeleton                                                                             
+#&gt; U_Immsurface/cytokines/signaling                                                                   
+#&gt; U_RAS/kinases                                                                                      
+#&gt; Interferon-inducible                                                                               
+#&gt; Inflammation I                                                                                     
+#&gt; Inflammation II                                                                                    
+#&gt; U_protphosphatases/PI3K                                                                            
+#&gt; U_hemoglobin                                                                                       
+#&gt; U_mitochondrial proteins                                                                           
+#&gt; U_proteasome/ubiquitin cx                                                                          
+#&gt; U_enzymes                                                                                          
+#&gt; U_kinases/phosphatases                                                                             
+#&gt;                                  module.overlapping.ratio        adj.p
+#&gt; Plasma cells                                   0.17241379 5.189173e-25
+#&gt; Erythrocytes                                   0.05882353 1.752218e-03
+#&gt; Platelets                                      0.00000000 1.000000e+00
+#&gt; B cells                                        0.00000000 1.000000e+00
+#&gt; U_cAMP/NF-KB activation                        0.00000000 1.000000e+00
+#&gt; Myeloid lineage 1                              0.00000000 1.000000e+00
+#&gt; U_P53 signaling                                0.00000000 1.000000e+00
+#&gt; MHC/Ribosomal proteins                         0.00000000 1.000000e+00
+#&gt; U_metabolism/replication                       0.00000000 1.000000e+00
+#&gt; Cytotoxic cells                                0.00000000 1.000000e+00
+#&gt; Neutrophils                                    0.00000000 1.000000e+00
+#&gt; Ribosomal proteins                             0.00000000 1.000000e+00
+#&gt; U_Immunity/cytoskeleton                        0.00000000 1.000000e+00
+#&gt; Myeloid lineage 2                              0.00000000 1.000000e+00
+#&gt; Unknown                                        0.00000000 1.000000e+00
+#&gt; T Cells                                        0.00000000 1.000000e+00
+#&gt; U_T cells/cytoskeleton                         0.00000000 1.000000e+00
+#&gt; U_Immsurface/cytokines/signaling               0.00000000 1.000000e+00
+#&gt; U_RAS/kinases                                  0.00000000 1.000000e+00
+#&gt; Interferon-inducible                           0.00000000 1.000000e+00
+#&gt; Inflammation I                                 0.00000000 1.000000e+00
+#&gt; Inflammation II                                0.00000000 1.000000e+00
+#&gt; U_protphosphatases/PI3K                        0.00000000 1.000000e+00
+#&gt; U_hemoglobin                                   0.00000000 1.000000e+00
+#&gt; U_mitochondrial proteins                       0.00000000 1.000000e+00
+#&gt; U_proteasome/ubiquitin cx                      0.00000000 1.000000e+00
+#&gt; U_enzymes                                      0.00000000 1.000000e+00
+#&gt; U_kinases/phosphatases                         0.00000000 1.000000e+00</div><div class='input'><span class='co'># }</span>
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -154,7 +260,7 @@ calculations. Default is 20,000.</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Onur Karakaslar, Duygu Ucar.</p>
+  <p>Developed by <a href='http://eonurk.github.io'>Onur Karakaslar</a>, Duygu Ucar.</p>
 </div>
 
 <div class="pkgdown">

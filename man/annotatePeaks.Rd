@@ -4,7 +4,7 @@
 \alias{annotatePeaks}
 \title{annotatePeaks}
 \usage{
-annotatePeaks(cp, reference.genome, show.annotation.pie = F)
+annotatePeaks(cp, reference.genome, show.annotation.pie = FALSE)
 }
 \arguments{
 \item{cp}{bed formatted consensus peak matrix: CHR, START, STOP and raw peak counts (peaks by 3+samples)}

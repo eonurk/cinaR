@@ -13,5 +13,14 @@ mouse2human(genes)
 returns a mapping from mouse to human
 }
 \description{
-mouse2human
+Given the mice gene symbols, this function creates a map from mice to human
+using biomaRt.
+}
+\examples{
+\donttest{
+
+mouse.genes <- c("Gfap", "Gzmb", "Il1b")
+map <- mouse2human(mouse.genes)
+
+}
 }

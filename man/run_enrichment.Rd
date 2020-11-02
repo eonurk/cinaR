@@ -7,9 +7,10 @@
 run_enrichment(
   results,
   geneset = NULL,
+  experiment.type = "ATAC-Seq",
   reference.genome = NULL,
   enrichment.method = NULL,
-  enrichment.FDR.cutoff = 0.05,
+  enrichment.FDR.cutoff = 1,
   background.genes.size = 20000
 )
 }
@@ -19,6 +20,8 @@ run_enrichment(
 \item{geneset}{Pathways to be used in enrichment analyses. If not set vp2008 (Chaussabel, 2008)
 immune modules will be used. This can be set to any geneset using `read.gmt` function from `qusage`
 package. Different modules are available: https://www.gsea-msigdb.org/gsea/downloads.jsp.}
+
+\item{experiment.type}{The type of experiment either set to "ATAC-Seq" or "RNA-Seq"}
 
 \item{reference.genome}{genome of interested species. It should be 'hg38', 'hg19' or 'mm10'.}
 
@@ -33,4 +36,11 @@ calculations. Default is 20,000.}
 }
 \description{
 run_enrichment
+}
+\examples{
+## For ATAC-Seq experiments
+## run_enrichment(results)
+
+## For RNA-Seq experiments
+## run_enrichment(results, experiment.type = "RNA-Seq")
 }

@@ -19,5 +19,15 @@ with fdr values less than `fdr.cutoff`.}
 ggplot object
 }
 \description{
-dot_plot
+Given the results from `cinaR` it produces dot plots for enrichment analyses.
+}
+\examples{
+
+## Shows all of the pathways
+## dot_plot(results)
+
+## Trims the pathways that are less than `fdr.cutoff` value.
+## dot_plot(results, filter.pathways = TRUE)
+
+
 }

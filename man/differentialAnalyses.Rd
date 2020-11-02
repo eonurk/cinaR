@@ -5,8 +5,9 @@
 \title{Differential Analyses}
 \usage{
 differentialAnalyses(
-  final.peaks,
+  final.matrix,
   contrasts,
+  experiment.type,
   DA.choice,
   DA.fdr.threshold,
   DA.lfc.threshold,
@@ -17,9 +18,11 @@ differentialAnalyses(
 )
 }
 \arguments{
-\item{final.peaks}{Annotated Consensus peaks}
+\item{final.matrix}{Annotated Consensus peaks}
 
 \item{contrasts}{user-defined contrasts for comparing samples}
+
+\item{experiment.type}{The type of experiment either set to "ATAC-Seq" or "RNA-Seq"}
 
 \item{DA.choice}{determines which pipeline to run:
 (1) edgeR, (2) limma-voom, (3) limma-trend, (4) DEseq2}

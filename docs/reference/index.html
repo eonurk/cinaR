@@ -54,6 +54,16 @@
 <![endif]-->
 
 
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-116646865-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-116646865-1');
+</script>
+
 
   </head>
 
@@ -138,7 +148,9 @@
         <td>
           <p><code><a href="GSEA.html">GSEA()</a></code> </p>
         </td>
-        <td><p>GSEA</p></td>
+        <td><p>GSEA
+Having run the differential analyses this function runs geneset enrihment analyses with
+`fgsea` package.</p></td>
       </tr><tr>
         
         <td>
@@ -256,7 +268,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Onur Karakaslar, Duygu Ucar.</p>
+  <p>Developed by <a href='http://eonurk.github.io'>Onur Karakaslar</a>, Duygu Ucar.</p>
 </div>
 
 <div class="pkgdown">

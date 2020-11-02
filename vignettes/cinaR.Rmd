@@ -60,7 +60,7 @@ names(results)
 ````
 
 Inside `DA.results`, you have the consensus peaks (cp) and differentially accessible (DA) peaks.
-If batch correction was run, then `cp` will be a batch-corrected consensus matrix, otherwise it is the original one you provided.
+If batch correction was run, then `cp` will be a batch-corrected consensus matrix, otherwise it is the filtered and normalized version of original consensus peaks you provided.
 
 ```{r}
 names(results$DA.results)
@@ -237,4 +237,5 @@ dot_plot(..., fdr.cutoff = 0.05)
 - Robinson MD, McCarthy DJ, Smyth GK (2010). “edgeR: a Bioconductor package for differential expression analysis of digital gene expression data.” Bioinformatics, 26(1), 139-140. doi: 10.1093/bioinformatics/btp616.
 
 - Ritchie ME, Phipson B, Wu D, Hu Y, Law CW, Shi W, Smyth GK (2015). “limma powers differential expression analyses for RNA-sequencing and microarray studies.” Nucleic Acids Research, 43(7), e47.
+
 - Love, M.I., Huber, W., Anders, S. (2014) Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2. Genome Biology, 15:550. 10.1186/s13059-014-0550-8

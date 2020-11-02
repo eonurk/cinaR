@@ -19,3 +19,13 @@ calculations. Default is 20,000.}
 \description{
 HPEA
 }
+\examples{
+\donttest{
+library(cinaR)
+
+data("VP2008")
+genes.to.test <- vp2008[[1]][1:10]
+HPEA(genes.to.test,vp2008, background.genes.size = 20e3)
+}
+
+}

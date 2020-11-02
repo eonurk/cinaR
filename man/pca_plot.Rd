@@ -16,8 +16,20 @@ pca_plot(results, overlaid.info, sample.names = NULL, show.names = TRUE)
 \item{show.names}{logical, if set FALSE sample names will be hidden}
 }
 \value{
-ggplot object, pca plot
+ggplot object
 }
 \description{
 pca_plot
+}
+\examples{
+## overlays the contrasts info onto PCA plots
+## pca_plot(results, contrasts)
+
+## you can overlay other information as well,
+## as long as it is the same length with the
+## number of samples.
+
+## sample.info <- c(rep("Group A", 11), rep("Group B", 11))
+## pca_plot(results, sample.info)
+
 }

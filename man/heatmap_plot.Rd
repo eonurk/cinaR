@@ -15,8 +15,12 @@ If number of peaks are less than k then all peaks will be used.}
 \item{...}{additional arguments for heatmap function, for more info `?pheatmap`}
 }
 \value{
-ggplot object, pca plot
+ggplot object
 }
 \description{
 plot most variable k peaks (default k = 100) among all samples
+}
+\examples{
+
+## heatmap_plot(results)
 }

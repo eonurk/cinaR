@@ -5,19 +5,20 @@
 \title{cinaR}
 \usage{
 cinaR(
-  consensus.peaks,
+  matrix,
   contrasts,
+  experiment.type = "ATAC-Seq",
   DA.choice = 1,
   DA.fdr.threshold = 0.05,
   DA.lfc.threshold = 0,
-  save.DA.peaks = F,
+  save.DA.peaks = FALSE,
   DA.peaks.path = NULL,
   norm.method = "cpm",
   filter.method = "custom",
   library.threshold = 2,
   cpm.threshold = 1,
   TSS.threshold = 50000,
-  show.annotation.pie = F,
+  show.annotation.pie = FALSE,
   reference.genome = NULL,
   batch.correction = FALSE,
   batch.information = NULL,
@@ -29,9 +30,12 @@ cinaR(
 )
 }
 \arguments{
-\item{consensus.peaks}{bed formatted consensus peak matrix: CHR, START, STOP and raw peak counts (peaks by 3+samples)}
+\item{matrix}{either bed formatted consensus peak matrix (peaks by 3+samples)
+CHR, START, STOP and raw peak counts OR count matrix (genes by 1+samples).}
 
 \item{contrasts}{user-defined contrasts for comparing samples}
+
+\item{experiment.type}{The type of experiment either set to "ATAC-Seq" or "RNA-Seq"}
 
 \item{DA.choice}{determines which pipeline to run:
 (1) edgeR, (2) limma-voom, (3) limma-trend, (4) DEseq2.
@@ -88,14 +92,14 @@ returns differentially accessible peaks
 Runs differential analyses and enrichment pipelines
 }
 \examples{
-\dontrun{
+\donttest{
 data(atac_seq_consensus_bm) # calls 'bed'
 
 # a vector for comparing the examples
 contrasts <- sapply(strsplit(colnames(bed), split = "-", fixed = TRUE),
                     function(x){x[1]})[4:25]
 
-DA.results <- cinaR(bed, contrasts, reference.genome = "mm10")
+results <- cinaR(bed, contrasts, reference.genome = "mm10")
 }
 
 

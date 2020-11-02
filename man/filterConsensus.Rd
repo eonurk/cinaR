@@ -12,7 +12,7 @@ filterConsensus(
 )
 }
 \arguments{
-\item{cp}{bed formatted consensus peak matrix: CHR, START, STOP and raw peak counts (peaks by 3+samples)}
+\item{cp}{consensus peak matrix, with unique ids at rownames.}
 
 \item{filter.method}{filtering method for low expressed peaks}
 
@@ -21,8 +21,16 @@ filterConsensus(
 \item{cpm.threshold}{count per million threshold for not to filter a peak}
 }
 \value{
-DApeaks returns DA peaks
+returns differentially accessible peaks
 }
 \description{
 Filters lowly expressed peaks from down-stream analyses
+}
+\examples{
+set.seed(123)
+cp <- matrix(rexp(200, rate=.1), ncol=20)
+
+## using cpm function from `edgeR` package
+cp.filtered <- filterConsensus(cp)
+
 }

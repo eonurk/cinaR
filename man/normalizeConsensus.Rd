@@ -19,3 +19,14 @@ Normalized consensus peaks
 \description{
 Normalizes consensus peak using different methods
 }
+\examples{
+
+set.seed(123)
+cp <- matrix(rexp(200, rate=.1), ncol=20)
+
+## using cpm function from `edgeR` package
+cp.normalized <- normalizeConsensus(cp)
+
+## quantile normalization option
+cp.normalized <- normalizeConsensus(cp, norm.method = "quantile")
+}
