@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="mouse2human — mouse2human" />
-<meta property="og:description" content="mouse2human" />
+<meta property="og:description" content="Given the mice gene symbols, this function creates a map from mice to human
+using biomaRt." />
 
 
 
@@ -100,12 +101,6 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li>
-  <a href="https://twitter.com/eonurkara">
-    <span class="fab fa fab fa-twitter fa-lg"></span>
-     
-  </a>
-</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -133,7 +128,8 @@
     </div>
 
     <div class="ref-description">
-    <p>mouse2human</p>
+    <p>Given the mice gene symbols, this function creates a map from mice to human
+using biomaRt.</p>
     </div>
 
     <pre class="usage"><span class='fu'>mouse2human</span><span class='op'>(</span><span class='va'>genes</span><span class='op'>)</span></pre>
@@ -151,6 +147,14 @@
 
     <p>returns a mapping from mouse to human</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
+
+<span class='va'>mouse.genes</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Gfap"</span>, <span class='st'>"Gzmb"</span>, <span class='st'>"Il1b"</span><span class='op'>)</span>
+<span class='va'>map</span> <span class='op'>&lt;-</span> <span class='fu'>mouse2human</span><span class='op'>(</span><span class='va'>mouse.genes</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>&gt;&gt; Converting mouse genes to human...</span></div><div class='output co'>#&gt; <span class='message'>&gt;&gt; Mouse to human mapping is created for all genes!</span></div><div class='input'>
+<span class='co'># }</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -100,12 +100,6 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li>
-  <a href="https://twitter.com/eonurkara">
-    <span class="fab fa fab fa-twitter fa-lg"></span>
-     
-  </a>
-</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -161,8 +155,20 @@
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>ggplot object, pca plot</p>
+    <p>ggplot object</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'>## overlays the contrasts info onto PCA plots</span>
+<span class='co'>## pca_plot(results, contrasts)</span>
+
+<span class='co'>## you can overlay other information as well,</span>
+<span class='co'>## as long as it is the same length with the</span>
+<span class='co'>## number of samples.</span>
+
+<span class='co'>## sample.info &lt;- c(rep("Group A", 11), rep("Group B", 11))</span>
+<span class='co'>## pca_plot(results, sample.info)</span>
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

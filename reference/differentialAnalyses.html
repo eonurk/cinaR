@@ -100,12 +100,6 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li>
-  <a href="https://twitter.com/eonurkara">
-    <span class="fab fa fab fa-twitter fa-lg"></span>
-     
-  </a>
-</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -137,8 +131,9 @@
     </div>
 
     <pre class="usage"><span class='fu'>differentialAnalyses</span><span class='op'>(</span>
-  <span class='va'>final.peaks</span>,
+  <span class='va'>final.matrix</span>,
   <span class='va'>contrasts</span>,
+  <span class='va'>experiment.type</span>,
   <span class='va'>DA.choice</span>,
   <span class='va'>DA.fdr.threshold</span>,
   <span class='va'>DA.lfc.threshold</span>,
@@ -152,12 +147,16 @@
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>final.peaks</th>
+      <th>final.matrix</th>
       <td><p>Annotated Consensus peaks</p></td>
     </tr>
     <tr>
       <th>contrasts</th>
       <td><p>user-defined contrasts for comparing samples</p></td>
+    </tr>
+    <tr>
+      <th>experiment.type</th>
+      <td><p>The type of experiment either set to "ATAC-Seq" or "RNA-Seq"</p></td>
     </tr>
     <tr>
       <th>DA.choice</th>
