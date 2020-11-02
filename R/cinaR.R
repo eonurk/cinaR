@@ -236,6 +236,8 @@ filterConsensus <-
     } else {
       stop("filter.method should be either 'custom' or 'edgeR'")
     }
+    message(">> Matrix is filtered!")
+    return(cp.filtered)
   }
 
 
