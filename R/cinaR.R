@@ -2,8 +2,10 @@
 #'
 #' Runs differential analyses and enrichment pipelines
 #'
-#' @param consensus.peaks bed formatted consensus peak matrix: CHR, START, STOP and raw peak counts (peaks by 3+samples)
+#' @param matrix either bed formatted consensus peak matrix (peaks by 3+samples)
+#' CHR, START, STOP and raw peak counts OR count matrix (genes by 1+samples).
 #' @param contrasts user-defined contrasts for comparing samples
+#' @param experiment.type The type of experiment either set to "ATAC-Seq" or "RNA-Seq"
 #' @param DA.choice determines which pipeline to run:
 #' (1) edgeR, (2) limma-voom, (3) limma-trend, (4) DEseq2.
 #' Note: Use limma-trend if consensus peaks are already normalized, otherwise use other methods.
@@ -35,14 +37,14 @@
 #' package. Different modules are available: https://www.gsea-msigdb.org/gsea/downloads.jsp.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' data(atac_seq_consensus_bm) # calls 'bed'
 #'
 #' # a vector for comparing the examples
 #' contrasts <- sapply(strsplit(colnames(bed), split = "-", fixed = TRUE),
 #'                     function(x){x[1]})[4:25]
 #'
-#' DA.results <- cinaR(bed, contrasts, reference.genome = "mm10")
+#' results <- cinaR(bed, contrasts, reference.genome = "mm10")
 #' }
 #'
 #'
@@ -50,19 +52,20 @@
 #'
 #' @export
 cinaR <-
-  function(consensus.peaks,
+  function(matrix,
            contrasts,
+           experiment.type = "ATAC-Seq",
            DA.choice = 1,
            DA.fdr.threshold = 0.05,
            DA.lfc.threshold = 0,
-           save.DA.peaks = F,
+           save.DA.peaks = FALSE,
            DA.peaks.path = NULL,
            norm.method = "cpm",
            filter.method = "custom",
            library.threshold = 2,
            cpm.threshold = 1,
            TSS.threshold = 50e3,
-           show.annotation.pie = F,
+           show.annotation.pie = FALSE,
            reference.genome = NULL,
            batch.correction = FALSE,
            batch.information = NULL,
@@ -72,36 +75,81 @@ cinaR <-
            background.genes.size = 20e3,
            geneset = NULL) {
 
-    if (length(contrasts) != (ncol(consensus.peaks) - 3)) {
-      stop("Length of 'contrasts' must be equal to number of samples in 'consensus.peaks'")
-    }
+
+    message(">> Experiment type: ", experiment.type)
 
     if (is.null(reference.genome)) {
       warning("'reference.genome' is not set, therefore hg38 will be used!")
       reference.genome <- "hg38"
     }
 
-    # collapse chr, start, end and make them rownames
-    cp.rownames <-
-      apply(consensus.peaks[, 1:3], 1, function(x) {
-        paste0(trimws(x), collapse = "_")
-      })
-    cp <- consensus.peaks[, -c(1:3)]
-    rownames(cp) <- cp.rownames
+    if (experiment.type == "ATAC-Seq"){
 
-    # filter low expressed peaks
-    cp.filtered <-
-      filterConsensus(cp, library.threshold = library.threshold, cpm.threshold = cpm.threshold)
+      if (length(contrasts) != (ncol(matrix) - 3)) {
+        stop("Length of 'contrasts' must be equal to number of samples in 'matrix'")
+      }
+
+      # collapse chr, start, end and make them rownames
+      cp.rownames <-
+        apply(matrix[, 1:3], 1, function(x) {
+          paste0(trimws(x), collapse = "_")
+        })
+      cp <- matrix[, -c(1:3)]
+      rownames(cp) <- cp.rownames
+
+      # filter low expressed peaks
+      cp.filtered <-
+        filterConsensus(cp, library.threshold = library.threshold, cpm.threshold = cpm.threshold)
 
 
-    # annotate the peaks to the closest TSS
-    cp.filtered.annotated <- annotatePeaks(cp.filtered,
-                                           reference.genome = reference.genome,
-                                           show.annotation.pie = show.annotation.pie)
+      # annotate the peaks to the closest TSS
+      cp.filtered.annotated <- annotatePeaks(cp.filtered,
+                                             reference.genome = reference.genome,
+                                             show.annotation.pie = show.annotation.pie)
 
-    # filter distance to TSS
-    final.peaks <-
-      cp.filtered.annotated[abs(cp.filtered.annotated$distanceToTSS) <= TSS.threshold, ]
+      # filter distance to TSS
+      final.matrix <-
+        cp.filtered.annotated[abs(cp.filtered.annotated$distanceToTSS) <= TSS.threshold, ]
+
+
+    } else if (experiment.type == "RNA-Seq"){
+
+      if (length(contrasts) != (ncol(matrix) - 1)) {
+        stop("Length of 'contrasts' must be equal to number of samples in `matrix`")
+      }
+
+      message(">> Arranging count matrix...")
+
+      # Remove spike-ins for now (may not exists in your data)
+      matrix <- matrix [!grepl("^ERCC", matrix[,1]),]
+
+      # Eliminate any homologs
+      # TODO could be dangerous to do it this way, find a better version...
+      matrix[,1] <- sapply(strsplit(matrix[,1], ".", fixed = TRUE), function(x){x[1]})
+
+      # Order genes according to their standard deviation in decreasing order
+      matrix <- matrix [rev(order(apply(matrix[,-1], 1, stats::sd))),]
+
+      # Remove duplicated genes
+      matrix <- matrix [!duplicated(matrix[,1]),]
+
+      # Make the gene names the row names
+      rownames(matrix) <- matrix[,1]
+
+      # Filter the genes
+      matrix <- matrix[,-1]
+
+      # Enforce all counts to be integers
+      matrix <- round(matrix, 0)
+
+      # filter low expressed peaks
+      final.matrix <-
+        filterConsensus(matrix, library.threshold = library.threshold, cpm.threshold = cpm.threshold)
+
+
+    } else {
+      stop("`experiment.type` must be either 'ATAC-Seq' or 'RNA-Seq'")
+    }
 
 
     if (!is.null(enrichment.method)) {
@@ -119,8 +167,9 @@ cinaR <-
     # edgeR, limma-voom, DEseq 2
     if (DA.choice %in% c(1:4)) {
       DA.results <- differentialAnalyses(
-        final.peaks = final.peaks,
+        final.matrix = final.matrix,
         contrasts = contrasts,
+        experiment.type = experiment.type,
         DA.choice = DA.choice,
         DA.fdr.threshold = DA.fdr.threshold,
         DA.lfc.threshold = DA.lfc.threshold,
@@ -140,13 +189,14 @@ cinaR <-
         run_enrichment(
           results = DA.results,
           geneset = geneset,
+          experiment.type = experiment.type,
           reference.genome = reference.genome,
           enrichment.method = enrichment.method,
           enrichment.FDR.cutoff = enrichment.FDR.cutoff,
           background.genes.size = background.genes.size
         )
-      cat(">> Enrichment results are ready...\n")
-      cat(">> Done!\n")
+      message(">> Enrichment results are ready...")
+      message(">> Done!")
       return(list(DA.results = DA.results,
                   Enrichment.Results = enrichment.results))
     }
@@ -158,12 +208,19 @@ cinaR <-
 #' Filters lowly expressed peaks from down-stream analyses
 #'
 #' @importFrom edgeR cpm filterByExpr
-#' @param cp bed formatted consensus peak matrix: CHR, START, STOP and raw peak counts (peaks by 3+samples)
+#' @param cp consensus peak matrix, with unique ids at rownames.
 #' @param filter.method filtering method for low expressed peaks
 #' @param library.threshold number of libraries a peak occurs so that it is not filtered default set to 2
 #' @param cpm.threshold count per million threshold for not to filter a peak
 #'
-#' @return DApeaks returns DA peaks
+#' @return returns differentially accessible peaks
+#'
+#' @examples
+#' set.seed(123)
+#' cp <- matrix(rexp(200, rate=.1), ncol=20)
+#'
+#' ## using cpm function from `edgeR` package
+#' cp.filtered <- filterConsensus(cp)
 #'
 #' @export
 filterConsensus <-
@@ -190,7 +247,16 @@ filterConsensus <-
 #' @param norm.method normalization method for consensus peaks
 #' @param log.option logical, log option for cpm function in edgeR
 #' @return Normalized consensus peaks
+#' @examples
 #'
+#' set.seed(123)
+#' cp <- matrix(rexp(200, rate=.1), ncol=20)
+#'
+#' ## using cpm function from `edgeR` package
+#' cp.normalized <- normalizeConsensus(cp)
+#'
+#' ## quantile normalization option
+#' cp.normalized <- normalizeConsensus(cp, norm.method = "quantile")
 #' @export
 normalizeConsensus <-
   function(cp, norm.method = "cpm", log.option = FALSE) {
@@ -213,14 +279,12 @@ normalizeConsensus <-
 #' @param show.annotation.pie shows the annotation pie chart produced with ChipSeeker
 #'
 #' @return DApeaks returns DA peaks
-#'
-#' @export
 annotatePeaks <-
   function(cp,
            reference.genome,
-           show.annotation.pie = F) {
+           show.annotation.pie = FALSE) {
     bed <-
-      as.data.frame(do.call(rbind, strsplit(rownames(cp), "_", fixed = T)))
+      as.data.frame(do.call(rbind, strsplit(rownames(cp), "_", fixed = TRUE)))
     colnames(bed) <- c("CHR", "Start", "End")
     bed.GRanges <- GenomicRanges::GRanges(bed)
 
@@ -264,7 +328,7 @@ annotatePeaks <-
     }
 
     # annotate peaks
-    annoPeaks <- ChIPseeker::annotatePeak(bed.GRanges, TxDb = txdb, assignGenomicAnnotation = T)
+    annoPeaks <- ChIPseeker::annotatePeak(bed.GRanges, TxDb = txdb, assignGenomicAnnotation = TRUE)
 
     if (show.annotation.pie) {
       ChIPseeker::plotAnnoPie(annoPeaks)
@@ -290,10 +354,11 @@ annotatePeaks <-
 #'
 #' Runs differential analyses pipeline of choice on consensus peaks
 #'
-#' @param final.peaks Annotated Consensus peaks
+#' @param final.matrix Annotated Consensus peaks
+#' @param contrasts user-defined contrasts for comparing samples
+#' @param experiment.type The type of experiment either set to "ATAC-Seq" or "RNA-Seq"
 #' @param DA.choice determines which pipeline to run:
 #' (1) edgeR, (2) limma-voom, (3) limma-trend, (4) DEseq2
-#' @param contrasts user-defined contrasts for comparing samples
 #' @param DA.fdr.threshold fdr cut-off for differential analyses
 #' @param DA.lfc.threshold log-fold change cutoff for differential analyses
 #' @param save.DA.peaks logical, saves differentially accessible peaks to an excel file
@@ -305,10 +370,9 @@ annotatePeaks <-
 #' @param batch.information character vector, given by user.
 #'
 #' @return returns consensus peaks (batch corrected version if enabled) and DA peaks
-#'
-#' @export
-differentialAnalyses <- function(final.peaks,
+differentialAnalyses <- function(final.matrix,
                                  contrasts,
+                                 experiment.type,
                                  DA.choice,
                                  DA.fdr.threshold,
                                  DA.lfc.threshold,
@@ -317,11 +381,17 @@ differentialAnalyses <- function(final.peaks,
                                  batch.correction,
                                  batch.information) {
 
-  # silence build notes
+  # silence CRAN build notes
   log2FoldChange <- padj <- NULL
 
-  cp.meta <- final.peaks[, 1:15]
-  cp.metaless <- final.peaks[, 16:ncol(final.peaks)]
+  if (experiment.type == "ATAC-Seq"){
+
+    cp.meta <- final.matrix[, 1:15]
+    cp.metaless <- final.matrix[, 16:ncol(final.matrix)]
+
+  } else { # RNA-seq
+    cp.metaless <- final.matrix
+  }
 
   design <- stats::model.matrix(~ 0 + contrasts)
 
@@ -330,7 +400,7 @@ differentialAnalyses <- function(final.peaks,
       ## First normalize the consensus peaks to avoid detecting the effects
       ## confounding from library size as Michael Love and Jeff Leek suggests
       ## in this thread:
-      cat(">> Running SVA for batch correction...\n")
+      message(">> Running SVA for batch correction...\n")
 
       cp.metaless.normalized <- normalizeConsensus(cp.metaless)
       mod  <- stats::model.matrix(~ 0 + contrasts)
@@ -355,7 +425,7 @@ differentialAnalyses <- function(final.peaks,
 
     } else {
       # if there is batch information available
-      cat(">> Adding batch information to design matrix...\n")
+      message(">> Adding batch information to design matrix...")
 
       if (nrow(design) != length(batch.information)) {
         stop("Number of samples and `batch.information` should be same length!")
@@ -404,12 +474,11 @@ differentialAnalyses <- function(final.peaks,
   if (DA.choice == 1) {
     ## edgeR
 
-    cat(
+    message(
       ">> Method: edgeR\n\tFDR:",
       DA.fdr.threshold,
       "& abs(logFC)<",
-      DA.lfc.threshold,
-      "\n"
+      DA.lfc.threshold
     )
 
     y <- edgeR::DGEList(counts = cp.metaless, group = contrasts)
@@ -418,11 +487,11 @@ differentialAnalyses <- function(final.peaks,
     y <- edgeR::calcNormFactors(y, method = "TMM")
 
     # Estimate dispersion for genes with Bayesian Shrinkage
-    cat(">> Estimating dispersion...\n")
+    message(">> Estimating dispersion...")
     y <- edgeR::estimateDisp(y, design)
 
     # Fit the model
-    cat(">> Fitting GLM...\n")
+    message(">> Fitting GLM...")
     fit.glm <- edgeR::glmQLFit(y, design)
 
     for (i in seq_len(ncol(ccc))) {
@@ -431,29 +500,42 @@ differentialAnalyses <- function(final.peaks,
       # plotMD(qlf, main = contrast.name, p.value = 0.1)
       top.table <-
         edgeR::topTags(qlf, n = Inf, p.value = DA.fdr.threshold)$table
-      top.table <- merge(cp.meta, top.table, by = 0)
 
       # ifelse does not return the dataframe for some reason,
       # therefore, implemented this check explicitly
+      if(is.null(top.table)){
+        top.table <- data.frame()
+      }
+
       if (nrow(top.table) > 0) {
+
         top.table <- top.table[abs(top.table$logFC) >= DA.lfc.threshold,]
-        # Refactor to uniformize DA results
-        top.table <- top.table[, c(1:17, 21)]
+
+        if(experiment.type == "ATAC-Seq"){
+          top.table <- merge(cp.meta, top.table, by = 0)
+          # Refactor to uniformize DA results
+          top.table <- top.table[, c(1:17, 21)]
+        } else {
+          top.table <- top.table[, c(1, 5)]
+          top.table <- cbind(gene_name = rownames(top.table), top.table)
+          rownames(top.table) <- NULL
+        }
+
         DA.peaks[[contrast.name]] <- top.table
+
       } else {
         DA.peaks[[contrast.name]] <- list()
       }
     }
   } else if (DA.choice == 2) {
     ## limma-voom
-    cat(
+    message(
       ">> Method: limma-voom\n\tFDR:",
       DA.fdr.threshold,
       "& abs(logFC)<",
-      DA.lfc.threshold,
-      "\n"
+      DA.lfc.threshold
     )
-    v <- limma::voom(cp.metaless, design, plot = F)
+    v <- limma::voom(cp.metaless, design, plot = FALSE)
     fit.voom <- limma::lmFit(v, design)
     fit.voom2 <-
       limma::eBayes(limma::contrasts.fit(fit.voom, ccc))
@@ -469,13 +551,27 @@ differentialAnalyses <- function(final.peaks,
           lfc = DA.lfc.threshold,
           number = Inf
         )
-      top.table <- merge(cp.meta, top.table, by = 0)
 
-      # Refactor to uniformize DA results
-      top.table <- top.table[, c(1:17, 21)]
-      colnames(top.table)[18] <- "FDR"
+      if(experiment.type == "ATAC-Seq"){
+        top.table <- merge(cp.meta, top.table, by = 0)
+
+        # Refactor to uniform DA results
+        top.table <- top.table[, c(1:17, 21)]
+        colnames(top.table)[18] <- "FDR"
+      } else {
+        # Refactor to uniform DA results
+        top.table <- top.table[, c(1, 5)]
+        colnames(top.table)[2] <- "FDR"
+        top.table<- cbind(gene_name = rownames(top.table), top.table)
+      }
+
+      # Safety check
+      if(is.null(top.table)){
+        top.table <- data.frame()
+      }
 
       if (nrow(top.table) > 0) {
+        rownames(top.table) <- NULL
         DA.peaks[[contrast.name]] <- top.table
       } else {
         DA.peaks[[contrast.name]] <- list()
@@ -484,17 +580,16 @@ differentialAnalyses <- function(final.peaks,
     }
   } else if (DA.choice == 3) {
     ## limma-trend
-    cat(
+    message(
       ">> Method: limma-trend\n\tFDR:",
       DA.fdr.threshold,
       "& abs(logFC)<",
-      DA.lfc.threshold,
-      "\n"
+      DA.lfc.threshold
     )
     fit.trend <- limma::lmFit(cp.metaless, design)
     fit.trend2 <-
       limma::eBayes(limma::contrasts.fit(fit.trend, ccc),
-                    trend = T)
+                    trend = TRUE)
     # summary(decideTests(fit.trend2, method="separate", lfc = 0, p.value = 0.1))
 
     for (i in seq_len(ncol(ccc))) {
@@ -507,13 +602,26 @@ differentialAnalyses <- function(final.peaks,
           lfc = DA.lfc.threshold,
           number = Inf
         )
-      top.table <- merge(cp.meta, top.table, by = 0)
 
-      # Refactor to uniformize DA results
-      top.table <- top.table[, c(1:17, 21)]
-      colnames(top.table)[18] <- "FDR"
+      if (experiment.type == "ATAC-Seq"){
+        top.table <- merge(cp.meta, top.table, by = 0)
 
+        # Refactor to uniformize DA results
+        top.table <- top.table[, c(1:17, 21)]
+        colnames(top.table)[18] <- "FDR"
+      } else {
+        # Refactor to uniform DA results
+        top.table <- top.table[, c(1, 5)]
+        colnames(top.table)[2] <- "FDR"
+        top.table<- cbind(gene_name = rownames(top.table), top.table)
+      }
+
+      # Safety check
+      if(is.null(top.table)){
+        top.table <- data.frame()
+      }
       if (nrow(top.table) > 0) {
+        rownames(top.table) <- NULL
         DA.peaks[[contrast.name]] <- top.table
       } else {
         DA.peaks[[contrast.name]] <- list()
@@ -521,19 +629,16 @@ differentialAnalyses <- function(final.peaks,
     }
   } else if (DA.choice == 4) {
     ## DEseq2
-    cat(
+    message(
       ">> Method: DEseq2\n\tFDR:",
       DA.fdr.threshold,
       "& abs(logFC)<",
-      DA.lfc.threshold,
-      "\n"
+      DA.lfc.threshold
     )
 
-    # Create your desired groups
-    group <- contrasts
 
     # Assign each sample to its group
-    colData <- as.data.frame(cbind(colnames(cp.metaless), group))
+    colData <- as.data.frame(cbind(colnames(cp.metaless), contrasts))
     colnames(colData)  = c("sample", "groups")
 
     # Create DEseq Object
@@ -542,7 +647,7 @@ differentialAnalyses <- function(final.peaks,
                                      colData = colData,
                                      design = ~ groups)
 
-    dds = DESeq2::DESeq(dds, parallel = T)
+    dds = DESeq2::DESeq(dds, parallel = TRUE)
 
     # Create DE gene list for DESeq2
 
@@ -553,8 +658,8 @@ differentialAnalyses <- function(final.peaks,
         DESeq2::results(
           dds,
           c("groups", DEseq.contrast[2], DEseq.contrast[1]),
-          parallel = T,
-          tidy = T
+          parallel = TRUE,
+          tidy = TRUE
         )
       rownames(res) <- res$row
       res.ordered <- res[order(res$pvalue), ]
@@ -562,11 +667,22 @@ differentialAnalyses <- function(final.peaks,
         subset(res.ordered,
                padj <= DA.fdr.threshold &
                  abs(log2FoldChange) >= DA.lfc.threshold)
-      res.significant <- merge(cp.meta, res.significant, by = 0)
 
-      top.table <- res.significant[, c(1:16, 19, 23)]
-      colnames(top.table)[c(17, 18)] <- c("logFC", "FDR")
+      if (experiment.type == "ATAC-Seq"){
+        res.significant <- merge(cp.meta, res.significant, by = 0)
+        top.table <- res.significant[, c(1:16, 19, 23)]
+        colnames(top.table)[c(17, 18)] <- c("logFC", "FDR")
+      } else {
+        top.table <- res.significant[, c(1,3,7)]
+        colnames(top.table) <- c("gene_name", "logFC", "FDR")
+      }
+
+      if(is.null(top.table)){
+        top.table <- data.frame()
+      }
+
       if (nrow(top.table) > 0) {
+        rownames(top.table) <- NULL
         DA.peaks[[contrast.name]] <- top.table
       } else {
         DA.peaks[[contrast.name]] <- list()
@@ -574,14 +690,14 @@ differentialAnalyses <- function(final.peaks,
     }
   }
 
-  cat(">> DA peaks are found!\n")
+  message(">> DA peaks are found!")
 
   if (save.DA.peaks) {
     if (is.null(DA.peaks.path)) {
-      cat(">> Saving DA peaks to current directory as DApeaks.xlsx...\n")
+      message(">> Saving DA peaks to current directory as DApeaks.xlsx...")
       writexl::write_xlsx(x = DA.peaks, path = "./DApeaks.xlsx")
     } else {
-      cat(paste0(">> Saving DA peaks to ", DA.peaks.path, "...\n"))
+      message(paste0(">> Saving DA peaks to ", DA.peaks.path, "..."))
       writexl::write_xlsx(x = DA.peaks, path = DA.peaks.path)
     }
   }
