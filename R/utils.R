@@ -1,11 +1,22 @@
 #' mouse2human
 #'
+#' Given the mice gene symbols, this function creates a map from mice to human
+#' using biomaRt.
+#'
 #' @param genes mice genes to be converted to human
 #' @return returns a mapping from mouse to human
 #'
+#'
+#' @examples
+#' \donttest{
+#'
+#' mouse.genes <- c("Gfap", "Gzmb", "Il1b")
+#' map <- mouse2human(mouse.genes)
+#'
+#' }
 #' @export
 mouse2human <- function(genes) {
-  cat(">> Converting mouse genes to human...\n")
+  message(">> Converting mouse genes to human...\n")
   human = biomaRt::useEnsembl("ensembl", dataset = "hsapiens_gene_ensembl")
   mouse = biomaRt::useEnsembl("ensembl", dataset = "mmusculus_gene_ensembl")
 
@@ -16,10 +27,10 @@ mouse2human <- function(genes) {
     mart = mouse,
     attributesL = c("hgnc_symbol"),
     martL = human,
-    uniqueRows = T
+    uniqueRows = TRUE
   )
 
-  cat(">> Mouse to human mapping is created for all genes!\n")
+  message(">> Mouse to human mapping is created for all genes!\n")
   # Return map
   return(genesV2)
 }
