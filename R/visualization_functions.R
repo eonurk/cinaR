@@ -1,5 +1,6 @@
-
 #' dot_plot
+#'
+#' Given the results from `cinaR` it produces dot plots for enrichment analyses.
 #'
 #' @param results cinaR result object
 #' @param fdr.cutoff Pathways with smaller fdr values than the cut-off
@@ -7,6 +8,15 @@
 #' @param filter.pathways logical, it will filter the pathways from dot plot
 #' with fdr values less than `fdr.cutoff`.
 #' @return ggplot object
+#'
+#' @examples
+#'
+#' ## Shows all of the pathways
+#' ## dot_plot(results)
+#'
+#' ## Trims the pathways that are less than `fdr.cutoff` value.
+#' ## dot_plot(results, filter.pathways = TRUE)
+#'
 #'
 #' @export
 dot_plot <- function(results, fdr.cutoff = 0.1, filter.pathways = FALSE){
@@ -19,6 +29,17 @@ dot_plot <- function(results, fdr.cutoff = 0.1, filter.pathways = FALSE){
   adj.p <- column_label <-
     log2FoldChange <- module.name <- padj <-
     prcomp <- status <- NULL
+
+  # Set ATAC-Seq and check if it is correct
+  exp.atac <- TRUE
+
+  atac.check <- unlist(lapply(results[["DA.results"]][["DA.peaks"]],
+                       function(x){ncol(x) == 3}), use.names = FALSE)
+
+  if(any(atac.check)){
+    message(">> cinaR was run for RNA-Seq experiments!")
+    exp.atac <- FALSE
+  }
 
   results <- results[["Enrichment.Results"]]
 
@@ -33,6 +54,11 @@ dot_plot <- function(results, fdr.cutoff = 0.1, filter.pathways = FALSE){
 
     # change the required field names
     colnames(df.plot)[c(2,4)] <- c("module.name", "adj.p")
+  }
+
+  if (!exp.atac){
+    df.plot[,"status"][ df.plot[,"status"] == "Opening"] <- "Up"
+    df.plot[,"status"][ df.plot[,"status"] == "Closing"] <- "Down"
   }
 
   if(filter.pathways){
@@ -71,7 +97,18 @@ dot_plot <- function(results, fdr.cutoff = 0.1, filter.pathways = FALSE){
 #' @param overlaid.info overlaid information onto the samples
 #' @param sample.names names of the samples shown on pca plot
 #' @param show.names logical, if set FALSE sample names will be hidden
-#' @return ggplot object, pca plot
+#' @return ggplot object
+#'
+#' @examples
+#' ## overlays the contrasts info onto PCA plots
+#' ## pca_plot(results, contrasts)
+#'
+#' ## you can overlay other information as well,
+#' ## as long as it is the same length with the
+#' ## number of samples.
+#'
+#' ## sample.info <- c(rep("Group A", 11), rep("Group B", 11))
+#' ## pca_plot(results, sample.info)
 #'
 #' @export
 pca_plot <- function(results, overlaid.info, sample.names = NULL, show.names = TRUE){
@@ -79,8 +116,12 @@ pca_plot <- function(results, overlaid.info, sample.names = NULL, show.names = T
   #silence CRAN build NOTES
   PC1 <- PC2 <- NULL
 
-  # extract consensus peaks
-  cp <- results[["DA.results"]][["cp"]]
+  # if enrichment not run!
+  if(!is.null(results[["cp"]])){
+    cp <- results[["cp"]]
+  } else { # if run
+    cp <- results[["DA.results"]][["cp"]]
+  }
 
   if(is.null(sample.names)){
     sample.names <- colnames(cp)
@@ -137,11 +178,19 @@ pca_plot <- function(results, overlaid.info, sample.names = NULL, show.names = T
 #' @param heatmap.peak.count number of peaks to be plotted.
 #' If number of peaks are less than k then all peaks will be used.
 #' @param ... additional arguments for heatmap function, for more info `?pheatmap`
-#' @return ggplot object, pca plot
+#' @return ggplot object
+#' @examples
 #'
+#' ## heatmap_plot(results)
 #' @export
 heatmap_plot <- function(results, heatmap.peak.count = 100, ...){
-  cp <- results[["DA.results"]][["cp"]]
+
+  # if enrichment not run!
+  if(!is.null(results[["cp"]])){
+    cp <- results[["cp"]]
+  } else { # if run
+    cp <- results[["DA.results"]][["cp"]]
+  }
 
   # consensus peaks are normalized before pca.
   # log option is set TRUE to have a better variance-stabilization.
@@ -155,22 +204,22 @@ heatmap_plot <- function(results, heatmap.peak.count = 100, ...){
   # reorder peak according to their standard deviation in decreasing order
   cp <- cp [rev(order(apply(cp, 1, stats::sd))),]
 
-  mat.heatmap <- cp[1:min(nrow(cp),heatmap.peak.count),]
-
   # pheatmap normalization function
   scale_rows <- function(x){
-    m = apply(x, 1, mean, na.rm = T)
-    s = apply(x, 1, stats::sd, na.rm = T)
+    m = apply(x, 1, mean, na.rm = TRUE)
+    s = apply(x, 1, stats::sd, na.rm = TRUE)
     return((x - m) / s)
   }
 
   # normalize peak distributions
-  mat.heatmap <- scale_rows(mat.heatmap)
+  mat.heatmap <- scale_rows(cp)
+
+  mat.heatmap <- mat.heatmap[1:min(nrow(cp),heatmap.peak.count),]
 
   breaksList = seq(min(mat.heatmap), max(mat.heatmap), by = .01)
-  plot.pheatmap <- pheatmap::pheatmap(mat.heatmap,
+  plot.pheatmap <- pheatmap::pheatmap(mat.heatmap, scale = "none",
                      color = grDevices::colorRampPalette(rev(RColorBrewer::brewer.pal(n=7,"RdBu")))(length(breaksList)),
-                     show_rownames = F,
+                     show_rownames = FALSE,
                      ... = ...)
   return(plot.pheatmap)
 }
