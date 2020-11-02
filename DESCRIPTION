@@ -1,6 +1,6 @@
 Package: cinaR
 Type: Package
-Title: Computational Pipeline for 'ATAC-Seq' in R
+Title: A Computational Pipeline for Bulk 'ATAC-Seq' Profiles
 Version: 0.1.0
 Authors@R: 
     c(person(given = "Onur",
@@ -12,7 +12,7 @@ Authors@R:
              role = "aut",
              comment = c(ORCID = "0000-0002-9772-3066"))
       )
-Description: Differential analyses and Enrichment pipeline for 'ATAC-seq' data
+Description: Differential analyses and Enrichment pipeline for bulk 'ATAC-seq' data
   analyses. This package combines different packages to have an ultimate package
   for both data analyses and visualization of 'ATAC-seq' data.
 License: GPL-3
