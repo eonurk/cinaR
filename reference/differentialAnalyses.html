@@ -140,7 +140,8 @@
   <span class='va'>save.DA.peaks</span>,
   <span class='va'>DA.peaks.path</span>,
   <span class='va'>batch.correction</span>,
-  <span class='va'>batch.information</span>
+  <span class='va'>batch.information</span>,
+  <span class='va'>additional.covariates</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -189,6 +190,12 @@ argument should be provided by user.</p></td>
     <tr>
       <th>batch.information</th>
       <td><p>character vector, given by user.</p></td>
+    </tr>
+    <tr>
+      <th>additional.covariates</th>
+      <td><p>vector or data.frame, this parameter will be directly added to design
+matrix before running the differential analyses, therefore won't affect the batch corrections but
+adjust the results in down-stream analyses.</p></td>
     </tr>
     </table>
 
