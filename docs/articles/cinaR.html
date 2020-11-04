@@ -80,7 +80,7 @@
       <h1 data-toc-skip>Introduction to cinaR</h1>
                         <h4 class="author">E Onur Karakaslar</h4>
             
-            <h4 class="date">11/01/2020</h4>
+            <h4 class="date">11/04/2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/eonurk/cinaR/blob/master/vignettes/cinaR.Rmd"><code>vignettes/cinaR.Rmd</code></a></small>
       <div class="hidden name"><code>cinaR.Rmd</code></div>
@@ -118,12 +118,12 @@
 <div class="sourceCode" id="cb7"><pre class="downlit">
 <span class="co"># If reference genome is not set hg38 will be used!</span>
 <span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">bed</span>, <span class="va">contrasts</span>, reference.genome <span class="op">=</span> <span class="st">"mm10"</span><span class="op">)</span></pre></div>
-<pre><code>## &gt;&gt; preparing features information...      2020-11-01 21:00:01 
-## &gt;&gt; identifying nearest features...        2020-11-01 21:00:03 
-## &gt;&gt; calculating distance from peak to TSS...   2020-11-01 21:00:04 
-## &gt;&gt; assigning genomic annotation...        2020-11-01 21:00:04 
-## &gt;&gt; assigning chromosome lengths           2020-11-01 21:00:31 
-## &gt;&gt; done...                    2020-11-01 21:00:31</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2020-11-04 12:59:03 
+## &gt;&gt; identifying nearest features...        2020-11-04 12:59:05 
+## &gt;&gt; calculating distance from peak to TSS...   2020-11-04 12:59:05 
+## &gt;&gt; assigning genomic annotation...        2020-11-04 12:59:05 
+## &gt;&gt; assigning chromosome lengths           2020-11-04 12:59:33 
+## &gt;&gt; done...                    2020-11-04 12:59:33</code></pre>
 <p>Now, you can access differential accessibility (DA) and enrichment results.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></pre></div>
@@ -266,12 +266,28 @@
 <p>Reminder - In our example data we have 22 samples</p>
 </blockquote>
 </div>
+<div id="adding-extra-covariates" class="section level2">
+<h2 class="hasAnchor">
+<a href="#adding-extra-covariates" class="anchor"></a>Adding extra covariates</h2>
+<p>Sometimes, one might want to add additional covariates to adjust the design matrix further, which affects the down-stream analyses. For instance, ages or sexes of the samples could be additional covariates. To account for those:</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true"></a><span class="co"># Ages of the samples could be not in biological interests but should be accounted for!</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true"></a><span class="kw">cinaR</span>(..., <span class="dt">additional.covariates =</span> <span class="kw">c</span>((<span class="dv">18</span>, <span class="dv">11</span>), (<span class="dv">3</span>, <span class="dv">11</span>)))</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true"></a></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true"></a><span class="co"># More than one covariate for instance, sex and age</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true"></a>sex.info &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, </span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true"></a>              <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>)</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true"></a></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true"></a>age.info &lt;-<span class="st"> </span><span class="kw">c</span>((<span class="dv">18</span>, <span class="dv">11</span>), (<span class="dv">3</span>, <span class="dv">11</span>)</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true"></a>covs &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">Sex =</span> sex.info, <span class="dt">Age =</span> age.info)</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true"></a></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true"></a><span class="kw">cinaR</span>(..., <span class="dt">additional.covariates =</span> covs)</span></code></pre></div>
+</div>
 <div id="saving-da-peaks-to-excel" class="section level2">
 <h2 class="hasAnchor">
 <a href="#saving-da-peaks-to-excel" class="anchor"></a>Saving DA peaks to excel</h2>
 <p>Setting <code>save.DA.peaks = TRUE</code> in <code>cinaR</code> function will create a <code>DApeaks.xlsx</code> file in the current directory. This file includes all the comparisons in different tabs. Additionally, you can set the path/name of the file using <code>DA.peaks.path</code> argument after setting <code>save.DA.peaks = TRUE</code>.</p>
 <p>For instance,</p>
-<div class="sourceCode" id="cb33"><pre class="downlit">
+<div class="sourceCode" id="cb34"><pre class="downlit">
 <span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, save.DA.peaks <span class="op">=</span> <span class="cn">T</span>, DA.peaks.path <span class="op">=</span> <span class="st">"./Peaks_mice.xlsx"</span><span class="op">)</span></pre></div>
 <p>will create an excel file with name <code>Peaks_mice.xlsx</code> in the current directory.</p>
 </div>
@@ -290,7 +306,7 @@
 <div id="some-useful-arguments" class="section level2">
 <h2 class="hasAnchor">
 <a href="#some-useful-arguments" class="anchor"></a>Some useful arguments</h2>
-<div class="sourceCode" id="cb34"><pre class="downlit">
+<div class="sourceCode" id="cb35"><pre class="downlit">
 <span class="co"># new FDR threshold for DA peaks</span>
 <span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, DA.fdr.threshold <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span>
 

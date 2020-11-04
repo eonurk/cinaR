@@ -186,6 +186,25 @@ cinaR(..., batch.correction = T, batch.information = c(rep(0, 11), rep(1,11)))
 ```
 > Reminder - In our example data we have 22 samples
   
+  
+## Adding extra covariates
+Sometimes, one might want to add additional covariates to adjust the design matrix further, which affects the down-stream analyses. For instance, ages or sexes of the samples could be additional covariates. 
+To account for those:
+
+```{r eval=FALSE}
+# Ages of the samples could be not in biological interests but should be accounted for!
+cinaR(..., additional.covariates = c((18, 11), (3, 11)))
+
+# More than one covariate for instance, sex and age
+sex.info <- c("M", "F", "M", "F", "F", "F", "F", "F", "M", "M", "M", 
+              "F", "F", "M", "M", "M", "F", "F", "M", "M", "F", "M")
+
+age.info <- c((18, 11), (3, 11)
+covs <- data.frame(Sex = sex.info, Age = age.info)
+
+cinaR(..., additional.covariates = covs)
+```
+
 ## Saving DA peaks to excel
 
 Setting `save.DA.peaks = TRUE` in `cinaR` function will create a `DApeaks.xlsx` file

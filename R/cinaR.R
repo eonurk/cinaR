@@ -25,6 +25,9 @@
 #' via sva (default) or if the batch information is known `batch.information`
 #' argument should be provided by user.
 #' @param batch.information character vector, given by user.
+#' @param additional.covariates vector or data.frame, this parameter will be directly added to design
+#' matrix before running the differential analyses, therefore won't affect the batch corrections but
+#' adjust the results in down-stream analyses.
 #' @param run.enrichment logical, turns off enrichment pipeline
 #' @param enrichment.method There are two methodologies for enrichment analyses,
 #' Hyper-geometric p-value (HPEA) or Geneset Enrichment Analyses (GSEA).
@@ -35,6 +38,7 @@
 #' @param geneset Pathways to be used in enrichment analyses. If not set vp2008 (Chaussabel, 2008)
 #' immune modules will be used. This can be set to any geneset using `read.gmt` function from `qusage`
 #' package. Different modules are available: https://www.gsea-msigdb.org/gsea/downloads.jsp.
+#'
 #'
 #' @examples
 #' \donttest{
@@ -69,6 +73,7 @@ cinaR <-
            reference.genome = NULL,
            batch.correction = FALSE,
            batch.information = NULL,
+           additional.covariates = NULL,
            run.enrichment = TRUE,
            enrichment.method = NULL,
            enrichment.FDR.cutoff = 1,
@@ -175,7 +180,8 @@ cinaR <-
         DA.lfc.threshold = DA.lfc.threshold,
         save.DA.peaks = save.DA.peaks,
         batch.correction = batch.correction,
-        batch.information = batch.information
+        batch.information = batch.information,
+        additional.covariates = additional.covariates
       )
     } else {
       stop (
@@ -263,7 +269,14 @@ filterConsensus <-
 normalizeConsensus <-
   function(cp, norm.method = "cpm", log.option = FALSE) {
     if (norm.method == "cpm") {
-      cp.norm <- edgeR::cpm(cp, log = log.option, prior.count = 5)
+      if (log.option){
+        # we don't use cpm log option,
+        # to make sure it does not yield any negative values.
+        cp.norm <- log2(edgeR::cpm(cp) + 1)
+      } else {
+        cp.norm <- edgeR::cpm(cp)
+      }
+
     } else if (norm.method == "quantile") {
       cp.norm <- preprocessCore::normalize.quantiles(cp)
     } else {
@@ -370,6 +383,9 @@ annotatePeaks <-
 #' via sva (default) or if the batch information is known `batch.information`
 #' argument should be provided by user.
 #' @param batch.information character vector, given by user.
+#' @param additional.covariates vector or data.frame, this parameter will be directly added to design
+#' matrix before running the differential analyses, therefore won't affect the batch corrections but
+#' adjust the results in down-stream analyses.
 #'
 #' @return returns consensus peaks (batch corrected version if enabled) and DA peaks
 differentialAnalyses <- function(final.matrix,
@@ -381,7 +397,8 @@ differentialAnalyses <- function(final.matrix,
                                  save.DA.peaks,
                                  DA.peaks.path,
                                  batch.correction,
-                                 batch.information) {
+                                 batch.information,
+                                 additional.covariates) {
 
   # silence CRAN build notes
   log2FoldChange <- padj <- NULL
@@ -442,6 +459,20 @@ differentialAnalyses <- function(final.matrix,
       # batch corrected consensus peaks created for PCA/Heatmaps
       cp.batch.corrected <- limma::removeBatchEffect(cp.metaless.normalized, batch = batch.information)
     }
+  }
+
+  if (!is.null(additional.covariates)) {
+
+    # If additional covariates are already data.frame
+    # this line does not change anything!
+    df.covariates <- data.frame(additional.covariates)
+
+    if (nrow(df.covariates) != nrow(design)){
+      stop("Number of samples in `additional.covariates` should match the with the sample size!")
+    }
+    design <- cbind(design, additional.covariates)
+
+    message(">> Additional covariates are added to design matrix...")
   }
 
   # Add intercept term for multiple comparisons

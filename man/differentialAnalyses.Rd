@@ -14,7 +14,8 @@ differentialAnalyses(
   save.DA.peaks,
   DA.peaks.path,
   batch.correction,
-  batch.information
+  batch.information,
+  additional.covariates
 )
 }
 \arguments{
@@ -41,6 +42,10 @@ via sva (default) or if the batch information is known `batch.information`
 argument should be provided by user.}
 
 \item{batch.information}{character vector, given by user.}
+
+\item{additional.covariates}{vector or data.frame, this parameter will be directly added to design
+matrix before running the differential analyses, therefore won't affect the batch corrections but
+adjust the results in down-stream analyses.}
 }
 \value{
 returns consensus peaks (batch corrected version if enabled) and DA peaks
