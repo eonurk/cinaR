@@ -397,14 +397,16 @@ differentialAnalyses <- function(final.matrix,
 
   design <- stats::model.matrix(~ 0 + contrasts)
 
+  # https://www.biostars.org/p/461026/
   if (batch.correction) {
+
     if (is.null(batch.information)) {
       ## First normalize the consensus peaks to avoid detecting the effects
       ## confounding from library size as Michael Love and Jeff Leek suggests
       ## in this thread:
       message(">> Running SVA for batch correction...\n")
 
-      cp.metaless.normalized <- normalizeConsensus(cp.metaless)
+      cp.metaless.normalized <- normalizeConsensus(cp.metaless, log.option = T)
       mod  <- stats::model.matrix(~ 0 + contrasts)
       mod0 <- cbind(rep(1, length(contrasts)))
 
@@ -422,8 +424,8 @@ differentialAnalyses <- function(final.matrix,
       design <-
         cbind(design, add.batch)
 
-      # batch corrected consensus peaks created for PCA/Heatmaps
-      cp.batch.corrected <- limma::removeBatchEffect(cp.metaless, covariates = add.batch)
+      # batch corrected/normalized consensus peaks created for PCA/Heatmaps
+      cp.batch.corrected <- limma::removeBatchEffect(cp.metaless.normalized, covariates = add.batch)
 
     } else {
       # if there is batch information available
@@ -433,10 +435,12 @@ differentialAnalyses <- function(final.matrix,
         stop("Number of samples and `batch.information` should be same length!")
       }
 
+      cp.metaless.normalized <- normalizeConsensus(cp.metaless, log.option = T)
+
       design <- cbind(design, BatchInfo = batch.information)
 
       # batch corrected consensus peaks created for PCA/Heatmaps
-      cp.batch.corrected <- limma::removeBatchEffect(cp.metaless, batch = batch.information)
+      cp.batch.corrected <- limma::removeBatchEffect(cp.metaless.normalized, batch = batch.information)
     }
   }
 
@@ -707,5 +711,5 @@ differentialAnalyses <- function(final.matrix,
   if (batch.correction){
     return(list (cp = cp.batch.corrected, DA.peaks = DA.peaks))
   }
-  return(list (cp = cp.metaless, DA.peaks = DA.peaks))
+  return(list (cp = normalizeConsensus(cp.metaless, log.option = T), DA.peaks = DA.peaks))
 }

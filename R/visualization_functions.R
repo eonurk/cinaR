@@ -131,11 +131,6 @@ pca_plot <- function(results, overlaid.info, sample.names = NULL, show.names = T
     }
   }
 
-  # consensus peaks are normalized before pca.
-  # log option is set TRUE to have a better variance-stabilization.
-  cp <- normalizeConsensus(cp, log.option = TRUE)
-
-
   # eliminate NaN values before-hand if there is any.
   pca <- stats::prcomp(t(stats::na.omit(cp)), center = TRUE)
 
@@ -191,12 +186,6 @@ heatmap_plot <- function(results, heatmap.peak.count = 100, ...){
   } else { # if run
     cp <- results[["DA.results"]][["cp"]]
   }
-
-  # consensus peaks are normalized before pca.
-  # log option is set TRUE to have a better variance-stabilization.
-  # NOTE: This is done because of the library depth differences, it does not
-  # account for peak-peak differences
-  cp <- normalizeConsensus(cp, log.option = TRUE)
 
   cp <- stats::na.omit(cp)
 
