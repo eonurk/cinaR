@@ -21,6 +21,13 @@ ggplot object
 plot most variable k peaks (default k = 100) among all samples
 }
 \examples{
+library(cinaR)
+data(atac_seq_consensus_bm) # calls 'bed'
 
-## heatmap_plot(results)
+# creating dummy results
+results <- NULL
+results[["cp"]] <- bed[,c(4:25)]
+
+heatmap_plot(results)
+
 }

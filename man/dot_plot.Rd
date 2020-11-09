@@ -22,12 +22,16 @@ ggplot object
 Given the results from `cinaR` it produces dot plots for enrichment analyses.
 }
 \examples{
+\donttest{
+library(cinaR)
+data(atac_seq_consensus_bm) # calls 'bed'
 
-## Shows all of the pathways
-## dot_plot(results)
+# a vector for comparing the examples
+contrasts <- sapply(strsplit(colnames(bed), split = "-", fixed = TRUE),
+                    function(x){x[1]})[4:25]
 
-## Trims the pathways that are less than `fdr.cutoff` value.
-## dot_plot(results, filter.pathways = TRUE)
+results <- cinaR(bed, contrasts, reference.genome = "mm10")
 
-
+dot_plot(results)
+}
 }

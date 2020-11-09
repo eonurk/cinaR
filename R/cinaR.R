@@ -423,7 +423,7 @@ differentialAnalyses <- function(final.matrix,
       ## in this thread:
       message(">> Running SVA for batch correction...\n")
 
-      cp.metaless.normalized <- normalizeConsensus(cp.metaless, log.option = T)
+      cp.metaless.normalized <- normalizeConsensus(cp.metaless, log.option = TRUE)
       mod  <- stats::model.matrix(~ 0 + contrasts)
       mod0 <- cbind(rep(1, length(contrasts)))
 
@@ -452,7 +452,7 @@ differentialAnalyses <- function(final.matrix,
         stop("Number of samples and `batch.information` should be same length!")
       }
 
-      cp.metaless.normalized <- normalizeConsensus(cp.metaless, log.option = T)
+      cp.metaless.normalized <- normalizeConsensus(cp.metaless, log.option = TRUE)
 
       design <- cbind(design, BatchInfo = batch.information)
 

@@ -10,14 +10,18 @@
 #' @return ggplot object
 #'
 #' @examples
+#' \donttest{
+#' library(cinaR)
+#' data(atac_seq_consensus_bm) # calls 'bed'
 #'
-#' ## Shows all of the pathways
-#' ## dot_plot(results)
+#' # a vector for comparing the examples
+#' contrasts <- sapply(strsplit(colnames(bed), split = "-", fixed = TRUE),
+#'                     function(x){x[1]})[4:25]
 #'
-#' ## Trims the pathways that are less than `fdr.cutoff` value.
-#' ## dot_plot(results, filter.pathways = TRUE)
+#' results <- cinaR(bed, contrasts, reference.genome = "mm10")
 #'
-#'
+#' dot_plot(results)
+#' }
 #' @export
 dot_plot <- function(results, fdr.cutoff = 0.1, filter.pathways = FALSE){
 
@@ -100,15 +104,27 @@ dot_plot <- function(results, fdr.cutoff = 0.1, filter.pathways = FALSE){
 #' @return ggplot object
 #'
 #' @examples
+#'
+#' #' library(cinaR)
+#' data(atac_seq_consensus_bm) # calls 'bed'
+#'
+#' # creating dummy results
+#' results <- NULL
+#' results[["cp"]] <- bed[,c(4:25)]
+#'
+#' # a vector for comparing the examples
+#' contrasts <- sapply(strsplit(colnames(bed), split = "-", fixed = TRUE),
+#'                     function(x){x[1]})[4:25]
+#'
 #' ## overlays the contrasts info onto PCA plots
-#' ## pca_plot(results, contrasts)
+#' pca_plot(results, contrasts)
 #'
 #' ## you can overlay other information as well,
 #' ## as long as it is the same length with the
 #' ## number of samples.
 #'
-#' ## sample.info <- c(rep("Group A", 11), rep("Group B", 11))
-#' ## pca_plot(results, sample.info)
+#' sample.info <- c(rep("Group A", 11), rep("Group B", 11))
+#' pca_plot(results, sample.info, show.names = FALSE)
 #'
 #' @export
 pca_plot <- function(results, overlaid.info, sample.names = NULL, show.names = TRUE){
@@ -175,8 +191,15 @@ pca_plot <- function(results, overlaid.info, sample.names = NULL, show.names = T
 #' @param ... additional arguments for heatmap function, for more info `?pheatmap`
 #' @return ggplot object
 #' @examples
+#' library(cinaR)
+#' data(atac_seq_consensus_bm) # calls 'bed'
 #'
-#' ## heatmap_plot(results)
+#' # creating dummy results
+#' results <- NULL
+#' results[["cp"]] <- bed[,c(4:25)]
+#'
+#' heatmap_plot(results)
+#'
 #' @export
 heatmap_plot <- function(results, heatmap.peak.count = 100, ...){
 

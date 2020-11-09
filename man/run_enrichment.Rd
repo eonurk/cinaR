@@ -35,12 +35,20 @@ are corrected by Benjamini-Hochberg procedure}
 calculations. Default is 20,000.}
 }
 \description{
-run_enrichment
+This function is run, if the enrichment pipeline wants to be called afterwards.
+Setting reference genome to the same genome which cinaR was run should be given to this function!
 }
 \examples{
-## For ATAC-Seq experiments
-## run_enrichment(results)
+\donttest{
+library(cinaR)
+data(atac_seq_consensus_bm) # calls 'bed'
 
-## For RNA-Seq experiments
-## run_enrichment(results, experiment.type = "RNA-Seq")
+# a vector for comparing the examples
+contrasts <- sapply(strsplit(colnames(bed), split = "-", fixed = TRUE),
+                    function(x){x[1]})[4:25]
+
+results <- cinaR(bed, contrasts, reference.genome = "mm10", run.enrichment = FALSE)
+
+results_with_enrichment <- run_enrichment(results, reference.genome = "mm10")
+}
 }

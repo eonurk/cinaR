@@ -22,14 +22,26 @@ ggplot object
 pca_plot
 }
 \examples{
+
+#' library(cinaR)
+data(atac_seq_consensus_bm) # calls 'bed'
+
+# creating dummy results
+results <- NULL
+results[["cp"]] <- bed[,c(4:25)]
+
+# a vector for comparing the examples
+contrasts <- sapply(strsplit(colnames(bed), split = "-", fixed = TRUE),
+                    function(x){x[1]})[4:25]
+
 ## overlays the contrasts info onto PCA plots
-## pca_plot(results, contrasts)
+pca_plot(results, contrasts)
 
 ## you can overlay other information as well,
 ## as long as it is the same length with the
 ## number of samples.
 
-## sample.info <- c(rep("Group A", 11), rep("Group B", 11))
-## pca_plot(results, sample.info)
+sample.info <- c(rep("Group A", 11), rep("Group B", 11))
+pca_plot(results, sample.info, show.names = FALSE)
 
 }

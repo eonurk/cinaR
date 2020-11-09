@@ -107,6 +107,9 @@ GSEA <- function(genes, geneset) {
 
 #' run_enrichment
 #'
+#' This function is run, if the enrichment pipeline wants to be called afterwards.
+#' Setting reference genome to the same genome which cinaR was run should be given to this function!
+#'
 #' @param results list, DA peaks list for different contrasts
 #' @param enrichment.method There are two methodologies for enrichment analyses,
 #' Hyper-geometric p-value (HPEA) or Geneset Enrichment Analyses (GSEA).
@@ -121,11 +124,18 @@ GSEA <- function(genes, geneset) {
 #' package. Different modules are available: https://www.gsea-msigdb.org/gsea/downloads.jsp.
 #'
 #' @examples
-#' ## For ATAC-Seq experiments
-#' ## run_enrichment(results)
+#' \donttest{
+#' library(cinaR)
+#' data(atac_seq_consensus_bm) # calls 'bed'
 #'
-#' ## For RNA-Seq experiments
-#' ## run_enrichment(results, experiment.type = "RNA-Seq")
+#' # a vector for comparing the examples
+#' contrasts <- sapply(strsplit(colnames(bed), split = "-", fixed = TRUE),
+#'                     function(x){x[1]})[4:25]
+#'
+#' results <- cinaR(bed, contrasts, reference.genome = "mm10", run.enrichment = FALSE)
+#'
+#' results_with_enrichment <- run_enrichment(results, reference.genome = "mm10")
+#' }
 #' @export
 run_enrichment <- function (
   results,
