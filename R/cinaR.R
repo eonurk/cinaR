@@ -482,7 +482,15 @@ differentialAnalyses <- function(final.matrix,
 
   # Create contrasts for all comparisons
   combs <-
-    utils::combn(colnames(design)[1:length(unique(contrasts))], 2)
+    utils::combn(colnames(design), 2)
+
+  contrasts.order <- c(1:length(unique(contrasts)))
+  names(contrasts.order) <- unique(contrasts)
+
+  # Re-order contrasts according to group order
+  combs <- apply(combs, 2, function(x){
+    names(sort(contrasts.order[x]))
+  })
 
   contrast.names <-
     apply(combs, 2, function(x) {
