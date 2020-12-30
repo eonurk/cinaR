@@ -33,6 +33,14 @@ To get bug fix and use a feature from the development version:
     # install.packages("devtools")
     devtools::install_github("eonurk/cinaR")
 
+### Known Installation Issues
+
+Sometimes bioconductor related packages may not be installed
+automatically.  
+Therefore, you may need to install them manually:
+
+    BiocManager::install(c("ChIPseeker", "DESeq2", "edgeR", "fgsea","GenomicRanges", "limma", "preprocessCore", "TxDb.Hsapiens.UCSC.hg38.knownGene", "TxDb.Hsapiens.UCSC.hg19.knownGene", "TxDb.Mmusculus.UCSC.mm10.knownGene"))
+
 ## Contribution
 
 You can send pull requests to make your contributions.
