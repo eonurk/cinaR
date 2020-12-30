@@ -91,7 +91,7 @@ Setting reference genome to the same genome which cinaR was run should be given 
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -105,7 +105,7 @@ Setting reference genome to the same genome which cinaR was run should be given 
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/eonurk/cinaR/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -191,12 +191,12 @@ calculations. Default is 20,000.</p></td>
                     <span class='kw'>function</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>{</span><span class='va'>x</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>}</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>4</span><span class='op'>:</span><span class='fl'>25</span><span class='op'>]</span>
 
 <span class='va'>results</span> <span class='op'>&lt;-</span> <span class='fu'><a href='cinaR.html'>cinaR</a></span><span class='op'>(</span><span class='va'>bed</span>, <span class='va'>contrasts</span>, reference.genome <span class='op'>=</span> <span class='st'>"mm10"</span>, run.enrichment <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>&gt;&gt; Experiment type: ATAC-Seq</span></div><div class='output co'>#&gt; <span class='message'>&gt;&gt; Matrix is filtered!</span></div><div class='output co'>#&gt; &gt;&gt; preparing features information...		 2020-11-27 22:41:14 
-#&gt; &gt;&gt; identifying nearest features...		 2020-11-27 22:41:14 
-#&gt; &gt;&gt; calculating distance from peak to TSS...	 2020-11-27 22:41:14 
-#&gt; &gt;&gt; assigning genomic annotation...		 2020-11-27 22:41:14 
-#&gt; &gt;&gt; assigning chromosome lengths			 2020-11-27 22:41:17 
-#&gt; &gt;&gt; done...					 2020-11-27 22:41:17 </div><div class='output co'>#&gt; <span class='message'>&gt;&gt; Method: edgeR</span>
+</div><div class='output co'>#&gt; <span class='message'>&gt;&gt; Experiment type: ATAC-Seq</span></div><div class='output co'>#&gt; <span class='message'>&gt;&gt; Matrix is filtered!</span></div><div class='output co'>#&gt; &gt;&gt; preparing features information...		 2020-12-30 02:22:57 
+#&gt; &gt;&gt; identifying nearest features...		 2020-12-30 02:22:57 
+#&gt; &gt;&gt; calculating distance from peak to TSS...	 2020-12-30 02:22:58 
+#&gt; &gt;&gt; assigning genomic annotation...		 2020-12-30 02:22:58 
+#&gt; &gt;&gt; assigning chromosome lengths			 2020-12-30 02:23:01 
+#&gt; &gt;&gt; done...					 2020-12-30 02:23:01 </div><div class='output co'>#&gt; <span class='message'>&gt;&gt; Method: edgeR</span>
 #&gt; <span class='message'>	FDR:0.05&amp; abs(logFC)&lt;0</span></div><div class='output co'>#&gt; <span class='message'>&gt;&gt; Estimating dispersion...</span></div><div class='output co'>#&gt; <span class='message'>&gt;&gt; Fitting GLM...</span></div><div class='output co'>#&gt; <span class='message'>&gt;&gt; DA peaks are found!</span></div><div class='input'>
 <span class='va'>results_with_enrichment</span> <span class='op'>&lt;-</span> <span class='fu'>run_enrichment</span><span class='op'>(</span><span class='va'>results</span>, reference.genome <span class='op'>=</span> <span class='st'>"mm10"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>&gt;&gt; No `geneset` is specified so immune modules (Chaussabel, 2008) will be used!</span></div><div class='output co'>#&gt; <span class='message'>&gt;&gt; enrichment.method` is not selected. Hyper-geometric p-value (HPEA) will be used!</span></div><div class='output co'>#&gt; <span class='message'>&gt;&gt; Mice gene symbols are converted to human symbols!</span></div><div class='input'><span class='co'># }</span>
