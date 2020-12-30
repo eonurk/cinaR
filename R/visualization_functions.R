@@ -216,14 +216,8 @@ heatmap_plot <- function(results, heatmap.peak.count = 100, ...){
   # reorder peak according to their standard deviation in decreasing order
   cp <- cp [rev(order(apply(cp, 1, stats::sd))),]
 
-  # pheatmap normalization function
-  scale_rows <- function(x){
-    m = apply(x, 1, mean, na.rm = TRUE)
-    s = apply(x, 1, stats::sd, na.rm = TRUE)
-    return((x - m) / s)
-  }
-
   # normalize peak distributions
+  # utils function
   mat.heatmap <- scale_rows(cp)
 
   mat.heatmap <- mat.heatmap[1:min(nrow(cp),heatmap.peak.count),]

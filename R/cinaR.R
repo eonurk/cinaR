@@ -421,7 +421,7 @@ differentialAnalyses <- function(final.matrix,
       ## First normalize the consensus peaks to avoid detecting the effects
       ## confounding from library size as Michael Love and Jeff Leek suggests
       ## in this thread:
-      message(">> Running SVA for batch correction...\n")
+      message(">> Running SVA for batch correction...")
 
       cp.metaless.normalized <- normalizeConsensus(cp.metaless, log.option = TRUE)
       mod  <- stats::model.matrix(~ 0 + contrasts)
