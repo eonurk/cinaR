@@ -5,7 +5,7 @@
 \alias{color_values}
 \title{color values}
 \format{
-An object of class \code{character} of length 49.
+An object of class \code{character} of length 8.
 }
 \usage{
 color_values

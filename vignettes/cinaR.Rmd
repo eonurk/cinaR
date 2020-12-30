@@ -145,6 +145,18 @@ unique(contrasts)
 in this case, each of them will be compared to each other which will result in
 28 different comparisons.
 
+## Running for bulk RNA-seq data
+
+To run `cinaR` with RNA-seq experiments, just provide the count matrix, and specify the experiment type:
+```{r eval=FALSE}
+cinaR(matrix = count.matrix, ..., experiment.type = "RNA-Seq")
+```
+
+Note that, `count.matrix` should be in the form of $g \times (1+n)$ where $g$ is the number of genes and $n$ is the number of samples, and plus one is for gene names.
+
+> Note that currently `cinaR` can only handle gene symbols (e.g. FOSL2, FOXA) and ensembl stable IDs (e.g. ENSG00000010404) for both human and mice!
+
+
 ## Running enrichment with different dataset
 You can run the enrichment analyses with a custom geneset:
 ```{r eval=FALSE}
