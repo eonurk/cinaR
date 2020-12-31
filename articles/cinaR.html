@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">cinaR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
       </span>
     </div>
 
@@ -54,6 +54,9 @@
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -79,7 +82,7 @@
       <h1 data-toc-skip>Introduction to cinaR</h1>
                         <h4 class="author">E Onur Karakaslar</h4>
             
-            <h4 class="date">12/30/2020</h4>
+            <h4 class="date">12/31/2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/eonurk/cinaR/blob/master/vignettes/cinaR.Rmd"><code>vignettes/cinaR.Rmd</code></a></small>
       <div class="hidden name"><code>cinaR.Rmd</code></div>
@@ -117,12 +120,12 @@
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># If reference genome is not set hg38 will be used!</span>
 <span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">bed</span>, <span class="va">contrasts</span>, reference.genome <span class="op">=</span> <span class="st">"mm10"</span><span class="op">)</span></code></pre></div>
-<pre><code>## &gt;&gt; preparing features information...      2020-12-30 16:03:25 
-## &gt;&gt; identifying nearest features...        2020-12-30 16:03:26 
-## &gt;&gt; calculating distance from peak to TSS...   2020-12-30 16:03:27 
-## &gt;&gt; assigning genomic annotation...        2020-12-30 16:03:27 
-## &gt;&gt; assigning chromosome lengths           2020-12-30 16:03:51 
-## &gt;&gt; done...                    2020-12-30 16:03:51</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2020-12-31 18:58:39 
+## &gt;&gt; identifying nearest features...        2020-12-31 18:58:40 
+## &gt;&gt; calculating distance from peak to TSS...   2020-12-31 18:58:41 
+## &gt;&gt; assigning genomic annotation...        2020-12-31 18:58:41 
+## &gt;&gt; assigning chromosome lengths           2020-12-31 18:59:04 
+## &gt;&gt; done...                    2020-12-31 18:59:04</code></pre>
 <p>Now, you can access differential accessibility (DA) and enrichment results.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></code></pre></div>
@@ -218,10 +221,10 @@
 <p>Note that you can further divide the resolution of contrasts, for instance this is also a valid vector</p>
 <div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">contrasts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strsplit.html">strsplit</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">bed</span><span class="op">)</span>, split <span class="op">=</span> <span class="st">"-"</span>, fixed <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>, 
-                    <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>, collapse <span class="op">=</span> <span class="st">"-"</span><span class="op">)</span><span class="op">}</span><span class="op">)</span><span class="op">[</span><span class="fl">4</span><span class="op">:</span><span class="fl">25</span><span class="op">]</span>
+                    <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>, collapse <span class="op">=</span> <span class="st">"."</span><span class="op">)</span><span class="op">}</span><span class="op">)</span><span class="op">[</span><span class="fl">4</span><span class="op">:</span><span class="fl">25</span><span class="op">]</span>
 <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">contrasts</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "B6-18mo-M-BM"  "B6-18mo-F-BM"  "NZO-18mo-F-BM" "NZO-18mo-M-BM"
-## [5] "B6-3mo-F-BM"   "B6-3mo-M-BM"   "NZO-3mo-F-BM"  "NZO-3mo-M-BM"</code></pre>
+<pre><code>## [1] "B6.18mo.M.BM"  "B6.18mo.F.BM"  "NZO.18mo.F.BM" "NZO.18mo.M.BM"
+## [5] "B6.3mo.F.BM"   "B6.3mo.M.BM"   "NZO.3mo.F.BM"  "NZO.3mo.M.BM"</code></pre>
 <p>in this case, each of them will be compared to each other which will result in 28 different comparisons.</p>
 </div>
 <div id="running-for-bulk-rna-seq-data" class="section level2">
@@ -340,6 +343,158 @@
 <li><p>Ritchie ME, Phipson B, Wu D, Hu Y, Law CW, Shi W, Smyth GK (2015). “limma powers differential expression analyses for RNA-sequencing and microarray studies.” Nucleic Acids Research, 43(7), e47.</p></li>
 <li><p>Love, M.I., Huber, W., Anders, S. (2014) Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2. Genome Biology, 15:550. 10.1186/s13059-014-0550-8</p></li>
 </ul>
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<pre><code>## R version 4.0.3 (2020-10-10)
+## Platform: x86_64-apple-darwin17.0 (64-bit)
+## Running under: macOS Catalina 10.15.7
+## 
+## Matrix products: default
+## BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib
+## LAPACK: /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRlapack.dylib
+## 
+## locale:
+## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+## [1] cinaR_0.1.1
+## 
+## loaded via a namespace (and not attached):
+##   [1] fgsea_1.16.0                             
+##   [2] colorspace_2.0-0                         
+##   [3] ellipsis_0.3.1                           
+##   [4] rprojroot_2.0.2                          
+##   [5] qvalue_2.22.0                            
+##   [6] XVector_0.30.0                           
+##   [7] GenomicRanges_1.42.0                     
+##   [8] fs_1.5.0                                 
+##   [9] farver_2.0.3                             
+##  [10] graphlayouts_0.7.1                       
+##  [11] ggrepel_0.9.0                            
+##  [12] bit64_4.0.5                              
+##  [13] scatterpie_0.1.5                         
+##  [14] AnnotationDbi_1.52.0                     
+##  [15] xml2_1.3.2                               
+##  [16] splines_4.0.3                            
+##  [17] GOSemSim_2.16.1                          
+##  [18] knitr_1.30                               
+##  [19] polyclip_1.10-0                          
+##  [20] Rsamtools_2.6.0                          
+##  [21] GO.db_3.12.1                             
+##  [22] dbplyr_2.0.0                             
+##  [23] pheatmap_1.0.12                          
+##  [24] ggforce_0.3.2                            
+##  [25] BiocManager_1.30.10                      
+##  [26] compiler_4.0.3                           
+##  [27] httr_1.4.2                               
+##  [28] rvcheck_0.1.8                            
+##  [29] assertthat_0.2.1                         
+##  [30] Matrix_1.2-18                            
+##  [31] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2  
+##  [32] limma_3.46.0                             
+##  [33] tweenr_1.0.1                             
+##  [34] htmltools_0.5.0                          
+##  [35] prettyunits_1.1.1                        
+##  [36] tools_4.0.3                              
+##  [37] igraph_1.2.6                             
+##  [38] gtable_0.3.0                             
+##  [39] glue_1.4.2                               
+##  [40] GenomeInfoDbData_1.2.4                   
+##  [41] reshape2_1.4.4                           
+##  [42] DO.db_2.9                                
+##  [43] dplyr_1.0.2                              
+##  [44] rappdirs_0.3.1                           
+##  [45] fastmatch_1.1-0                          
+##  [46] Rcpp_1.0.5                               
+##  [47] enrichplot_1.10.1                        
+##  [48] Biobase_2.50.0                           
+##  [49] pkgdown_1.6.1                            
+##  [50] vctrs_0.3.6                              
+##  [51] Biostrings_2.58.0                        
+##  [52] rtracklayer_1.50.0                       
+##  [53] ggraph_2.0.4                             
+##  [54] TxDb.Mmusculus.UCSC.mm10.knownGene_3.10.0
+##  [55] xfun_0.19                                
+##  [56] stringr_1.4.0                            
+##  [57] lifecycle_0.2.0                          
+##  [58] gtools_3.8.2                             
+##  [59] XML_3.99-0.5                             
+##  [60] DOSE_3.16.0                              
+##  [61] edgeR_3.32.0                             
+##  [62] zlibbioc_1.36.0                          
+##  [63] MASS_7.3-53                              
+##  [64] scales_1.1.1                             
+##  [65] tidygraph_1.2.0                          
+##  [66] ragg_0.4.0                               
+##  [67] hms_0.5.3                                
+##  [68] MatrixGenerics_1.2.0                     
+##  [69] parallel_4.0.3                           
+##  [70] SummarizedExperiment_1.20.0              
+##  [71] RColorBrewer_1.1-2                       
+##  [72] yaml_2.2.1                               
+##  [73] curl_4.3                                 
+##  [74] memoise_1.1.0                            
+##  [75] gridExtra_2.3                            
+##  [76] ggplot2_3.3.3                            
+##  [77] biomaRt_2.46.0                           
+##  [78] stringi_1.5.3                            
+##  [79] RSQLite_2.2.1                            
+##  [80] ChIPseeker_1.26.0                        
+##  [81] S4Vectors_0.28.1                         
+##  [82] desc_1.2.0                               
+##  [83] plotrix_3.7-8                            
+##  [84] caTools_1.18.0                           
+##  [85] GenomicFeatures_1.42.1                   
+##  [86] BiocGenerics_0.36.0                      
+##  [87] boot_1.3-25                              
+##  [88] BiocParallel_1.24.1                      
+##  [89] GenomeInfoDb_1.26.2                      
+##  [90] rlang_0.4.10                             
+##  [91] pkgconfig_2.0.3                          
+##  [92] systemfonts_0.3.2                        
+##  [93] matrixStats_0.57.0                       
+##  [94] bitops_1.0-6                             
+##  [95] evaluate_0.14                            
+##  [96] lattice_0.20-41                          
+##  [97] purrr_0.3.4                              
+##  [98] labeling_0.4.2                           
+##  [99] GenomicAlignments_1.26.0                 
+## [100] shadowtext_0.0.7                         
+## [101] cowplot_1.1.1                            
+## [102] bit_4.0.4                                
+## [103] tidyselect_1.1.0                         
+## [104] plyr_1.8.6                               
+## [105] magrittr_2.0.1                           
+## [106] R6_2.5.0                                 
+## [107] gplots_3.1.1                             
+## [108] IRanges_2.24.1                           
+## [109] generics_0.1.0                           
+## [110] DelayedArray_0.16.0                      
+## [111] DBI_1.1.0                                
+## [112] pillar_1.4.7                             
+## [113] RCurl_1.98-1.2                           
+## [114] tibble_3.0.4                             
+## [115] crayon_1.3.4                             
+## [116] KernSmooth_2.23-17                       
+## [117] BiocFileCache_1.14.0                     
+## [118] rmarkdown_2.6                            
+## [119] viridis_0.5.1                            
+## [120] progress_1.2.2                           
+## [121] locfit_1.5-9.4                           
+## [122] grid_4.0.3                               
+## [123] data.table_1.13.6                        
+## [124] blob_1.2.1                               
+## [125] digest_0.6.27                            
+## [126] tidyr_1.1.2                              
+## [127] textshaping_0.2.1                        
+## [128] openssl_1.4.3                            
+## [129] stats4_4.0.3                             
+## [130] munsell_0.5.0                            
+## [131] viridisLite_0.3.0                        
+## [132] askpass_1.1</code></pre>
 </div>
   </div>
 
