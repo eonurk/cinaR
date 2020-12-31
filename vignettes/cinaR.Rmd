@@ -139,7 +139,7 @@ Note that you can further divide the resolution of contrasts, for instance this
 is also a valid vector
 ```{r}
 contrasts <- sapply(strsplit(colnames(bed), split = "-", fixed = T), 
-                    function(x){paste(x[1:4], collapse = "-")})[4:25]
+                    function(x){paste(x[1:4], collapse = ".")})[4:25]
 unique(contrasts)
 ```
 in this case, each of them will be compared to each other which will result in
@@ -270,3 +270,9 @@ dot_plot(..., fdr.cutoff = 0.05)
 - Ritchie ME, Phipson B, Wu D, Hu Y, Law CW, Shi W, Smyth GK (2015). “limma powers differential expression analyses for RNA-sequencing and microarray studies.” Nucleic Acids Research, 43(7), e47.
 
 - Love, M.I., Huber, W., Anders, S. (2014) Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2. Genome Biology, 15:550. 10.1186/s13059-014-0550-8
+
+
+```{r session Info}
+sessionInfo()
+```
+
