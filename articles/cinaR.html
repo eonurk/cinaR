@@ -76,13 +76,13 @@
 
       
 
-      </header><script src="cinaR_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="cinaR_files/header-attrs-2.6/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction to cinaR</h1>
                         <h4 class="author">E Onur Karakaslar</h4>
             
-            <h4 class="date">01/02/2021</h4>
+            <h4 class="date">12/31/2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/eonurk/cinaR/blob/master/vignettes/cinaR.Rmd"><code>vignettes/cinaR.Rmd</code></a></small>
       <div class="hidden name"><code>cinaR.Rmd</code></div>
@@ -120,12 +120,12 @@
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># If reference genome is not set hg38 will be used!</span>
 <span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">bed</span>, <span class="va">contrasts</span>, reference.genome <span class="op">=</span> <span class="st">"mm10"</span><span class="op">)</span></code></pre></div>
-<pre><code>## &gt;&gt; preparing features information...      2021-01-02 23:30:56 
-## &gt;&gt; identifying nearest features...        2021-01-02 23:30:58 
-## &gt;&gt; calculating distance from peak to TSS...   2021-01-02 23:30:58 
-## &gt;&gt; assigning genomic annotation...        2021-01-02 23:30:58 
-## &gt;&gt; assigning chromosome lengths           2021-01-02 23:31:21 
-## &gt;&gt; done...                    2021-01-02 23:31:21</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2020-12-31 13:59:40 
+## &gt;&gt; identifying nearest features...        2020-12-31 13:59:41 
+## &gt;&gt; calculating distance from peak to TSS...   2020-12-31 13:59:42 
+## &gt;&gt; assigning genomic annotation...        2020-12-31 13:59:42 
+## &gt;&gt; assigning chromosome lengths           2020-12-31 14:00:07 
+## &gt;&gt; done...                    2020-12-31 14:00:07</code></pre>
 <p>Now, you can access differential accessibility (DA) and enrichment results.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></code></pre></div>
@@ -283,17 +283,17 @@
 <h2 class="hasAnchor">
 <a href="#adding-extra-covariates" class="anchor"></a>Adding extra covariates</h2>
 <p>Sometimes, one might want to add additional covariates to adjust the design matrix further, which affects the down-stream analyses. For instance, ages or sexes of the samples could be additional covariates. To account for those:</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1"></a><span class="co"># Ages of the samples could be not in biological interests but should be accounted for!</span></span>
-<span id="cb34-2"><a href="#cb34-2"></a><span class="kw">cinaR</span>(..., <span class="dt">additional.covariates =</span> <span class="kw">c</span>((<span class="dv">18</span>, <span class="dv">11</span>), (<span class="dv">3</span>, <span class="dv">11</span>)))</span>
-<span id="cb34-3"><a href="#cb34-3"></a></span>
-<span id="cb34-4"><a href="#cb34-4"></a><span class="co"># More than one covariate for instance, sex and age</span></span>
-<span id="cb34-5"><a href="#cb34-5"></a>sex.info &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, </span>
-<span id="cb34-6"><a href="#cb34-6"></a>              <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>)</span>
-<span id="cb34-7"><a href="#cb34-7"></a></span>
-<span id="cb34-8"><a href="#cb34-8"></a>age.info &lt;-<span class="st"> </span><span class="kw">c</span>((<span class="dv">18</span>, <span class="dv">11</span>), (<span class="dv">3</span>, <span class="dv">11</span>)</span>
-<span id="cb34-9"><a href="#cb34-9"></a>covs &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">Sex =</span> sex.info, <span class="dt">Age =</span> age.info)</span>
-<span id="cb34-10"><a href="#cb34-10"></a></span>
-<span id="cb34-11"><a href="#cb34-11"></a><span class="kw">cinaR</span>(..., <span class="dt">additional.covariates =</span> covs)</span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true"></a><span class="co"># Ages of the samples could be not in biological interests but should be accounted for!</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true"></a><span class="kw">cinaR</span>(..., <span class="dt">additional.covariates =</span> <span class="kw">c</span>((<span class="dv">18</span>, <span class="dv">11</span>), (<span class="dv">3</span>, <span class="dv">11</span>)))</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true"></a></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true"></a><span class="co"># More than one covariate for instance, sex and age</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true"></a>sex.info &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, </span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true"></a>              <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>)</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true"></a></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true"></a>age.info &lt;-<span class="st"> </span><span class="kw">c</span>((<span class="dv">18</span>, <span class="dv">11</span>), (<span class="dv">3</span>, <span class="dv">11</span>)</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true"></a>covs &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">Sex =</span> sex.info, <span class="dt">Age =</span> age.info)</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true"></a></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true"></a><span class="kw">cinaR</span>(..., <span class="dt">additional.covariates =</span> covs)</span></code></pre></div>
 </div>
 <div id="saving-da-peaks-to-excel" class="section level2">
 <h2 class="hasAnchor">
@@ -345,9 +345,9 @@
 </ul>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<pre><code>## R version 4.0.3 (2020-10-10)
+<pre><code>## R version 4.0.2 (2020-06-22)
 ## Platform: x86_64-apple-darwin17.0 (64-bit)
-## Running under: macOS Catalina 10.15.7
+## Running under: macOS Mojave 10.14.6
 ## 
 ## Matrix products: default
 ## BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib
@@ -363,138 +363,139 @@
 ## [1] cinaR_0.1.1
 ## 
 ## loaded via a namespace (and not attached):
-##   [1] fgsea_1.16.0                             
-##   [2] colorspace_2.0-0                         
-##   [3] ellipsis_0.3.1                           
-##   [4] rprojroot_2.0.2                          
-##   [5] qvalue_2.22.0                            
-##   [6] XVector_0.30.0                           
-##   [7] GenomicRanges_1.42.0                     
-##   [8] fs_1.5.0                                 
-##   [9] farver_2.0.3                             
-##  [10] graphlayouts_0.7.1                       
-##  [11] ggrepel_0.9.0                            
-##  [12] bit64_4.0.5                              
-##  [13] scatterpie_0.1.5                         
-##  [14] AnnotationDbi_1.52.0                     
-##  [15] xml2_1.3.2                               
-##  [16] splines_4.0.3                            
-##  [17] GOSemSim_2.16.1                          
-##  [18] knitr_1.30                               
-##  [19] polyclip_1.10-0                          
-##  [20] Rsamtools_2.6.0                          
-##  [21] GO.db_3.12.1                             
-##  [22] dbplyr_2.0.0                             
-##  [23] pheatmap_1.0.12                          
-##  [24] ggforce_0.3.2                            
-##  [25] BiocManager_1.30.10                      
-##  [26] compiler_4.0.3                           
-##  [27] httr_1.4.2                               
-##  [28] rvcheck_0.1.8                            
-##  [29] assertthat_0.2.1                         
-##  [30] Matrix_1.2-18                            
-##  [31] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2  
-##  [32] limma_3.46.0                             
-##  [33] tweenr_1.0.1                             
-##  [34] htmltools_0.5.0                          
-##  [35] prettyunits_1.1.1                        
-##  [36] tools_4.0.3                              
-##  [37] igraph_1.2.6                             
-##  [38] gtable_0.3.0                             
-##  [39] glue_1.4.2                               
-##  [40] GenomeInfoDbData_1.2.4                   
-##  [41] reshape2_1.4.4                           
-##  [42] DO.db_2.9                                
-##  [43] dplyr_1.0.2                              
-##  [44] rappdirs_0.3.1                           
-##  [45] fastmatch_1.1-0                          
-##  [46] Rcpp_1.0.5                               
-##  [47] enrichplot_1.10.1                        
-##  [48] Biobase_2.50.0                           
-##  [49] pkgdown_1.6.1                            
-##  [50] vctrs_0.3.6                              
-##  [51] Biostrings_2.58.0                        
-##  [52] rtracklayer_1.50.0                       
-##  [53] ggraph_2.0.4                             
-##  [54] TxDb.Mmusculus.UCSC.mm10.knownGene_3.10.0
-##  [55] xfun_0.19                                
-##  [56] stringr_1.4.0                            
-##  [57] lifecycle_0.2.0                          
-##  [58] gtools_3.8.2                             
-##  [59] XML_3.99-0.5                             
-##  [60] DOSE_3.16.0                              
-##  [61] edgeR_3.32.0                             
-##  [62] zlibbioc_1.36.0                          
-##  [63] MASS_7.3-53                              
-##  [64] scales_1.1.1                             
-##  [65] tidygraph_1.2.0                          
-##  [66] ragg_0.4.0                               
-##  [67] hms_0.5.3                                
-##  [68] MatrixGenerics_1.2.0                     
-##  [69] parallel_4.0.3                           
-##  [70] SummarizedExperiment_1.20.0              
-##  [71] RColorBrewer_1.1-2                       
-##  [72] yaml_2.2.1                               
-##  [73] curl_4.3                                 
-##  [74] memoise_1.1.0                            
-##  [75] gridExtra_2.3                            
-##  [76] ggplot2_3.3.3                            
-##  [77] biomaRt_2.46.0                           
-##  [78] stringi_1.5.3                            
-##  [79] RSQLite_2.2.1                            
-##  [80] ChIPseeker_1.26.0                        
-##  [81] S4Vectors_0.28.1                         
-##  [82] desc_1.2.0                               
-##  [83] plotrix_3.7-8                            
-##  [84] caTools_1.18.0                           
-##  [85] GenomicFeatures_1.42.1                   
-##  [86] BiocGenerics_0.36.0                      
-##  [87] boot_1.3-25                              
-##  [88] BiocParallel_1.24.1                      
-##  [89] GenomeInfoDb_1.26.2                      
-##  [90] rlang_0.4.10                             
-##  [91] pkgconfig_2.0.3                          
-##  [92] systemfonts_0.3.2                        
-##  [93] matrixStats_0.57.0                       
-##  [94] bitops_1.0-6                             
-##  [95] evaluate_0.14                            
-##  [96] lattice_0.20-41                          
-##  [97] purrr_0.3.4                              
-##  [98] labeling_0.4.2                           
-##  [99] GenomicAlignments_1.26.0                 
-## [100] shadowtext_0.0.7                         
-## [101] cowplot_1.1.1                            
-## [102] bit_4.0.4                                
-## [103] tidyselect_1.1.0                         
-## [104] plyr_1.8.6                               
-## [105] magrittr_2.0.1                           
-## [106] R6_2.5.0                                 
-## [107] gplots_3.1.1                             
-## [108] IRanges_2.24.1                           
-## [109] generics_0.1.0                           
-## [110] DelayedArray_0.16.0                      
-## [111] DBI_1.1.0                                
-## [112] pillar_1.4.7                             
-## [113] RCurl_1.98-1.2                           
-## [114] tibble_3.0.4                             
-## [115] crayon_1.3.4                             
-## [116] KernSmooth_2.23-17                       
-## [117] BiocFileCache_1.14.0                     
-## [118] rmarkdown_2.6                            
-## [119] viridis_0.5.1                            
-## [120] progress_1.2.2                           
-## [121] locfit_1.5-9.4                           
-## [122] grid_4.0.3                               
-## [123] data.table_1.13.6                        
-## [124] blob_1.2.1                               
-## [125] digest_0.6.27                            
-## [126] tidyr_1.1.2                              
-## [127] textshaping_0.2.1                        
-## [128] openssl_1.4.3                            
-## [129] stats4_4.0.3                             
-## [130] munsell_0.5.0                            
-## [131] viridisLite_0.3.0                        
-## [132] askpass_1.1</code></pre>
+##   [1] shadowtext_0.0.7                         
+##   [2] ChIPseeker_1.26.0                        
+##   [3] fastmatch_1.1-0                          
+##   [4] BiocFileCache_1.14.0                     
+##   [5] systemfonts_0.3.2                        
+##   [6] plyr_1.8.6                               
+##   [7] igraph_1.2.6                             
+##   [8] splines_4.0.2                            
+##   [9] BiocParallel_1.24.1                      
+##  [10] GenomeInfoDb_1.26.2                      
+##  [11] ggplot2_3.3.3                            
+##  [12] digest_0.6.27                            
+##  [13] htmltools_0.5.0                          
+##  [14] GOSemSim_2.16.1                          
+##  [15] viridis_0.5.1                            
+##  [16] GO.db_3.12.1                             
+##  [17] magrittr_2.0.1                           
+##  [18] memoise_1.1.0                            
+##  [19] limma_3.46.0                             
+##  [20] Biostrings_2.58.0                        
+##  [21] graphlayouts_0.7.1                       
+##  [22] matrixStats_0.57.0                       
+##  [23] askpass_1.1                              
+##  [24] pkgdown_1.6.1                            
+##  [25] enrichplot_1.10.1                        
+##  [26] prettyunits_1.1.1                        
+##  [27] colorspace_2.0-0                         
+##  [28] blob_1.2.1                               
+##  [29] rappdirs_0.3.1                           
+##  [30] ggrepel_0.9.0                            
+##  [31] textshaping_0.2.1                        
+##  [32] xfun_0.19                                
+##  [33] dplyr_1.0.2                              
+##  [34] crayon_1.3.4                             
+##  [35] RCurl_1.98-1.2                           
+##  [36] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2  
+##  [37] scatterpie_0.1.5                         
+##  [38] glue_1.4.2                               
+##  [39] polyclip_1.10-0                          
+##  [40] gtable_0.3.0                             
+##  [41] zlibbioc_1.36.0                          
+##  [42] XVector_0.30.0                           
+##  [43] DelayedArray_0.16.0                      
+##  [44] BiocGenerics_0.36.0                      
+##  [45] scales_1.1.1                             
+##  [46] DOSE_3.16.0                              
+##  [47] pheatmap_1.0.12                          
+##  [48] DBI_1.1.0                                
+##  [49] edgeR_3.32.0                             
+##  [50] Rcpp_1.0.5                               
+##  [51] plotrix_3.7-8                            
+##  [52] viridisLite_0.3.0                        
+##  [53] progress_1.2.2                           
+##  [54] bit_4.0.4                                
+##  [55] stats4_4.0.2                             
+##  [56] httr_1.4.2                               
+##  [57] fgsea_1.16.0                             
+##  [58] gplots_3.1.1                             
+##  [59] RColorBrewer_1.1-2                       
+##  [60] ellipsis_0.3.1                           
+##  [61] pkgconfig_2.0.3                          
+##  [62] XML_3.99-0.5                             
+##  [63] farver_2.0.3                             
+##  [64] dbplyr_2.0.0                             
+##  [65] locfit_1.5-9.4                           
+##  [66] labeling_0.4.2                           
+##  [67] tidyselect_1.1.0                         
+##  [68] rlang_0.4.10                             
+##  [69] reshape2_1.4.4                           
+##  [70] AnnotationDbi_1.52.0                     
+##  [71] munsell_0.5.0                            
+##  [72] tools_4.0.2                              
+##  [73] generics_0.1.0                           
+##  [74] RSQLite_2.2.1                            
+##  [75] evaluate_0.14                            
+##  [76] stringr_1.4.0                            
+##  [77] yaml_2.2.1                               
+##  [78] ragg_0.4.0                               
+##  [79] knitr_1.30                               
+##  [80] bit64_4.0.5                              
+##  [81] fs_1.5.0                                 
+##  [82] tidygraph_1.2.0                          
+##  [83] caTools_1.18.0                           
+##  [84] purrr_0.3.4                              
+##  [85] ggraph_2.0.4                             
+##  [86] DO.db_2.9                                
+##  [87] xml2_1.3.2                               
+##  [88] biomaRt_2.46.0                           
+##  [89] compiler_4.0.2                           
+##  [90] rstudioapi_0.13                          
+##  [91] curl_4.3                                 
+##  [92] tibble_3.0.4                             
+##  [93] tweenr_1.0.1                             
+##  [94] stringi_1.5.3                            
+##  [95] GenomicFeatures_1.42.1                   
+##  [96] desc_1.2.0                               
+##  [97] lattice_0.20-41                          
+##  [98] Matrix_1.3-0                             
+##  [99] vctrs_0.3.6                              
+## [100] pillar_1.4.7                             
+## [101] lifecycle_0.2.0                          
+## [102] BiocManager_1.30.10                      
+## [103] data.table_1.13.6                        
+## [104] cowplot_1.1.1                            
+## [105] bitops_1.0-6                             
+## [106] TxDb.Mmusculus.UCSC.mm10.knownGene_3.10.0
+## [107] rtracklayer_1.50.0                       
+## [108] GenomicRanges_1.42.0                     
+## [109] qvalue_2.22.0                            
+## [110] R6_2.5.0                                 
+## [111] KernSmooth_2.23-18                       
+## [112] gridExtra_2.3                            
+## [113] IRanges_2.24.1                           
+## [114] boot_1.3-25                              
+## [115] MASS_7.3-53                              
+## [116] gtools_3.8.2                             
+## [117] assertthat_0.2.1                         
+## [118] SummarizedExperiment_1.20.0              
+## [119] openssl_1.4.3                            
+## [120] rprojroot_2.0.2                          
+## [121] GenomicAlignments_1.26.0                 
+## [122] Rsamtools_2.6.0                          
+## [123] S4Vectors_0.28.1                         
+## [124] GenomeInfoDbData_1.2.4                   
+## [125] parallel_4.0.2                           
+## [126] hms_0.5.3                                
+## [127] grid_4.0.2                               
+## [128] tidyr_1.1.2                              
+## [129] rmarkdown_2.6                            
+## [130] rvcheck_0.1.8                            
+## [131] MatrixGenerics_1.2.0                     
+## [132] ggforce_0.3.2                            
+## [133] Biobase_2.50.0</code></pre>
 </div>
   </div>
 
