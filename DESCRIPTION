@@ -1,7 +1,7 @@
 Package: cinaR
 Type: Package
 Title: A Computational Pipeline for Bulk 'ATAC-Seq' Profiles
-Version: 0.1.1
+Version: 0.2.0
 Authors@R: 
     c(person(given = "Onur",
              family = "Karakaslar",

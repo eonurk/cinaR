@@ -110,16 +110,34 @@ pca_plot(results, overlaid.info, sample.names)
 
 ### Heatmaps
 
+
+#### Differential peaks
+
+You can see the available comparisons using:
+```{r}
+show_comparisons(results)
+```
+
+Then, plot the differential peaks for a selected contrast using:
+```{r}
+heatmap_differential(results, comparison = "B6_NZO")
+```
+  
+Also, you can configure your heatmaps using the additional arguments of `pheatmap` function. For more information check out `?pheatmap`.
+```{r}
+heatmap_differential(results, comparison = "B6_NZO", show_colnames = FALSE)
+```
+
+#### Most variable peaks
 You can also plot most variable 100 peaks for all samples:
 ```{r}
-heatmap_plot(results)
+heatmap_var_peaks(results)
 ```
 
-Plus, you can set the number of peaks to be used in these plots, and also you can change the additional arguments of `pheatmap` function. For more information check out `?pheatmap`.
+Plus, you can set the number of peaks to be used in these plots, and again you can change the additional arguments of `pheatmap` function. For more information check out `?pheatmap`.
 ```{r}
-heatmap_plot(results, heatmap.peak.count = 200, cluster_cols = F)
+heatmap_var_peaks(results, heatmap.peak.count = 200, cluster_cols = F)
 ```
-
 
 ### Enrichment Plots
 You can plot your enrichment results using:
@@ -131,7 +149,6 @@ if it gets too crowded, you can get rid of the irrelevant pathways as well:
 ```{r }
 dot_plot(results, filter.pathways = T)
 ```
-
 
 ## Creating different contrasts
 

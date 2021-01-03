@@ -51,8 +51,27 @@ mouse2human <- function(genes) {
 #' head(bed.row.normalized)
 #' }
 #' @export
-scale_rows <- function(x){
-  m = apply(x, 1, mean, na.rm = TRUE)
-  s = apply(x, 1, stats::sd, na.rm = TRUE)
+scale_rows <- function (x){
+  m <- apply(x, 1, mean, na.rm = TRUE)
+  s <- apply(x, 1, stats::sd, na.rm = TRUE)
   return((x - m) / s)
 }
+
+
+#' show_comparisons
+#'
+#' returns the names of the created comparisons
+#'
+#' @param results output of the cinaR
+#' @return comparisons created
+#' @export
+show_comparisons <- function (results) {
+  # if enrichment not run!
+  if(!is.null(results[["cp"]])){
+    return(names(results$DA.peaks))
+  } else { # if run
+    return(names(results$DA.results$DA.peaks))
+  }
+}
+
+
