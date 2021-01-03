@@ -4,11 +4,15 @@
 # cinaR <a href='https://eonurk.github.io/cinaR/'><img src='man/figures/cinaR.png' align="right" height="139" /></a>
 
 <!-- badges: start -->
-<!-- [![Build Status](https://travis-ci.com/eonurk/cinaR.svg?branch=master)](https://travis-ci.com/eonurk/cinaR) -->
 
+[![Build
+Status](https://travis-ci.com/eonurk/cinaR.svg?branch=master)](https://travis-ci.com/eonurk/cinaR)
 [![R build
 status](https://github.com/eonurk/cinaR/workflows/R-CMD-check/badge.svg)](https://github.com/eonurk/cinaR/actions)
-[![](https://cranlogs.r-pkg.org/badges/cinaR?color=orange)](https://cran.r-project.org/package=cinaR?color=orange)
+[![CRAN
+version](https://www.r-pkg.org/badges/version/cinaR)](https://cran.r-project.org/package=cinaR)
+[![CRAN
+download](https://cranlogs.r-pkg.org/badges/cinaR?color=orange)](https://cran.r-project.org/package=cinaR?color=orange)
 <!-- badges: end -->
 
 ## Overview
