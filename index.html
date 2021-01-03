@@ -39,7 +39,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">cinaR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -85,7 +85,6 @@
 <a href="#cinar-" class="anchor"></a>cinaR <a href="https://eonurk.github.io/cinaR/"><img src="reference/figures/cinaR.png" align="right" height="139"></a>
 </h1></div>
 <!-- badges: start -->
-<!-- [![Build Status](https://travis-ci.com/eonurk/cinaR.svg?branch=master)](https://travis-ci.com/eonurk/cinaR) -->
 
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
@@ -96,21 +95,21 @@
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="co"># CRAN mirror</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a><span class="kw">install.packages</span>(<span class="st">"cinaR"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># CRAN mirror</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="kw">install.packages</span>(<span class="st">"cinaR"</span>)</span></code></pre></div>
 <div id="development-version" class="section level3">
 <h3 class="hasAnchor">
 <a href="#development-version" class="anchor"></a>Development version</h3>
 <p>To get bug fix and use a feature from the development version:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="co"># install.packages("devtools")</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a>devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">"eonurk/cinaR"</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># install.packages("devtools")</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a>devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">"eonurk/cinaR"</span>)</span></code></pre></div>
 </div>
 <div id="known-installation-issues" class="section level3">
 <h3 class="hasAnchor">
 <a href="#known-installation-issues" class="anchor"></a>Known Installation Issues</h3>
 <p>Sometimes bioconductor related packages may not be installed automatically.<br>
 Therefore, you may need to install them manually:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a>BiocManager<span class="op">::</span><span class="kw">install</span>(<span class="kw">c</span>(<span class="st">"ChIPseeker"</span>, <span class="st">"DESeq2"</span>, <span class="st">"edgeR"</span>, <span class="st">"fgsea"</span>,<span class="st">"GenomicRanges"</span>, <span class="st">"limma"</span>, <span class="st">"preprocessCore"</span>, <span class="st">"TxDb.Hsapiens.UCSC.hg38.knownGene"</span>, <span class="st">"TxDb.Hsapiens.UCSC.hg19.knownGene"</span>, <span class="st">"TxDb.Mmusculus.UCSC.mm10.knownGene"</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>BiocManager<span class="op">::</span><span class="kw">install</span>(<span class="kw">c</span>(<span class="st">"ChIPseeker"</span>, <span class="st">"DESeq2"</span>, <span class="st">"edgeR"</span>, <span class="st">"fgsea"</span>,<span class="st">"GenomicRanges"</span>, <span class="st">"limma"</span>, <span class="st">"preprocessCore"</span>, <span class="st">"TxDb.Hsapiens.UCSC.hg38.knownGene"</span>, <span class="st">"TxDb.Hsapiens.UCSC.hg19.knownGene"</span>, <span class="st">"TxDb.Mmusculus.UCSC.mm10.knownGene"</span>))</span></code></pre></div>
 </div>
 </div>
 <div id="contribution" class="section level2">
@@ -165,8 +164,10 @@ Therefore, you may need to install them manually:</p>
   <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
+<li><a href="https://travis-ci.com/eonurk/cinaR"><img src="https://travis-ci.com/eonurk/cinaR.svg?branch=master" alt="Build Status"></a></li>
 <li><a href="https://github.com/eonurk/cinaR/actions"><img src="https://github.com/eonurk/cinaR/workflows/R-CMD-check/badge.svg" alt="R build status"></a></li>
-<li><a href="https://cran.r-project.org/package=cinaR?color=orange"><img src="https://cranlogs.r-pkg.org/badges/cinaR?color=orange"></a></li>
+<li><a href="https://cran.r-project.org/package=cinaR"><img src="https://www.r-pkg.org/badges/version/cinaR" alt="CRAN version"></a></li>
+<li><a href="https://cran.r-project.org/package=cinaR?color=orange"><img src="https://cranlogs.r-pkg.org/badges/cinaR?color=orange" alt="CRAN download"></a></li>
 </ul>
 </div>
 </div>
