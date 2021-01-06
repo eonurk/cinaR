@@ -144,7 +144,8 @@
   <span class='va'>DA.peaks.path</span>,
   <span class='va'>batch.correction</span>,
   <span class='va'>batch.information</span>,
-  <span class='va'>additional.covariates</span>
+  <span class='va'>additional.covariates</span>,
+  <span class='va'>sv.number</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -199,6 +200,10 @@ argument should be provided by user.</p></td>
       <td><p>vector or data.frame, this parameter will be directly added to design
 matrix before running the differential analyses, therefore won't affect the batch corrections but
 adjust the results in down-stream analyses.</p></td>
+    </tr>
+    <tr>
+      <th>sv.number</th>
+      <td><p>number of surrogate variables to be calculated using SVA, best left untouched.</p></td>
     </tr>
     </table>
 
