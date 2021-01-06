@@ -15,7 +15,8 @@ differentialAnalyses(
   DA.peaks.path,
   batch.correction,
   batch.information,
-  additional.covariates
+  additional.covariates,
+  sv.number
 )
 }
 \arguments{
@@ -46,6 +47,8 @@ argument should be provided by user.}
 \item{additional.covariates}{vector or data.frame, this parameter will be directly added to design
 matrix before running the differential analyses, therefore won't affect the batch corrections but
 adjust the results in down-stream analyses.}
+
+\item{sv.number}{number of surrogate variables to be calculated using SVA, best left untouched.}
 }
 \value{
 returns consensus peaks (batch corrected version if enabled) and DA peaks

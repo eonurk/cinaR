@@ -28,6 +28,7 @@
 #' @param additional.covariates vector or data.frame, this parameter will be directly added to design
 #' matrix before running the differential analyses, therefore won't affect the batch corrections but
 #' adjust the results in down-stream analyses.
+#' @param sv.number number of surrogate variables to be calculated using SVA, best left untouched.
 #' @param run.enrichment logical, turns off enrichment pipeline
 #' @param enrichment.method There are two methodologies for enrichment analyses,
 #' Hyper-geometric p-value (HPEA) or Geneset Enrichment Analyses (GSEA).
@@ -74,6 +75,7 @@ cinaR <-
            batch.correction = FALSE,
            batch.information = NULL,
            additional.covariates = NULL,
+           sv.number = NULL,
            run.enrichment = TRUE,
            enrichment.method = NULL,
            enrichment.FDR.cutoff = 1,
@@ -181,7 +183,8 @@ cinaR <-
         save.DA.peaks = save.DA.peaks,
         batch.correction = batch.correction,
         batch.information = batch.information,
-        additional.covariates = additional.covariates
+        additional.covariates = additional.covariates,
+        sv.number = sv.number
       )
     } else {
       stop (
@@ -386,6 +389,7 @@ annotatePeaks <-
 #' @param additional.covariates vector or data.frame, this parameter will be directly added to design
 #' matrix before running the differential analyses, therefore won't affect the batch corrections but
 #' adjust the results in down-stream analyses.
+#' @param sv.number number of surrogate variables to be calculated using SVA, best left untouched.
 #'
 #' @return returns consensus peaks (batch corrected version if enabled) and DA peaks
 differentialAnalyses <- function(final.matrix,
@@ -398,7 +402,8 @@ differentialAnalyses <- function(final.matrix,
                                  DA.peaks.path,
                                  batch.correction,
                                  batch.information,
-                                 additional.covariates) {
+                                 additional.covariates,
+                                 sv.number) {
 
   # silence CRAN build notes
   log2FoldChange <- padj <- NULL
@@ -428,8 +433,13 @@ differentialAnalyses <- function(final.matrix,
       mod0 <- cbind(rep(1, length(contrasts)))
 
       # calculate the batch effects
-      sva.res <-
-        sva::svaseq(cp.metaless.normalized, mod, mod0)
+      if (is.null(sv.number)){
+        sva.res <-
+          sva::svaseq(cp.metaless.normalized, mod, mod0)
+      } else {
+        sva.res <-
+          sva::svaseq(cp.metaless.normalized, mod, mod0, n.sv = sv.number)
+      }
 
       # batch effect additional matrix
       add.batch <- sva.res$sv

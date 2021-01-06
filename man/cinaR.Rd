@@ -23,6 +23,7 @@ cinaR(
   batch.correction = FALSE,
   batch.information = NULL,
   additional.covariates = NULL,
+  sv.number = NULL,
   run.enrichment = TRUE,
   enrichment.method = NULL,
   enrichment.FDR.cutoff = 1,
@@ -74,6 +75,8 @@ argument should be provided by user.}
 \item{additional.covariates}{vector or data.frame, this parameter will be directly added to design
 matrix before running the differential analyses, therefore won't affect the batch corrections but
 adjust the results in down-stream analyses.}
+
+\item{sv.number}{number of surrogate variables to be calculated using SVA, best left untouched.}
 
 \item{run.enrichment}{logical, turns off enrichment pipeline}
 

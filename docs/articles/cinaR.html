@@ -82,7 +82,7 @@
       <h1 data-toc-skip>Introduction to cinaR</h1>
                         <h4 class="author">E Onur Karakaslar</h4>
             
-            <h4 class="date">01/03/2021</h4>
+            <h4 class="date">01/06/2021</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/eonurk/cinaR/blob/master/vignettes/cinaR.Rmd"><code>vignettes/cinaR.Rmd</code></a></small>
       <div class="hidden name"><code>cinaR.Rmd</code></div>
@@ -120,12 +120,12 @@
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># If reference genome is not set hg38 will be used!</span>
 <span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">bed</span>, <span class="va">contrasts</span>, reference.genome <span class="op">=</span> <span class="st">"mm10"</span><span class="op">)</span></code></pre></div>
-<pre><code>## &gt;&gt; preparing features information...      2021-01-03 14:20:56 
-## &gt;&gt; identifying nearest features...        2021-01-03 14:20:58 
-## &gt;&gt; calculating distance from peak to TSS...   2021-01-03 14:20:59 
-## &gt;&gt; assigning genomic annotation...        2021-01-03 14:20:59 
-## &gt;&gt; assigning chromosome lengths           2021-01-03 14:21:25 
-## &gt;&gt; done...                    2021-01-03 14:21:25</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2021-01-06 11:29:58 
+## &gt;&gt; identifying nearest features...        2021-01-06 11:30:00 
+## &gt;&gt; calculating distance from peak to TSS...   2021-01-06 11:30:01 
+## &gt;&gt; assigning genomic annotation...        2021-01-06 11:30:01 
+## &gt;&gt; assigning chromosome lengths           2021-01-06 11:30:23 
+## &gt;&gt; done...                    2021-01-06 11:30:23</code></pre>
 <p>Now, you can access differential accessibility (DA) and enrichment results.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></code></pre></div>
@@ -290,9 +290,16 @@
 <p>If you suspect your data have unknown batch effects, you can use:</p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, batch.correction <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></code></pre></div>
-<p>This option will run <a href="http://bioconductor.org/packages/release/bioc/html/sva.html">Surrogate Variable Analysis</a> (SVA) and try to adjust your data for unknown batch effects. If however, you already know the batches of the samples, you can simply set the <code>batch.information</code> argument as well:</p>
+<p>This option will run <a href="http://bioconductor.org/packages/release/bioc/html/sva.html">Surrogate Variable Analysis</a> (SVA) and try to adjust your data for unknown batch effects. If however, you already know the batches of the samples, you can simply set the <code>batch.information</code> argument as well. This will not run the SVA but just add the batches to design matrix.</p>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># batch information should be number a vector where</span>
+<code class="sourceCode R"><span class="co"># runs SVA</span>
+<span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, batch.correction <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>
+
+<span class="co"># runs SVA with 2 surrogate variables</span>
+<span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, batch.correction <span class="op">=</span> <span class="cn">T</span>, sv.number <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
+
+<span class="co"># adds only batch information to the design matrix! (does not run SVA)</span>
+<span class="co"># batch.information should be number a vector where</span>
 <span class="co"># the length of it equals to the number of samples.</span>
 <span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, batch.correction <span class="op">=</span> <span class="cn">T</span>, batch.information <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">11</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">11</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <blockquote>
