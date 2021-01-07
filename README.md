@@ -23,19 +23,23 @@ consensus peak file, it outputs differentially accessible peaks,
 enrichment results, and provides users with various configurable
 visualization options.
 
-![<a href="https://eonurk.github.io/cinaR/articles/cinaR.html" class="uri">https://eonurk.github.io/cinaR/articles/cinaR.html</a>](man/figures/overview@5x.png)
+![<https://eonurk.github.io/cinaR/articles/cinaR.html>](man/figures/overview@5x.png)
 
 ## Installation
 
-    # CRAN mirror
-    install.packages("cinaR")
+``` r
+# CRAN mirror
+install.packages("cinaR")
+```
 
 ### Development version
 
 To get bug fix and use a feature from the development version:
 
-    # install.packages("devtools")
-    devtools::install_github("eonurk/cinaR")
+``` r
+# install.packages("devtools")
+devtools::install_github("eonurk/cinaR")
+```
 
 ### Known Installation Issues
 
@@ -43,7 +47,9 @@ Sometimes bioconductor related packages may not be installed
 automatically.  
 Therefore, you may need to install them manually:
 
-    BiocManager::install(c("ChIPseeker", "DESeq2", "edgeR", "fgsea","GenomicRanges", "limma", "preprocessCore", "TxDb.Hsapiens.UCSC.hg38.knownGene", "TxDb.Hsapiens.UCSC.hg19.knownGene", "TxDb.Mmusculus.UCSC.mm10.knownGene"))
+``` r
+BiocManager::install(c("ChIPseeker", "DESeq2", "edgeR", "fgsea","GenomicRanges", "limma", "preprocessCore", "sva", "TxDb.Hsapiens.UCSC.hg38.knownGene", "TxDb.Hsapiens.UCSC.hg19.knownGene", "TxDb.Mmusculus.UCSC.mm10.knownGene"))
+```
 
 ## Contribution
 
@@ -51,8 +57,8 @@ You can send pull requests to make your contributions.
 
 ## Author
 
--   [E Onur Karakaslar](https://eonurk.github.io/)
+  - [E Onur Karakaslar](https://eonurk.github.io/)
 
 ## License
 
--   GNU General Public License v3.0
+  - GNU General Public License v3.0
