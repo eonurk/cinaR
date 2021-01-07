@@ -749,12 +749,15 @@ differentialAnalyses <- function(final.matrix,
   message(">> DA peaks are found!")
 
   if (save.DA.peaks) {
+    # Make sure every list
+    DA.peaks.dfs <- lapply(DA.peaks, data.frame)
+
     if (is.null(DA.peaks.path)) {
       message(">> Saving DA peaks to current directory as DApeaks.xlsx...")
-      writexl::write_xlsx(x = DA.peaks, path = "./DApeaks.xlsx")
+      writexl::write_xlsx(x = DA.peaks.dfs, path = "./DApeaks.xlsx")
     } else {
       message(paste0(">> Saving DA peaks to ", DA.peaks.path, "..."))
-      writexl::write_xlsx(x = DA.peaks, path = DA.peaks.path)
+      writexl::write_xlsx(x = DA.peaks.dfs, path = DA.peaks.path)
     }
   }
 
