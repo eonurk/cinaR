@@ -181,6 +181,7 @@ cinaR <-
         DA.fdr.threshold = DA.fdr.threshold,
         DA.lfc.threshold = DA.lfc.threshold,
         save.DA.peaks = save.DA.peaks,
+        DA.peaks.path = DA.peaks.path,
         batch.correction = batch.correction,
         batch.information = batch.information,
         additional.covariates = additional.covariates,
