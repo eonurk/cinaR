@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>annotatePeaks — annotatePeaks • cinaR</title>
+<title>verboseFn — verboseFn • cinaR</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="annotatePeaks — annotatePeaks" />
-<meta property="og:description" content="Runs DA pipeline and makes it ready for enrichment analyses" />
+<meta property="og:title" content="verboseFn — verboseFn" />
+<meta property="og:description" content="returns a printing function to be used with in the script" />
 
 
 
@@ -124,41 +124,29 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>annotatePeaks</h1>
-    <small class="dont-index">Source: <a href='https://github.com/eonurk/cinaR/blob/master/R/cinaR.R'><code>R/cinaR.R</code></a></small>
-    <div class="hidden name"><code>annotatePeaks.Rd</code></div>
+    <h1>verboseFn</h1>
+    <small class="dont-index">Source: <a href='https://github.com/eonurk/cinaR/blob/master/R/utils.R'><code>R/utils.R</code></a></small>
+    <div class="hidden name"><code>verboseFn.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Runs DA pipeline and makes it ready for enrichment analyses</p>
+    <p>returns a printing function to be used with in the script</p>
     </div>
 
-    <pre class="usage"><span class='fu'>annotatePeaks</span><span class='op'>(</span><span class='va'>cp</span>, <span class='va'>reference.genome</span>, show.annotation.pie <span class='op'>=</span> <span class='cn'>FALSE</span>, <span class='va'>verbose</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>verboseFn</span><span class='op'>(</span><span class='va'>verbose</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>cp</th>
-      <td><p>bed formatted consensus peak matrix: CHR, START, STOP and raw peak counts (peaks by 3+samples)</p></td>
-    </tr>
-    <tr>
-      <th>reference.genome</th>
-      <td><p>genome of interested species. It should be 'hg38', 'hg19' or 'mm10'.</p></td>
-    </tr>
-    <tr>
-      <th>show.annotation.pie</th>
-      <td><p>shows the annotation pie chart produced with ChipSeeker</p></td>
-    </tr>
-    <tr>
       <th>verbose</th>
-      <td><p>prints messages through running the pipeline</p></td>
+      <td><p>boolean, determines whether the output going be printed or not</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>DApeaks returns DA peaks</p>
+    <p>print function</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
