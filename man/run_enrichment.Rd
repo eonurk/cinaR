@@ -11,7 +11,8 @@ run_enrichment(
   reference.genome = NULL,
   enrichment.method = NULL,
   enrichment.FDR.cutoff = 1,
-  background.genes.size = 20000
+  background.genes.size = 20000,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -33,6 +34,8 @@ are corrected by Benjamini-Hochberg procedure}
 
 \item{background.genes.size}{number of background genes for hyper-geometric p-value
 calculations. Default is 20,000.}
+
+\item{verbose}{prints messages through running the pipeline}
 }
 \description{
 This function is run, if the enrichment pipeline wants to be called afterwards.

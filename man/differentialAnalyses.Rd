@@ -16,7 +16,8 @@ differentialAnalyses(
   batch.correction,
   batch.information,
   additional.covariates,
-  sv.number
+  sv.number,
+  verbose
 )
 }
 \arguments{
@@ -49,6 +50,8 @@ matrix before running the differential analyses, therefore won't affect the batc
 adjust the results in down-stream analyses.}
 
 \item{sv.number}{number of surrogate variables to be calculated using SVA, best left untouched.}
+
+\item{verbose}{prints messages through running the pipeline}
 }
 \value{
 returns consensus peaks (batch corrected version if enabled) and DA peaks

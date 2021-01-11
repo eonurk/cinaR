@@ -4,7 +4,7 @@
 \alias{annotatePeaks}
 \title{annotatePeaks}
 \usage{
-annotatePeaks(cp, reference.genome, show.annotation.pie = FALSE)
+annotatePeaks(cp, reference.genome, show.annotation.pie = FALSE, verbose)
 }
 \arguments{
 \item{cp}{bed formatted consensus peak matrix: CHR, START, STOP and raw peak counts (peaks by 3+samples)}
@@ -12,6 +12,8 @@ annotatePeaks(cp, reference.genome, show.annotation.pie = FALSE)
 \item{reference.genome}{genome of interested species. It should be 'hg38', 'hg19' or 'mm10'.}
 
 \item{show.annotation.pie}{shows the annotation pie chart produced with ChipSeeker}
+
+\item{verbose}{prints messages through running the pipeline}
 }
 \value{
 DApeaks returns DA peaks
