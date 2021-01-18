@@ -82,7 +82,7 @@
       <h1 data-toc-skip>Introduction to cinaR</h1>
                         <h4 class="author">E Onur Karakaslar</h4>
             
-            <h4 class="date">01/11/2021</h4>
+            <h4 class="date">01/18/2021</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/eonurk/cinaR/blob/master/vignettes/cinaR.Rmd"><code>vignettes/cinaR.Rmd</code></a></small>
       <div class="hidden name"><code>cinaR.Rmd</code></div>
@@ -120,12 +120,12 @@
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># If reference genome is not set hg38 will be used!</span>
 <span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">bed</span>, <span class="va">contrasts</span>, reference.genome <span class="op">=</span> <span class="st">"mm10"</span><span class="op">)</span></code></pre></div>
-<pre><code>## &gt;&gt; preparing features information...      2021-01-11 13:42:30 
-## &gt;&gt; identifying nearest features...        2021-01-11 13:42:31 
-## &gt;&gt; calculating distance from peak to TSS...   2021-01-11 13:42:32 
-## &gt;&gt; assigning genomic annotation...        2021-01-11 13:42:32 
-## &gt;&gt; assigning chromosome lengths           2021-01-11 13:42:46 
-## &gt;&gt; done...                    2021-01-11 13:42:46</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2021-01-18 17:19:42 
+## &gt;&gt; identifying nearest features...        2021-01-18 17:19:43 
+## &gt;&gt; calculating distance from peak to TSS...   2021-01-18 17:19:43 
+## &gt;&gt; assigning genomic annotation...        2021-01-18 17:19:43 
+## &gt;&gt; assigning chromosome lengths           2021-01-18 17:19:57 
+## &gt;&gt; done...                    2021-01-18 17:19:57</code></pre>
 <p>Now, you can access differential accessibility (DA) and enrichment results.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></code></pre></div>
@@ -370,6 +370,10 @@
 <li><p>Ritchie ME, Phipson B, Wu D, Hu Y, Law CW, Shi W, Smyth GK (2015). “limma powers differential expression analyses for RNA-sequencing and microarray studies.” Nucleic Acids Research, 43(7), e47.</p></li>
 <li><p>Love, M.I., Huber, W., Anders, S. (2014) Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2. Genome Biology, 15:550. 10.1186/s13059-014-0550-8</p></li>
 </ul>
+</div>
+<div id="session-info" class="section level2">
+<h2 class="hasAnchor">
+<a href="#session-info" class="anchor"></a>Session Info</h2>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <pre><code>## R version 4.0.3 (2020-10-10)
@@ -463,7 +467,7 @@
 ##  [71] munsell_0.5.0                            
 ##  [72] tools_4.0.3                              
 ##  [73] generics_0.1.0                           
-##  [74] RSQLite_2.2.1                            
+##  [74] RSQLite_2.2.2                            
 ##  [75] evaluate_0.14                            
 ##  [76] stringr_1.4.0                            
 ##  [77] yaml_2.2.1                               
@@ -472,7 +476,7 @@
 ##  [80] bit64_4.0.5                              
 ##  [81] fs_1.5.0                                 
 ##  [82] tidygraph_1.2.0                          
-##  [83] caTools_1.18.0                           
+##  [83] caTools_1.18.1                           
 ##  [84] purrr_0.3.4                              
 ##  [85] ggraph_2.0.4                             
 ##  [86] DO.db_2.9                                
