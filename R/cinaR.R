@@ -39,7 +39,7 @@
 #' @param geneset Pathways to be used in enrichment analyses. If not set vp2008 (Chaussabel, 2008)
 #' immune modules will be used. This can be set to any geneset using `read.gmt` function from `qusage`
 #' package. Different modules are available: https://www.gsea-msigdb.org/gsea/downloads.jsp.
-#'
+#' @param verbose prints messages through running the pipeline
 #'
 #' @examples
 #' \donttest{
@@ -80,10 +80,14 @@ cinaR <-
            enrichment.method = NULL,
            enrichment.FDR.cutoff = 1,
            background.genes.size = 20e3,
-           geneset = NULL) {
+           geneset = NULL,
+           verbose = TRUE) {
 
+    # Printing function
+    verbosePrint <- verboseFn(verbose)
 
-    message(">> Experiment type: ", experiment.type)
+    verbosePrint(">> Experiment type: ", experiment.type)
+
 
     if (is.null(reference.genome)) {
       warning("'reference.genome' is not set, therefore hg38 will be used!")
@@ -108,11 +112,13 @@ cinaR <-
       cp.filtered <-
         filterConsensus(cp, library.threshold = library.threshold, cpm.threshold = cpm.threshold)
 
+      verbosePrint(">> Matrix is filtered!")
 
       # annotate the peaks to the closest TSS
       cp.filtered.annotated <- annotatePeaks(cp.filtered,
                                              reference.genome = reference.genome,
-                                             show.annotation.pie = show.annotation.pie)
+                                             show.annotation.pie = show.annotation.pie,
+                                             verbose = verbose)
 
       # filter distance to TSS
       final.matrix <-
@@ -125,7 +131,7 @@ cinaR <-
         stop("Length of 'contrasts' must be equal to number of samples in `matrix`")
       }
 
-      message(">> Arranging count matrix...")
+      verbosePrint(">> Arranging count matrix...")
 
       # Remove spike-ins for now (may not exists in your data)
       matrix <- matrix [!grepl("^ERCC", matrix[,1]),]
@@ -153,6 +159,7 @@ cinaR <-
       final.matrix <-
         filterConsensus(matrix, library.threshold = library.threshold, cpm.threshold = cpm.threshold)
 
+      verbosePrint(">> Matrix is filtered!")
 
     } else {
       stop("`experiment.type` must be either 'ATAC-Seq' or 'RNA-Seq'")
@@ -161,7 +168,7 @@ cinaR <-
 
     if (!is.null(enrichment.method)) {
       if (enrichment.method == "GSEA" & run.enrichment == TRUE) {
-        message(
+        verbosePrint(
           ">> Setting `DA.fdr.threshold = 1` and `DA.lfc.threshold = 0`
               since GSEA is chosen for enrichment method!"
         )
@@ -185,7 +192,8 @@ cinaR <-
         batch.correction = batch.correction,
         batch.information = batch.information,
         additional.covariates = additional.covariates,
-        sv.number = sv.number
+        sv.number = sv.number,
+        verbose = verbose
       )
     } else {
       stop (
@@ -203,10 +211,11 @@ cinaR <-
           reference.genome = reference.genome,
           enrichment.method = enrichment.method,
           enrichment.FDR.cutoff = enrichment.FDR.cutoff,
-          background.genes.size = background.genes.size
+          background.genes.size = background.genes.size,
+          verbose = verbose
         )
-      message(">> Enrichment results are ready...")
-      message(">> Done!")
+      verbosePrint(">> Enrichment results are ready...")
+      verbosePrint(">> Done!")
       return(list(DA.results = DA.results,
                   Enrichment.Results = enrichment.results))
     }
@@ -246,7 +255,6 @@ filterConsensus <-
     } else {
       stop("filter.method should be either 'custom' or 'edgeR'")
     }
-    message(">> Matrix is filtered!")
     return(cp.filtered)
   }
 
@@ -296,12 +304,14 @@ normalizeConsensus <-
 #' @param cp bed formatted consensus peak matrix: CHR, START, STOP and raw peak counts (peaks by 3+samples)
 #' @param reference.genome genome of interested species. It should be 'hg38', 'hg19' or 'mm10'.
 #' @param show.annotation.pie shows the annotation pie chart produced with ChipSeeker
+#' @param verbose prints messages through running the pipeline
 #'
 #' @return DApeaks returns DA peaks
 annotatePeaks <-
   function(cp,
            reference.genome,
-           show.annotation.pie = FALSE) {
+           show.annotation.pie = FALSE,
+           verbose) {
     bed <-
       as.data.frame(do.call(rbind, strsplit(rownames(cp), "_", fixed = TRUE)))
     colnames(bed) <- c("CHR", "Start", "End")
@@ -347,7 +357,7 @@ annotatePeaks <-
     }
 
     # annotate peaks
-    annoPeaks <- ChIPseeker::annotatePeak(bed.GRanges, TxDb = txdb, assignGenomicAnnotation = TRUE)
+    annoPeaks <- ChIPseeker::annotatePeak(bed.GRanges, TxDb = txdb, assignGenomicAnnotation = TRUE, verbose = verbose)
 
     if (show.annotation.pie) {
       ChIPseeker::plotAnnoPie(annoPeaks)
@@ -391,7 +401,7 @@ annotatePeaks <-
 #' matrix before running the differential analyses, therefore won't affect the batch corrections but
 #' adjust the results in down-stream analyses.
 #' @param sv.number number of surrogate variables to be calculated using SVA, best left untouched.
-#'
+#' @param verbose prints messages through running the pipeline
 #' @return returns consensus peaks (batch corrected version if enabled) and DA peaks
 differentialAnalyses <- function(final.matrix,
                                  contrasts,
@@ -404,7 +414,11 @@ differentialAnalyses <- function(final.matrix,
                                  batch.correction,
                                  batch.information,
                                  additional.covariates,
-                                 sv.number) {
+                                 sv.number,
+                                 verbose) {
+
+  # Printing function
+  verbosePrint <- verboseFn(verbose)
 
   # silence CRAN build notes
   log2FoldChange <- padj <- NULL
@@ -427,7 +441,7 @@ differentialAnalyses <- function(final.matrix,
       ## First normalize the consensus peaks to avoid detecting the effects
       ## confounding from library size as Michael Love and Jeff Leek suggests
       ## in this thread:
-      message(">> Running SVA for batch correction...")
+      verbosePrint(">> Running SVA for batch correction...")
 
       cp.metaless.normalized <- normalizeConsensus(cp.metaless, log.option = TRUE)
       mod  <- stats::model.matrix(~ 0 + contrasts)
@@ -457,7 +471,7 @@ differentialAnalyses <- function(final.matrix,
 
     } else {
       # if there is batch information available
-      message(">> Adding batch information to design matrix...")
+      verbosePrint(">> Adding batch information to design matrix...")
 
       if (nrow(design) != length(batch.information)) {
         stop("Number of samples and `batch.information` should be same length!")
@@ -483,7 +497,7 @@ differentialAnalyses <- function(final.matrix,
     }
     design <- cbind(design, additional.covariates)
 
-    message(">> Additional covariates are added to design matrix...")
+    verbosePrint(">> Additional covariates are added to design matrix...")
   }
 
   # Add intercept term for multiple comparisons
@@ -503,10 +517,6 @@ differentialAnalyses <- function(final.matrix,
     names(sort(contrasts.order[x]))
   })
 
-  contrast.names <-
-    apply(combs, 2, function(x) {
-      paste(x, collapse = "_")
-    })
   cc <- apply(combs, 2,
               function(x) {
                 paste0(paste(x, collapse = "_"), "=", x[1], "-", x[2])
@@ -530,7 +540,7 @@ differentialAnalyses <- function(final.matrix,
   if (DA.choice == 1) {
     ## edgeR
 
-    message(
+    verbosePrint(
       ">> Method: edgeR\n\tFDR:",
       DA.fdr.threshold,
       "& abs(logFC)<",
@@ -543,11 +553,11 @@ differentialAnalyses <- function(final.matrix,
     y <- edgeR::calcNormFactors(y, method = "TMM")
 
     # Estimate dispersion for genes with Bayesian Shrinkage
-    message(">> Estimating dispersion...")
+    verbosePrint(">> Estimating dispersion...")
     y <- edgeR::estimateDisp(y, design)
 
     # Fit the model
-    message(">> Fitting GLM...")
+    verbosePrint(">> Fitting GLM...")
     fit.glm <- edgeR::glmQLFit(y, design)
 
     for (i in seq_len(ncol(ccc))) {
@@ -585,7 +595,7 @@ differentialAnalyses <- function(final.matrix,
     }
   } else if (DA.choice == 2) {
     ## limma-voom
-    message(
+    verbosePrint(
       ">> Method: limma-voom\n\tFDR:",
       DA.fdr.threshold,
       "& abs(logFC)<",
@@ -636,7 +646,7 @@ differentialAnalyses <- function(final.matrix,
     }
   } else if (DA.choice == 3) {
     ## limma-trend
-    message(
+    verbosePrint(
       ">> Method: limma-trend\n\tFDR:",
       DA.fdr.threshold,
       "& abs(logFC)<",
@@ -685,7 +695,7 @@ differentialAnalyses <- function(final.matrix,
     }
   } else if (DA.choice == 4) {
     ## DEseq2
-    message(
+    verbosePrint(
       ">> Method: DEseq2\n\tFDR:",
       DA.fdr.threshold,
       "& abs(logFC)<",
@@ -746,17 +756,17 @@ differentialAnalyses <- function(final.matrix,
     }
   }
 
-  message(">> DA peaks are found!")
+  verbosePrint(">> DA peaks are found!")
 
   if (save.DA.peaks) {
     # Make sure every list
     DA.peaks.dfs <- lapply(DA.peaks, data.frame)
 
     if (is.null(DA.peaks.path)) {
-      message(">> Saving DA peaks to current directory as DApeaks.xlsx...")
+      verbosePrint(">> Saving DA peaks to current directory as DApeaks.xlsx...")
       writexl::write_xlsx(x = DA.peaks.dfs, path = "./DApeaks.xlsx")
     } else {
-      message(paste0(">> Saving DA peaks to ", DA.peaks.path, "..."))
+      verbosePrint(paste0(">> Saving DA peaks to ", DA.peaks.path, "..."))
       writexl::write_xlsx(x = DA.peaks.dfs, path = DA.peaks.path)
     }
   }

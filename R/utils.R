@@ -74,4 +74,23 @@ show_comparisons <- function (results) {
   }
 }
 
+#' verboseFn
+#'
+#' returns a printing function to be used with in the script
+#' @param verbose boolean, determines whether the output going be printed or not
+#' @return print function
+#'
+#' @export
+verboseFn <- function(verbose){
+  if(verbose){
+    return(function(...) {
+      message(...)
+    })
+  } else {
+    return(function(...){
+      return(invisible(NULL))
+    })
+  }
+}
+
 

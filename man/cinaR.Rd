@@ -28,7 +28,8 @@ cinaR(
   enrichment.method = NULL,
   enrichment.FDR.cutoff = 1,
   background.genes.size = 20000,
-  geneset = NULL
+  geneset = NULL,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -92,6 +93,8 @@ calculations. Default is 20,000.}
 \item{geneset}{Pathways to be used in enrichment analyses. If not set vp2008 (Chaussabel, 2008)
 immune modules will be used. This can be set to any geneset using `read.gmt` function from `qusage`
 package. Different modules are available: https://www.gsea-msigdb.org/gsea/downloads.jsp.}
+
+\item{verbose}{prints messages through running the pipeline}
 }
 \value{
 returns differentially accessible peaks

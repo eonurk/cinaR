@@ -49,7 +49,7 @@ contrasts<- c("B6", "B6", "B6", "B6", "B6", "NZO", "NZO", "NZO", "NZO", "NZO", "
 ```
 
 `cinaR` function directly computes the differentially accessible peaks.
-```{r }
+```{r}
 # If reference genome is not set hg38 will be used!
 results <- cinaR(bed, contrasts, reference.genome = "mm10")
 ```
@@ -57,7 +57,7 @@ results <- cinaR(bed, contrasts, reference.genome = "mm10")
 Now, you can access differential accessibility (DA) and enrichment results.
 ```{r}
 names(results)
-````
+```
 
 Inside `DA.results`, you have the consensus peaks (cp) and differentially accessible (DA) peaks.
 If batch correction was run, then `cp` will be a batch-corrected consensus matrix, otherwise it is the filtered and normalized version of original consensus peaks you provided.
@@ -307,6 +307,7 @@ dot_plot(..., fdr.cutoff = 0.05)
 - Love, M.I., Huber, W., Anders, S. (2014) Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2. Genome Biology, 15:550. 10.1186/s13059-014-0550-8
 
 
+## Session Info
 ```{r session Info}
 sessionInfo()
 ```
