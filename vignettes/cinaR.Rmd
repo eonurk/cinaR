@@ -5,9 +5,9 @@ date: "`r format(Sys.Date(), '%m/%d/%Y')`"
 output:
   rmarkdown::html_document:
     highlight: pygments
-    toc: true
+    toc: true 
     fig_width: 5
-
+    
 vignette: >
   %\VignetteIndexEntry{cinaR}
   %\VignetteEngine{knitr::rmarkdown}
@@ -175,21 +175,31 @@ Note that, `count.matrix` should be in the form of $g \times (1+n)$ where $g$ is
 
 
 ## Running enrichment with different dataset
-You can run the enrichment analyses with a custom geneset:
+You can run the enrichment analyses with a custom gene set:
 ```{r eval=FALSE}
 cinaR(..., geneset = new_geneset)
 ```
 
-`geneset` must be a `.gmt` formatted symbol file. You can download different genesets from this [site](https://www.gsea-msigdb.org/gsea/downloads.jsp). 
+#### `cinaRgenesets`
+Easiest way to do this is to use [cinaRgenesets](https://github.com/eonurk/cinaR-genesets) package. 
+You can select your gene set of interest and just plug it into your pipeline.
 
-> You can use `read.gmt` function from `qusage` package to read genesets into your current environment.
+#### MSigDB
+You can also download different gene sets from [MSigDB site](https://www.gsea-msigdb.org/gsea/downloads.jsp). 
+Note that you should use the human gene symbol versions. 
 
-Also, you can familarize yourself with the format by checking out :
+> You can use `read.gmt` function from `qusage` package to read these genesets into your current environment.
+
+#### Custom gene sets
+
+A `geneset` must be a `.gmt` formatted symbol file.  
+You can familiarize yourself with the format by checking out :
 ```{r eval=FALSE}
 # default geneset to be used
 data("VP2008")
 ```
 
+> If you have gene and pathway names in a `data.frame`, you can use `split` function to create your own `.gmt` formatted gene sets e.g. `split(df$genes, df$pathways)`.
 
 ## Selecting different reference genomes
 For now, `cinaR` supports 3 genomes for human and mice models:

@@ -82,7 +82,7 @@
       <h1 data-toc-skip>Introduction to cinaR</h1>
                         <h4 class="author">E Onur Karakaslar</h4>
             
-            <h4 class="date">01/06/2021</h4>
+            <h4 class="date">01/22/2021</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/eonurk/cinaR/blob/master/vignettes/cinaR.Rmd"><code>vignettes/cinaR.Rmd</code></a></small>
       <div class="hidden name"><code>cinaR.Rmd</code></div>
@@ -120,12 +120,12 @@
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># If reference genome is not set hg38 will be used!</span>
 <span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">bed</span>, <span class="va">contrasts</span>, reference.genome <span class="op">=</span> <span class="st">"mm10"</span><span class="op">)</span></code></pre></div>
-<pre><code>## &gt;&gt; preparing features information...      2021-01-06 11:43:29 
-## &gt;&gt; identifying nearest features...        2021-01-06 11:43:30 
-## &gt;&gt; calculating distance from peak to TSS...   2021-01-06 11:43:31 
-## &gt;&gt; assigning genomic annotation...        2021-01-06 11:43:31 
-## &gt;&gt; assigning chromosome lengths           2021-01-06 11:43:55 
-## &gt;&gt; done...                    2021-01-06 11:43:55</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2021-01-22 11:34:49 
+## &gt;&gt; identifying nearest features...        2021-01-22 11:34:51 
+## &gt;&gt; calculating distance from peak to TSS...   2021-01-22 11:34:52 
+## &gt;&gt; assigning genomic annotation...        2021-01-22 11:34:52 
+## &gt;&gt; assigning chromosome lengths           2021-01-22 11:35:16 
+## &gt;&gt; done...                    2021-01-22 11:35:16</code></pre>
 <p>Now, you can access differential accessibility (DA) and enrichment results.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></code></pre></div>
@@ -261,17 +261,35 @@
 <div id="running-enrichment-with-different-dataset" class="section level2">
 <h2 class="hasAnchor">
 <a href="#running-enrichment-with-different-dataset" class="anchor"></a>Running enrichment with different dataset</h2>
-<p>You can run the enrichment analyses with a custom geneset:</p>
+<p>You can run the enrichment analyses with a custom gene set:</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, geneset <span class="op">=</span> <span class="va">new_geneset</span><span class="op">)</span></code></pre></div>
-<p><code>geneset</code> must be a <code>.gmt</code> formatted symbol file. You can download different genesets from this <a href="https://www.gsea-msigdb.org/gsea/downloads.jsp">site</a>.</p>
+<div id="cinargenesets" class="section level4">
+<h4 class="hasAnchor">
+<a href="#cinargenesets" class="anchor"></a><code>cinaRgenesets</code>
+</h4>
+<p>Easiest way to do this is to use <a href="https://github.com/eonurk/cinaR-genesets">cinaRgenesets</a> package. You can select your gene set of interest and just plug it into your pipeline.</p>
+</div>
+<div id="msigdb" class="section level4">
+<h4 class="hasAnchor">
+<a href="#msigdb" class="anchor"></a>MSigDB</h4>
+<p>You can also download different gene sets from <a href="https://www.gsea-msigdb.org/gsea/downloads.jsp">MSigDB site</a>. Note that you should use the human gene symbol versions.</p>
 <blockquote>
-<p>You can use <code>read.gmt</code> function from <code>qusage</code> package to read genesets into your current environment.</p>
+<p>You can use <code>read.gmt</code> function from <code>qusage</code> package to read these genesets into your current environment.</p>
 </blockquote>
-<p>Also, you can familarize yourself with the format by checking out :</p>
+</div>
+<div id="custom-gene-sets" class="section level4">
+<h4 class="hasAnchor">
+<a href="#custom-gene-sets" class="anchor"></a>Custom gene sets</h4>
+<p>A <code>geneset</code> must be a <code>.gmt</code> formatted symbol file.<br>
+You can familiarize yourself with the format by checking out :</p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># default geneset to be used</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"VP2008"</span><span class="op">)</span></code></pre></div>
+<blockquote>
+<p>If you have gene and pathway names in a <code>data.frame</code>, you can use <code>split</code> function to create your own <code>.gmt</code> formatted gene sets e.g. <code><a href="https://rdrr.io/r/base/split.html">split(df$genes, df$pathways)</a></code>.</p>
+</blockquote>
+</div>
 </div>
 <div id="selecting-different-reference-genomes" class="section level2">
 <h2 class="hasAnchor">
