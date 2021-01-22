@@ -6,7 +6,7 @@ output:
   rmarkdown::html_document:
     highlight: pygments
     toc: true 
-    fig_width: 5
+    fig_width: 5 
     
 vignette: >
   %\VignetteIndexEntry{cinaR}
