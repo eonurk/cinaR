@@ -1,14 +1,10 @@
 # cinaR 0.2.1
 * Added:
-<<<<<<< HEAD
   - An extra argument `sv.number` is added if user wants to set the number of surrogate variables.  
   More info [here](https://bioconductor.riken.jp/packages/3.0/bioc/vignettes/sva/inst/doc/sva.pdf).
-  - [`cinaRgenesets`](https://github.com/eonurk/cinaR-genesets) added to vignette.
-=======
-  - An extra argument `sv.number` is added if user wants to set the number of surrogate variables. More info [here](https://bioconductor.riken.jp/packages/3.0/bioc/vignettes/sva/inst/doc/sva.pdf).
   - `verbose` argument, default set to `TRUE`. I think, I have implemented this in a really cool way!
->>>>>>> 290ea798e79cbafb4fa8ee6c673959b889d18172
-  
+  - [`cinaRgenesets`](https://github.com/eonurk/cinaR-genesets) added to vignette.
+
 # cinaR 0.2.0
 * Added:
   - `heatmap_differential` function to be able to plot the heatmaps
