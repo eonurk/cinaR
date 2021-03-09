@@ -21,7 +21,8 @@ download](https://cranlogs.r-pkg.org/badges/cinaR?color=orange)](https://cran.r-
 analyses of bulk ATAC-seq (or RNA-seq) profiles. Starting from a
 consensus peak file, it outputs differentially accessible peaks,
 enrichment results, and provides users with various configurable
-visualization options.
+visualization options. For more details, please see the
+[preprint](https://www.biorxiv.org/content/10.1101/2021.03.05.434143v2).
 
 ![<https://eonurk.github.io/cinaR/articles/cinaR.html>](man/figures/overview@5x.png)
 
