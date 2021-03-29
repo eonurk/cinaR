@@ -312,11 +312,12 @@ annotatePeaks <-
            reference.genome,
            show.annotation.pie = FALSE,
            verbose) {
+    verbosePrint <- verboseFn(verbose)
+
     bed <-
       as.data.frame(do.call(rbind, strsplit(rownames(cp), "_", fixed = TRUE)))
     colnames(bed) <- c("CHR", "Start", "End")
     bed.GRanges <- GenomicRanges::GRanges(bed)
-
 
     if (reference.genome == "hg38") {
       if (!requireNamespace("TxDb.Hsapiens.UCSC.hg38.knownGene", quietly = TRUE)) {
@@ -355,9 +356,10 @@ annotatePeaks <-
     } else {
       stop ("reference.genome should be 'hg38', 'hg19' or 'mm10'")
     }
-
+    verbosePrint("Checkpoint #1")
     # annotate peaks
     annoPeaks <- ChIPseeker::annotatePeak(bed.GRanges, TxDb = txdb, verbose = verbose)
+    verbosePrint("Checkpoint #2")
 
     if (show.annotation.pie) {
       ChIPseeker::plotAnnoPie(annoPeaks)
