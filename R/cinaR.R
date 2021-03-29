@@ -368,16 +368,18 @@ annotatePeaks <-
     annoPeaks.anno <- annoPeaks@anno
     entrezids <- unique(annoPeaks.anno$geneId)
 
+    verbosePrint("Checkpoint #3")
+
     # entrez to gene name mapping
     entrez2gene <-
       base::subset(genome,
                    genome$entrez %in% entrezids,
                    select = c('entrez', 'symbol'))
-
+    verbosePrint("Checkpoint #4")
     # Match to each annotation dataframe
     m <- match(annoPeaks.anno$geneId, entrez2gene$entrez)
     annoPeaks.anno$gene_name <- entrez2gene$symbol[m]
-
+    verbosePrint("Checkpoint #5")
     return(cbind(annoPeaks.anno, cp))
   }
 
