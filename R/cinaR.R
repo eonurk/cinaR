@@ -312,7 +312,7 @@ annotatePeaks <-
            reference.genome,
            show.annotation.pie = FALSE,
            verbose) {
-    verbosePrint <- verboseFn(verbose)
+
 
     bed <-
       as.data.frame(do.call(rbind, strsplit(rownames(cp), "_", fixed = TRUE)))
@@ -356,10 +356,10 @@ annotatePeaks <-
     } else {
       stop ("reference.genome should be 'hg38', 'hg19' or 'mm10'")
     }
-    verbosePrint("Checkpoint #1")
+
     # annotate peaks
     annoPeaks <- ChIPseeker::annotatePeak(bed.GRanges, TxDb = txdb, verbose = verbose)
-    verbosePrint("Checkpoint #2")
+
 
     if (show.annotation.pie) {
       ChIPseeker::plotAnnoPie(annoPeaks)
@@ -368,18 +368,18 @@ annotatePeaks <-
     annoPeaks.anno <- annoPeaks@anno
     entrezids <- unique(annoPeaks.anno$geneId)
 
-    verbosePrint("Checkpoint #3")
+
 
     # entrez to gene name mapping
     entrez2gene <-
       base::subset(genome,
                    genome$entrez %in% entrezids,
                    select = c('entrez', 'symbol'))
-    verbosePrint("Checkpoint #4")
+
     # Match to each annotation dataframe
     m <- match(annoPeaks.anno$geneId, entrez2gene$entrez)
     annoPeaks.anno$gene_name <- entrez2gene$symbol[m]
-    verbosePrint("Checkpoint #5")
+
     return(cbind(data.frame(annoPeaks.anno), cp))
   }
 
