@@ -1,7 +1,7 @@
 # cinaR 0.2.1
 * Added:
   - An extra argument `sv.number` is added if user wants to set the number of surrogate variables.  
-  More info [here](https://bioconductor.riken.jp/packages/3.0/bioc/vignettes/sva/inst/doc/sva.pdf).
+  More info [here](https://bioconductor.org/packages/release/bioc/vignettes/sva/inst/doc/sva.pdf).
   - `verbose` argument, default set to `TRUE`. I think, I have implemented this in a really cool way!
   - [`cinaRgenesets`](https://github.com/eonurk/cinaR-genesets) added to vignette.
 
