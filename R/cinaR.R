@@ -380,7 +380,7 @@ annotatePeaks <-
     m <- match(annoPeaks.anno$geneId, entrez2gene$entrez)
     annoPeaks.anno$gene_name <- entrez2gene$symbol[m]
     verbosePrint("Checkpoint #5")
-    return(cbind(annoPeaks.anno, cp))
+    return(cbind(data.frame(annoPeaks.anno), cp))
   }
 
 #' Differential Analyses
