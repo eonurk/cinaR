@@ -11,7 +11,7 @@ knitr::opts_chunk$set(
   fig.path = "man/figures/",
   out.width = "100%",
   fig.dpi = 96
-)
+) 
 ```
 
 # cinaR <a href='https://eonurk.github.io/cinaR/'><img src='man/figures/cinaR.png' align="right" height="139" /></a>
