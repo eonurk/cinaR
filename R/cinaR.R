@@ -357,7 +357,7 @@ annotatePeaks <-
     }
 
     # annotate peaks
-    annoPeaks <- ChIPseeker::annotatePeak(bed.GRanges, TxDb = txdb, assignGenomicAnnotation = TRUE, verbose = verbose)
+    annoPeaks <- ChIPseeker::annotatePeak(bed.GRanges, TxDb = txdb, verbose = verbose)
 
     if (show.annotation.pie) {
       ChIPseeker::plotAnnoPie(annoPeaks)
