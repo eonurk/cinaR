@@ -7,7 +7,7 @@
 #' @param geneset Pathways to be used in enrichment analyses. If not set vp2008 (Chaussabel, 2008)
 #' immune modules will be used. This can be set to any geneset using `read.gmt` function from `qusage`
 #' package. Different modules are available: https://www.gsea-msigdb.org/gsea/downloads.jsp.
-#'
+#' @return data.frame, list of pathways and their enrichment (adjusted) p-values.
 #' @examples
 #' \donttest{
 #' library(cinaR)
@@ -79,6 +79,8 @@ HPEA <- function(genes, geneset, background.genes.size) {
 #' @param geneset Pathways to be used in enrichment analyses. If not set vp2008 (Chaussabel, 2008)
 #' immune modules will be used. This can be set to any geneset using `read.gmt` function from `qusage`
 #' package. Different modules are available: https://www.gsea-msigdb.org/gsea/downloads.jsp.
+#' @return data.frame, list of pathways and their enrichment (adjusted) p-values.
+#'
 #' @examples
 #' \donttest{
 #' library(cinaR)
@@ -123,6 +125,7 @@ GSEA <- function(genes, geneset) {
 #' immune modules will be used. This can be set to any geneset using `read.gmt` function from `qusage`
 #' package. Different modules are available: https://www.gsea-msigdb.org/gsea/downloads.jsp.
 #' @param verbose prints messages through running the pipeline
+#' @return list, enrichment analyses results along with corresponding differential analyses outcomes
 #'
 #' @examples
 #' \donttest{

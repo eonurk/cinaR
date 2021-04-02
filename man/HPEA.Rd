@@ -16,8 +16,11 @@ package. Different modules are available: https://www.gsea-msigdb.org/gsea/downl
 \item{background.genes.size}{number of background genes for hyper-geometric p-value
 calculations. Default is 20,000.}
 }
+\value{
+data.frame, list of pathways and their enrichment (adjusted) p-values.
+}
 \description{
-HPEA
+Hyper-geometric p-value enrichment analyses, looking for over-representation of a set of genes on given pathways.
 }
 \examples{
 \donttest{

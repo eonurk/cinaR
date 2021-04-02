@@ -37,6 +37,9 @@ calculations. Default is 20,000.}
 
 \item{verbose}{prints messages through running the pipeline}
 }
+\value{
+list, enrichment analyses results along with corresponding differential analyses outcomes
+}
 \description{
 This function is run, if the enrichment pipeline wants to be called afterwards.
 Setting reference genome to the same genome which cinaR was run should be given to this function!
