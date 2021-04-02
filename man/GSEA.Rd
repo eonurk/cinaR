@@ -2,9 +2,7 @@
 % Please edit documentation in R/enrichment_functions.R
 \name{GSEA}
 \alias{GSEA}
-\title{GSEA
-Having run the differential analyses this function runs geneset enrihment analyses with
-`fgsea` package.}
+\title{GSEA}
 \usage{
 GSEA(genes, geneset)
 }
@@ -15,10 +13,11 @@ GSEA(genes, geneset)
 immune modules will be used. This can be set to any geneset using `read.gmt` function from `qusage`
 package. Different modules are available: https://www.gsea-msigdb.org/gsea/downloads.jsp.}
 }
+\value{
+data.frame, list of pathways and their enrichment (adjusted) p-values.
+}
 \description{
-GSEA
-Having run the differential analyses this function runs geneset enrihment analyses with
-`fgsea` package.
+Gene set enrichment analyses, runs 'fgsea' package implementation with preset values.
 }
 \examples{
 \donttest{

@@ -1,13 +1,15 @@
 
 #' HPEA
 #'
+#' Hyper-geometric p-value enrichment analyses, looking for over-representation of a set of genes on given pathways.
+#'
 #' @param genes DA gene names to be checked if they are over-represented or not.
 #' @param background.genes.size number of background genes for hyper-geometric p-value
 #' calculations. Default is 20,000.
 #' @param geneset Pathways to be used in enrichment analyses. If not set vp2008 (Chaussabel, 2008)
 #' immune modules will be used. This can be set to any geneset using `read.gmt` function from `qusage`
 #' package. Different modules are available: https://www.gsea-msigdb.org/gsea/downloads.jsp.
-#'
+#' @return data.frame, list of pathways and their enrichment (adjusted) p-values.
 #' @examples
 #' \donttest{
 #' library(cinaR)
@@ -72,13 +74,15 @@ HPEA <- function(genes, geneset, background.genes.size) {
 
 
 #' GSEA
-#' Having run the differential analyses this function runs geneset enrihment analyses with
-#' `fgsea` package.
+#'
+#' Gene set enrichment analyses, runs 'fgsea' package implementation with preset values.
 #'
 #' @param genes DA gene names to be checked if they are over-represented or not.
 #' @param geneset Pathways to be used in enrichment analyses. If not set vp2008 (Chaussabel, 2008)
 #' immune modules will be used. This can be set to any geneset using `read.gmt` function from `qusage`
 #' package. Different modules are available: https://www.gsea-msigdb.org/gsea/downloads.jsp.
+#' @return data.frame, list of pathways and their enrichment (adjusted) p-values.
+#'
 #' @examples
 #' \donttest{
 #' library(cinaR)
@@ -123,6 +127,7 @@ GSEA <- function(genes, geneset) {
 #' immune modules will be used. This can be set to any geneset using `read.gmt` function from `qusage`
 #' package. Different modules are available: https://www.gsea-msigdb.org/gsea/downloads.jsp.
 #' @param verbose prints messages through running the pipeline
+#' @return list, enrichment analyses results along with corresponding differential analyses outcomes
 #'
 #' @examples
 #' \donttest{
