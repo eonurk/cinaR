@@ -250,6 +250,8 @@ run_enrichment <- function (
           x <- x[order(abs(x[,"distanceToTSS"])),]
           x <- x[!duplicated(x[,"gene_name"]),]
         }
+
+        return(x)
       }
     }
   )
