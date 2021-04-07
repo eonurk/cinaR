@@ -1,3 +1,7 @@
+# cinaR 0.2.2
+* Added:
+  - `comparison.scheme` either set to `OVO` (default) which will compare each contrasts to each other. If it's set to `OVA` each contrast will be compared to rest. 
+
 # cinaR 0.2.1
 * Added:
   - An extra argument `sv.number` is added if user wants to set the number of surrogate variables.  

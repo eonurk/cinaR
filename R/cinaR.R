@@ -18,6 +18,7 @@
 #' @param reference.genome genome of interested species. It should be 'hg38', 'hg19' or 'mm10'.
 #' @param DA.fdr.threshold fdr cut-off for differential analyses
 #' @param DA.lfc.threshold log-fold change cutoff for differential analyses
+#' @param comparison.scheme either one-vs-one (OVO) or one-vs-all (OVA) comparisons.
 #' @param save.DA.peaks saves differentially accessible peaks to an excel file
 #' @param DA.peaks.path the path which the excel file of the DA peaks will be saved,
 #' if not set it will be saved to current directory.
@@ -63,6 +64,7 @@ cinaR <-
            DA.choice = 1,
            DA.fdr.threshold = 0.05,
            DA.lfc.threshold = 0,
+           comparison.scheme = "OVO",
            save.DA.peaks = FALSE,
            DA.peaks.path = NULL,
            norm.method = "cpm",
@@ -187,6 +189,7 @@ cinaR <-
         DA.choice = DA.choice,
         DA.fdr.threshold = DA.fdr.threshold,
         DA.lfc.threshold = DA.lfc.threshold,
+        comparison.scheme = comparison.scheme,
         save.DA.peaks = save.DA.peaks,
         DA.peaks.path = DA.peaks.path,
         batch.correction = batch.correction,
@@ -394,6 +397,7 @@ annotatePeaks <-
 #' (1) edgeR, (2) limma-voom, (3) limma-trend, (4) DEseq2
 #' @param DA.fdr.threshold fdr cut-off for differential analyses
 #' @param DA.lfc.threshold log-fold change cutoff for differential analyses
+#' @param comparison.scheme either one-vs-one (OVO) or one-vs-all (OVA) comparisons.
 #' @param save.DA.peaks logical, saves differentially accessible peaks to an excel file
 #' @param DA.peaks.path the path which the excel file of the DA peaks will be saved,
 #' if not set it will be saved to current directory.
@@ -413,6 +417,7 @@ differentialAnalyses <- function(final.matrix,
                                  DA.choice,
                                  DA.fdr.threshold,
                                  DA.lfc.threshold,
+                                 comparison.scheme,
                                  save.DA.peaks,
                                  DA.peaks.path,
                                  batch.correction,
@@ -509,22 +514,38 @@ differentialAnalyses <- function(final.matrix,
   rownames(design) <- colnames(cp.metaless)
   colnames(design) <- gsub("contrasts", "", colnames(design))
 
-  # Create contrasts for all comparisons
-  combs <-
-    utils::combn(colnames(design)[1:length(unique(contrasts))], 2)
 
-  contrasts.order <- c(1:length(unique(contrasts)))
-  names(contrasts.order) <- unique(contrasts)
+  if (comparison.scheme == "OVO"){ # one vs one
 
-  # Re-order contrasts according to group order
-  combs <- apply(combs, 2, function(x){
-    names(sort(contrasts.order[x]))
-  })
+    # Create contrasts for all comparisons
+    combs <-
+      utils::combn(colnames(design)[1:length(unique(contrasts))], 2)
 
-  cc <- apply(combs, 2,
-              function(x) {
-                paste0(paste(x, collapse = "_"), "=", x[1], "-", x[2])
-              })
+    contrasts.order <- c(1:length(unique(contrasts)))
+    names(contrasts.order) <- unique(contrasts)
+
+    # Re-order contrasts according to group order
+    combs <- apply(combs, 2, function(x){
+      names(sort(contrasts.order[x]))
+    })
+
+    cc <- apply(combs, 2,
+                function(x) {
+                  paste0(paste(x, collapse = "_"), "=", x[1], "-", x[2])
+                })
+
+  } else if(comparison.scheme == "OVA") { # one vs all
+    comps <- colnames(design)[1:length(unique(contrasts))]
+    cc <- NULL
+    for (i in seq(1,length(comps))){
+      cc <- cbind(cc,
+                  paste0(comps[i],"_REST=",
+                         comps[i], "-",
+                         paste0(comps[-i], "/", length(comps)-1, collapse = "-")))
+    }
+  } else {
+    stop("Comparison scheme should be either 'OVO' (one vs one) or 'OVA' (one vs all)")
+  }
 
   # to avoid the message in R CMD check!
   ccc <- NULL

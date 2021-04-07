@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">cinaR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.2</span>
       </span>
     </div>
 
@@ -82,7 +82,7 @@
       <h1 data-toc-skip>Introduction to cinaR</h1>
                         <h4 class="author"><a href="https://eonurk.github.io">E Onur Karakaslar</a></h4>
             
-            <h4 class="date">04/02/2021</h4>
+            <h4 class="date">04/07/2021</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/eonurk/cinaR/blob/master/vignettes/cinaR.Rmd"><code>vignettes/cinaR.Rmd</code></a></small>
       <div class="hidden name"><code>cinaR.Rmd</code></div>
@@ -120,12 +120,12 @@
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># If reference genome is not set hg38 will be used!</span>
 <span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">bed</span>, <span class="va">contrasts</span>, reference.genome <span class="op">=</span> <span class="st">"mm10"</span><span class="op">)</span></code></pre></div>
-<pre><code>## &gt;&gt; preparing features information...      2021-04-02 12:08:46 
-## &gt;&gt; identifying nearest features...        2021-04-02 12:08:47 
-## &gt;&gt; calculating distance from peak to TSS...   2021-04-02 12:08:47 
-## &gt;&gt; assigning genomic annotation...        2021-04-02 12:08:47 
-## &gt;&gt; assigning chromosome lengths           2021-04-02 12:09:02 
-## &gt;&gt; done...                    2021-04-02 12:09:02</code></pre>
+<pre><code>## &gt;&gt; preparing features information...      2021-04-07 22:06:23 
+## &gt;&gt; identifying nearest features...        2021-04-07 22:06:24 
+## &gt;&gt; calculating distance from peak to TSS...   2021-04-07 22:06:24 
+## &gt;&gt; assigning genomic annotation...        2021-04-07 22:06:24 
+## &gt;&gt; assigning chromosome lengths           2021-04-07 22:06:38 
+## &gt;&gt; done...                    2021-04-07 22:06:38</code></pre>
 <p>Now, you can access differential accessibility (DA) and enrichment results.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></code></pre></div>
@@ -247,11 +247,21 @@
 ## [5] "B6.3mo.F.BM"   "B6.3mo.M.BM"   "NZO.3mo.F.BM"  "NZO.3mo.M.BM"</code></pre>
 <p>in this case, each of them will be compared to each other which will result in 28 different comparisons.</p>
 </div>
+<div id="comparison-scheme" class="section level2">
+<h2 class="hasAnchor">
+<a href="#comparison-scheme" class="anchor"></a>Comparison scheme</h2>
+<p>As default, <code>cinaR</code> will use one vs one (OVA) scheme, comparing each contrast to others one by one. However, this can be changed to one vs all (OVA) which will compare each contrast to rest:</p>
+<pre eval="FALSE"><code><a href="../reference/cinaR.html"># one-vs-one (results in n choose k comparisons, default)
+cinaR(..., comparison.scheme = "OVO")
+
+# one-vs-all (results in n comparisons)
+cinaR(..., comparison.scheme = "OVA")</a></code></pre>
+</div>
 <div id="running-for-bulk-rna-seq-data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#running-for-bulk-rna-seq-data" class="anchor"></a>Running for bulk RNA-seq data</h2>
 <p>To run <code>cinaR</code> with RNA-seq experiments, just provide the count matrix, and specify the experiment type:</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span>matrix <span class="op">=</span> <span class="va">count.matrix</span>, <span class="va">...</span>, experiment.type <span class="op">=</span> <span class="st">"RNA-Seq"</span><span class="op">)</span></code></pre></div>
 <p>Note that, <code>count.matrix</code> should be in the form of <span class="math inline">\(g \times (1+n)\)</span> where <span class="math inline">\(g\)</span> is the number of genes and <span class="math inline">\(n\)</span> is the number of samples, and plus one is for gene names.</p>
 <blockquote>
@@ -262,7 +272,7 @@
 <h2 class="hasAnchor">
 <a href="#running-enrichment-with-different-dataset" class="anchor"></a>Running enrichment with different dataset</h2>
 <p>You can run the enrichment analyses with a custom gene set:</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, geneset <span class="op">=</span> <span class="va">new_geneset</span><span class="op">)</span></code></pre></div>
 <div id="cinargenesets" class="section level4">
 <h4 class="hasAnchor">
@@ -283,7 +293,7 @@
 <a href="#custom-gene-sets" class="anchor"></a>Custom gene sets</h4>
 <p>A <code>geneset</code> must be a <code>.gmt</code> formatted symbol file.<br>
 You can familiarize yourself with the format by checking out :</p>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># default geneset to be used</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"VP2008"</span><span class="op">)</span></code></pre></div>
 <blockquote>
@@ -306,10 +316,10 @@ You can familiarize yourself with the format by checking out :</p>
 <h2 class="hasAnchor">
 <a href="#batch-effect-correction" class="anchor"></a>Batch Effect Correction</h2>
 <p>If you suspect your data have unknown batch effects, you can use:</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, batch.correction <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></code></pre></div>
 <p>This option will run <a href="http://bioconductor.org/packages/release/bioc/html/sva.html">Surrogate Variable Analysis</a> (SVA) and try to adjust your data for unknown batch effects. If however, you already know the batches of the samples, you can simply set the <code>batch.information</code> argument as well. This will not run the SVA but just add the batches to design matrix.</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># runs SVA</span>
 <span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, batch.correction <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>
 
@@ -328,24 +338,24 @@ You can familiarize yourself with the format by checking out :</p>
 <h2 class="hasAnchor">
 <a href="#adding-extra-covariates" class="anchor"></a>Adding extra covariates</h2>
 <p>Sometimes, one might want to add additional covariates to adjust the design matrix further, which affects the down-stream analyses. For instance, ages or sexes of the samples could be additional covariates. To account for those:</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ages of the samples could be not in biological interests but should be accounted for!</span></span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cinaR</span>(..., <span class="at">additional.covariates =</span> <span class="fu">c</span>((<span class="dv">18</span>, <span class="dv">11</span>), (<span class="dv">3</span>, <span class="dv">11</span>)))</span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="co"># More than one covariate for instance, sex and age</span></span>
-<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>sex.info <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, </span>
-<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>              <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>)</span>
-<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>age.info <span class="ot">&lt;-</span> <span class="fu">c</span>((<span class="dv">18</span>, <span class="dv">11</span>), (<span class="dv">3</span>, <span class="dv">11</span>)</span>
-<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>covs <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Sex =</span> sex.info, <span class="at">Age =</span> age.info)</span>
-<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a><span class="fu">cinaR</span>(..., <span class="at">additional.covariates =</span> covs)</span></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ages of the samples could be not in biological interests but should be accounted for!</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cinaR</span>(..., <span class="at">additional.covariates =</span> <span class="fu">c</span>((<span class="dv">18</span>, <span class="dv">11</span>), (<span class="dv">3</span>, <span class="dv">11</span>)))</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="co"># More than one covariate for instance, sex and age</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>sex.info <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, </span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>              <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>)</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>age.info <span class="ot">&lt;-</span> <span class="fu">c</span>((<span class="dv">18</span>, <span class="dv">11</span>), (<span class="dv">3</span>, <span class="dv">11</span>)</span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>covs <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Sex =</span> sex.info, <span class="at">Age =</span> age.info)</span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a><span class="fu">cinaR</span>(..., <span class="at">additional.covariates =</span> covs)</span></code></pre></div>
 </div>
 <div id="saving-da-peaks-to-excel" class="section level2">
 <h2 class="hasAnchor">
 <a href="#saving-da-peaks-to-excel" class="anchor"></a>Saving DA peaks to excel</h2>
 <p>Setting <code>save.DA.peaks = TRUE</code> in <code>cinaR</code> function will create a <code>DApeaks.xlsx</code> file in the current directory. This file includes all the comparisons in different tabs. Additionally, you can set the path/name of the file using <code>DA.peaks.path</code> argument after setting <code>save.DA.peaks = TRUE</code>.</p>
 <p>For instance,</p>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, save.DA.peaks <span class="op">=</span> <span class="cn">T</span>, DA.peaks.path <span class="op">=</span> <span class="st">"./Peaks_mice.xlsx"</span><span class="op">)</span></code></pre></div>
 <p>will create an excel file with name <code>Peaks_mice.xlsx</code> in the current directory.</p>
 </div>
@@ -364,7 +374,7 @@ You can familiarize yourself with the format by checking out :</p>
 <div id="some-useful-arguments" class="section level2">
 <h2 class="hasAnchor">
 <a href="#some-useful-arguments" class="anchor"></a>Some useful arguments</h2>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># new FDR threshold for DA peaks</span>
 <span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, DA.fdr.threshold <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span>
 
@@ -392,7 +402,7 @@ You can familiarize yourself with the format by checking out :</p>
 <div id="session-info" class="section level2">
 <h2 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session Info</h2>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <pre><code>## R version 4.0.4 (2021-02-15)
 ## Platform: x86_64-apple-darwin17.0 (64-bit)
@@ -409,7 +419,7 @@ You can familiarize yourself with the format by checking out :</p>
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] cinaR_0.2.1
+## [1] cinaR_0.2.2
 ## 
 ## loaded via a namespace (and not attached):
 ##   [1] shadowtext_0.0.7                         

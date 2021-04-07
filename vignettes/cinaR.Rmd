@@ -110,7 +110,6 @@ pca_plot(results, overlaid.info, sample.names)
 
 ### Heatmaps
 
-
 #### Differential peaks
 
 You can see the available comparisons using:
@@ -161,6 +160,18 @@ unique(contrasts)
 ```
 in this case, each of them will be compared to each other which will result in
 28 different comparisons.
+
+## Comparison scheme
+As default, `cinaR` will use one vs one (OVA) scheme, comparing each contrast to others one by one. However, this can be changed to one vs all (OVA) which will compare each contrast to rest:
+
+```{eval=FALSE}
+# one-vs-one (results in n choose k comparisons, default)
+cinaR(..., comparison.scheme = "OVO")
+
+# one-vs-all (results in n comparisons)
+cinaR(..., comparison.scheme = "OVA")
+```
+
 
 ## Running for bulk RNA-seq data
 

@@ -11,6 +11,7 @@ differentialAnalyses(
   DA.choice,
   DA.fdr.threshold,
   DA.lfc.threshold,
+  comparison.scheme,
   save.DA.peaks,
   DA.peaks.path,
   batch.correction,
@@ -33,6 +34,8 @@ differentialAnalyses(
 \item{DA.fdr.threshold}{fdr cut-off for differential analyses}
 
 \item{DA.lfc.threshold}{log-fold change cutoff for differential analyses}
+
+\item{comparison.scheme}{either one-vs-one (OVO) or one-vs-all (OVA) comparisons.}
 
 \item{save.DA.peaks}{logical, saves differentially accessible peaks to an excel file}
 

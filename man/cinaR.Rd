@@ -11,6 +11,7 @@ cinaR(
   DA.choice = 1,
   DA.fdr.threshold = 0.05,
   DA.lfc.threshold = 0,
+  comparison.scheme = "OVO",
   save.DA.peaks = FALSE,
   DA.peaks.path = NULL,
   norm.method = "cpm",
@@ -47,6 +48,8 @@ Note: Use limma-trend if consensus peaks are already normalized, otherwise use o
 \item{DA.fdr.threshold}{fdr cut-off for differential analyses}
 
 \item{DA.lfc.threshold}{log-fold change cutoff for differential analyses}
+
+\item{comparison.scheme}{either one-vs-one (OVO) or one-vs-all (OVA) comparisons.}
 
 \item{save.DA.peaks}{saves differentially accessible peaks to an excel file}
 
