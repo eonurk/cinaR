@@ -51,6 +51,9 @@ Therefore, you may need to install them manually:
 ``` r
 BiocManager::install(c("ChIPseeker", "DESeq2", "edgeR", "fgsea","GenomicRanges", "limma", "preprocessCore", "sva", "TxDb.Hsapiens.UCSC.hg38.knownGene", "TxDb.Hsapiens.UCSC.hg19.knownGene", "TxDb.Mmusculus.UCSC.mm10.knownGene"))
 ```
+## Get started
+
+To start using cinaR, see our documentation [here](https://eonurk.github.io/cinaR/index.html).
 
 ## Contribution
 
