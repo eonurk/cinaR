@@ -53,7 +53,7 @@ BiocManager::install(c("ChIPseeker", "DESeq2", "edgeR", "fgsea","GenomicRanges",
 ```
 ## Get started
 
-To start using cinaR, see our documentation [here](https://eonurk.github.io/cinaR/index.html).
+To start using cinaR, please see our documentation [here](https://eonurk.github.io/cinaR/index.html).
 
 ## Contribution
 
