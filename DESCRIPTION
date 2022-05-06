@@ -22,7 +22,7 @@ LazyData: true
 URL: https://github.com/eonurk/cinaR/
 BugReports: https://github.com/eonurk/cinaR/issues/
 biocViews:
-Depends: R (>= 3.5.0)
+Depends: R (>= 4.0.0)
 Imports: ChIPseeker, 
          DESeq2, 
          dplyr,
