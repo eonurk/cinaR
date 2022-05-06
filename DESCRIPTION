@@ -30,6 +30,9 @@ Imports: ChIPseeker,
          fgsea,
          GenomicRanges, 
          GenomicFeatures,
+         TxDb.Hsapiens.UCSC.hg38.knownGene, 
+         TxDb.Hsapiens.UCSC.hg19.knownGene, 
+         TxDb.Mmusculus.UCSC.mm10.knownGene,
          ggplot2,
          ggrepel,
          grDevices,
@@ -43,8 +46,5 @@ Imports: ChIPseeker,
 RoxygenNote: 7.1.2
 Suggests: 
     knitr,
-    rmarkdown,
-    TxDb.Hsapiens.UCSC.hg38.knownGene, 
-    TxDb.Hsapiens.UCSC.hg19.knownGene, 
-    TxDb.Mmusculus.UCSC.mm10.knownGene
+    rmarkdown
 VignetteBuilder: knitr 
