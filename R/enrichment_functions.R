@@ -215,8 +215,8 @@ run_enrichment <- function (
 
     if(grepl("ENSG", results[[1]][1,1], fixed = TRUE)){
       results <- lapply(results, function(x) {
-        m <- match(x[, "gene_name"], ens2gene[, "ensgene"])
-        mapped.genes <- ens2gene[, "symbol"][m]
+        m <- match(x[, "gene_name"], ens2gene[, "ensgene", drop = TRUE])
+        mapped.genes <- ens2gene[, "symbol", drop = TRUE][m]
 
         x[, "gene_name"] <- mapped.genes
         if(nrow(x) == sum(is.na(x[,"gene_name"])) & nrow(x) > 5){
@@ -230,8 +230,8 @@ run_enrichment <- function (
     ens2gene <- cinaR::grch37
     if(grepl("ENSG", results[[1]][1,1], fixed = TRUE)){
       results <- lapply(results, function(x) {
-        m <- match(x[, "gene_name"], ens2gene[, "ensgene"])
-        mapped.genes <- ens2gene[, "symbol"][m]
+        m <- match(x[, "gene_name"], ens2gene[, "ensgene", drop = TRUE])
+        mapped.genes <- ens2gene[, "symbol", drop = TRUE][m]
 
         x[, "gene_name"] <- mapped.genes
         return(x)

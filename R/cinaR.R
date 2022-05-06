@@ -315,7 +315,7 @@ annotatePeaks <-
            reference.genome,
            show.annotation.pie = FALSE,
            verbose) {
-
+    
 
     bed <-
       as.data.frame(do.call(rbind, strsplit(rownames(cp), "_", fixed = TRUE)))
@@ -324,11 +324,13 @@ annotatePeaks <-
 
     if (reference.genome == "hg38") {
       if (!requireNamespace("TxDb.Hsapiens.UCSC.hg38.knownGene", quietly = TRUE)) {
-        stop(
+        
+        message(
           "Package \"TxDb.Hsapiens.UCSC.hg38.knownGene\" needed for this
-             function to work. Please install it.",
-          call. = FALSE
+             function to work. Please install it."
         )
+        return(NULL)
+        
       }
       txdb <-
         TxDb.Hsapiens.UCSC.hg38.knownGene::TxDb.Hsapiens.UCSC.hg38.knownGene
@@ -336,22 +338,23 @@ annotatePeaks <-
       reference.genome <- "hg38"
     } else if (reference.genome == "hg19") {
       if (!requireNamespace("TxDb.Hsapiens.UCSC.hg19.knownGene", quietly = TRUE)) {
-        stop(
+        message(
           "Package \"TxDb.Hsapiens.UCSC.hg19.knownGene\" needed for this
-             function to work. Please install it.",
-          call. = FALSE
+             function to work. Please install it."
         )
+        return(NULL)
       }
       txdb <-
         TxDb.Hsapiens.UCSC.hg19.knownGene::TxDb.Hsapiens.UCSC.hg19.knownGene
       genome <- cinaR::grch37
     } else if (reference.genome == "mm10") {
       if (!requireNamespace("TxDb.Mmusculus.UCSC.mm10.knownGene", quietly = TRUE)) {
-        stop(
+        message(
           "Package \"TxDb.Mmusculus.UCSC.mm10.knownGene\" needed for this
              function to work. Please install it.",
           call. = FALSE
         )
+        return(NULL)
       }
       txdb <-
         TxDb.Mmusculus.UCSC.mm10.knownGene::TxDb.Mmusculus.UCSC.mm10.knownGene

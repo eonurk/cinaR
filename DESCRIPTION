@@ -1,7 +1,7 @@
 Package: cinaR
 Type: Package
 Title: A Computational Pipeline for Bulk 'ATAC-Seq' Profiles
-Version: 0.2.2
+Version: 0.2.3
 Authors@R: 
     c(person(given = "Onur",
              family = "Karakaslar",
@@ -42,7 +42,7 @@ Imports: ChIPseeker,
          TxDb.Hsapiens.UCSC.hg19.knownGene, 
          TxDb.Mmusculus.UCSC.mm10.knownGene,
          writexl 
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Suggests: 
     biomaRt,
     knitr,
