@@ -45,5 +45,5 @@ Suggests:
     rmarkdown,
     TxDb.Hsapiens.UCSC.hg38.knownGene, 
     TxDb.Hsapiens.UCSC.hg19.knownGene, 
-    TxDb.Mmusculus.UCSC.mm10.knownGene,
+    TxDb.Mmusculus.UCSC.mm10.knownGene
 VignetteBuilder: knitr 
