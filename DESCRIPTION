@@ -15,7 +15,7 @@ Authors@R:
 Description: Differential analyses and Enrichment pipeline for bulk 'ATAC-seq' data
   analyses. This package combines different packages to have an ultimate package
   for both data analyses and visualization of 'ATAC-seq' data. Methods are described in 
-  Karakaslar et al. (2021) <doi:10.1101/2021.03.05.434143>.
+  'Karakaslar et al.' (2021) <doi:10.1101/2021.03.05.434143>.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

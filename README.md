@@ -1,14 +1,10 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# cinaR <a href='https://eonurk.github.io/cinaR/'><img src='man/figures/cinaR.png' align="right" height="139" /></a>
+# cinaR <a href='https://eonurk.github.io/cinaR/'><img src='man/figures/cinaR.png' align="right" alt="" width="139" /></a>
 
 <!-- badges: start -->
 
-[![Build
-Status](https://travis-ci.com/eonurk/cinaR.svg?branch=master)](https://travis-ci.com/eonurk/cinaR)
-[![R build
-status](https://github.com/eonurk/cinaR/workflows/R-CMD-check/badge.svg)](https://github.com/eonurk/cinaR/actions)
 [![CRAN
 version](https://www.r-pkg.org/badges/version/cinaR)](https://cran.r-project.org/package=cinaR)
 [![CRAN
@@ -24,7 +20,7 @@ enrichment results, and provides users with various configurable
 visualization options. For more details, please see the
 [preprint](https://www.biorxiv.org/content/10.1101/2021.03.05.434143v2).
 
-![<https://eonurk.github.io/cinaR/articles/cinaR.html>](man/figures/overview@5x.png)
+![](man/figures/overview@5x.png)
 
 ## Installation
 
@@ -41,6 +37,11 @@ To get bug fix and use a feature from the development version:
 # install.packages("devtools")
 devtools::install_github("eonurk/cinaR")
 ```
+
+## Usage
+
+For more details please go to our site from
+[here!](https://eonurk.github.io/cinaR/articles/cinaR.html)
 
 ### Known Installation Issues
 
