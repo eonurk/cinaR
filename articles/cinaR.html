@@ -25,6 +25,8 @@
 </script>
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -37,18 +39,12 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">cinaR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.3</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../articles/cinaR.html">Get started</a>
 </li>
@@ -61,7 +57,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/eonurk/cinaR/">
+  <a href="https://github.com/eonurk/cinaR/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -80,94 +76,94 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction to cinaR</h1>
-                        <h4 class="author"><a href="https://eonurk.github.io">E Onur Karakaslar</a></h4>
+                        <h4 data-toc-skip class="author"><a href="https://eonurk.github.io" class="external-link">E Onur Karakaslar</a></h4>
             
-            <h4 class="date">11/15/2021</h4>
+            <h4 data-toc-skip class="date">05/17/2022</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/eonurk/cinaR/blob/master/vignettes/cinaR.Rmd"><code>vignettes/cinaR.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/eonurk/cinaR/blob/HEAD/vignettes/cinaR.Rmd" class="external-link"><code>vignettes/cinaR.Rmd</code></a></small>
       <div class="hidden name"><code>cinaR.Rmd</code></div>
 
     </div>
 
     
     
-<div id="quick-start" class="section level2">
-<h2 class="hasAnchor">
-<a href="#quick-start" class="anchor"></a>Quick Start</h2>
+<div class="section level2">
+<h2 id="quick-start">Quick Start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
+</h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/eonurk/cinaR/">cinaR</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"atac_seq_consensus_bm"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/eonurk/cinaR/" class="external-link">cinaR</a></span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"atac_seq_consensus_bm"</span><span class="op">)</span></code></pre></div>
 <p>Bed formatted consensus matrix (chr, start, end and samples)</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">bed</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 1000   25</code></pre>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">bed</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] 1000   25</span></code></pre>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># bed formatted file</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">bed</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<pre><code>##         Chr     Start       End B6-18mo-M-BM-47-GT18-01783
-## 52834  chr5  24841478  24845196                       1592
-## 29780 chr17   8162955   8164380                        109
-## 67290  chr8  40577584  40578029                         72
-## 51295  chr4 145277698 145278483                        110
-## 4267   chr1 180808752 180815472                       2452
-## 45102  chr3  88732151  88732652                         49</code></pre>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">bed</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">##         Chr     Start       End B6-18mo-M-BM-47-GT18-01783</span>
+<span class="co">## 52834  chr5  24841478  24845196                       1592</span>
+<span class="co">## 29780 chr17   8162955   8164380                        109</span>
+<span class="co">## 67290  chr8  40577584  40578029                         72</span>
+<span class="co">## 51295  chr4 145277698 145278483                        110</span>
+<span class="co">## 4267   chr1 180808752 180815472                       2452</span>
+<span class="co">## 45102  chr3  88732151  88732652                         49</span></code></pre>
 <p>Create the contrasts you want to compare, here we create contrasts for 22 mice samples from different strains.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># create contrast vector which will be compared.</span>
-<span class="va">contrasts</span><span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, 
+<span class="va">contrasts</span><span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, 
               <span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span><span class="op">)</span></code></pre></div>
 <p><code>cinaR</code> function directly computes the differentially accessible peaks.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># If reference genome is not set hg38 will be used!</span>
 <span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">bed</span>, <span class="va">contrasts</span>, reference.genome <span class="op">=</span> <span class="st">"mm10"</span><span class="op">)</span></code></pre></div>
-<pre><code>## &gt;&gt; preparing features information...      2021-11-15 12:09:39 
-## &gt;&gt; identifying nearest features...        2021-11-15 12:09:40 
-## &gt;&gt; calculating distance from peak to TSS...   2021-11-15 12:09:41 
-## &gt;&gt; assigning genomic annotation...        2021-11-15 12:09:41 
-## &gt;&gt; assigning chromosome lengths           2021-11-15 12:10:03 
-## &gt;&gt; done...                    2021-11-15 12:10:03</code></pre>
+<pre><code><span class="co">## &gt;&gt; preparing features information...      2022-05-17 08:22:27 </span>
+<span class="co">## &gt;&gt; identifying nearest features...        2022-05-17 08:22:28 </span>
+<span class="co">## &gt;&gt; calculating distance from peak to TSS...   2022-05-17 08:22:29 </span>
+<span class="co">## &gt;&gt; assigning genomic annotation...        2022-05-17 08:22:29 </span>
+<span class="co">## &gt;&gt; assigning chromosome lengths           2022-05-17 08:22:56 </span>
+<span class="co">## &gt;&gt; done...                    2022-05-17 08:22:56</span></code></pre>
 <p>Now, you can access differential accessibility (DA) and enrichment results.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "DA.results"         "Enrichment.Results"</code></pre>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] "DA.results"         "Enrichment.Results"</span></code></pre>
 <p>Inside <code>DA.results</code>, you have the consensus peaks (cp) and differentially accessible (DA) peaks. If batch correction was run, then <code>cp</code> will be a batch-corrected consensus matrix, otherwise it is the filtered and normalized version of original consensus peaks you provided.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">DA.results</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "cp"       "DA.peaks"</code></pre>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">DA.results</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] "cp"       "DA.peaks"</span></code></pre>
 <p>There are many information <code>cinaR</code> provides such as adjusted p value, log fold-changes, gene names etc for each peak:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">DA.results</span><span class="op">$</span><span class="va">DA.peaks</span><span class="op">$</span><span class="va">B6_NZO</span><span class="op">)</span></code></pre></div>
-<pre><code>##  [1] "Row.names"     "seqnames"      "start"         "end"          
-##  [5] "width"         "strand"        "annotation"    "geneChr"      
-##  [9] "geneStart"     "geneEnd"       "geneLength"    "geneStrand"   
-## [13] "geneId"        "transcriptId"  "distanceToTSS" "gene_name"    
-## [17] "logFC"         "FDR"</code></pre>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">DA.results</span><span class="op">$</span><span class="va">DA.peaks</span><span class="op">$</span><span class="va">B6_NZO</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">##  [1] "Row.names"     "seqnames"      "start"         "end"          </span>
+<span class="co">##  [5] "width"         "strand"        "annotation"    "geneChr"      </span>
+<span class="co">##  [9] "geneStart"     "geneEnd"       "geneLength"    "geneStrand"   </span>
+<span class="co">## [13] "geneId"        "transcriptId"  "distanceToTSS" "gene_name"    </span>
+<span class="co">## [17] "logFC"         "FDR"</span></code></pre>
 <p>Here is an overview of those DA peaks:</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">DA.results</span><span class="op">$</span><span class="va">DA.peaks</span><span class="op">$</span><span class="va">B6_NZO</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<pre><code>##                  Row.names seqnames     start       end width
-## 1 chr1_134559439_134560787     chr1 134559439 134560787  1349
-## 2 chr1_138158514_138159483     chr1 138158514 138159483   970
-## 3 chr1_164247654_164251852     chr1 164247654 164251852  4199
-## 4 chr1_171631196_171631780     chr1 171631196 171631780   585
-## 5 chr1_173954537_173955745     chr1 173954537 173955745  1209
-## 6 chr1_177935969_177936852     chr1 177935969 177936852   884</code></pre>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">DA.results</span><span class="op">$</span><span class="va">DA.peaks</span><span class="op">$</span><span class="va">B6_NZO</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">##                  Row.names seqnames     start       end width</span>
+<span class="co">## 1 chr1_134559439_134560787     chr1 134559439 134560787  1349</span>
+<span class="co">## 2 chr1_138158514_138159483     chr1 138158514 138159483   970</span>
+<span class="co">## 3 chr1_164247654_164251852     chr1 164247654 164251852  4199</span>
+<span class="co">## 4 chr1_171631196_171631780     chr1 171631196 171631780   585</span>
+<span class="co">## 5 chr1_173954537_173955745     chr1 173954537 173955745  1209</span>
+<span class="co">## 6 chr1_177935969_177936852     chr1 177935969 177936852   884</span></code></pre>
 <blockquote>
 <p>Since the comparison is <code>B6_NZO</code>, if fold-changes are positive it means they are more accesible in B6 compared to NZO and vice versa for negative values!</p>
 </blockquote>
 <p>and here is a little overview for enrichment analyses results:</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">Enrichment.Results</span><span class="op">$</span><span class="va">B6_NZO</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"module.name"</span>,<span class="st">"overlapping.genes"</span>, <span class="st">"adj.p"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></code></pre></div>
-<pre><code>##                 module.name                   overlapping.genes      adj.p
-## 1         Myeloid lineage 1 TFEB,FBXL5,PLXNC1,GM2A,AGTPBP1,CTSB 0.05914491
-## 2  U_metabolism/replication             SLC2A6,GM2A,CTSB,PECAM1 0.05914491
-## 3  U_mitochondrial proteins     PIK3R1,PAQR3,UBE3A,MAP4K4,PTPRC 0.32816305
-## 4 U_proteasome/ubiquitin cx                  PIK3R1,IREB2,PTPRC 0.39112517
-## 5   U_Immunity/cytoskeleton                          RPS6,RPS19 0.66488512
-## 6         Myeloid lineage 2                        RNF157,MTUS1 0.66488512</code></pre>
-<div id="pca-plots" class="section level3">
-<h3 class="hasAnchor">
-<a href="#pca-plots" class="anchor"></a>PCA Plots</h3>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">results</span><span class="op">$</span><span class="va">Enrichment.Results</span><span class="op">$</span><span class="va">B6_NZO</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"module.name"</span>,<span class="st">"overlapping.genes"</span>, <span class="st">"adj.p"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">##                 module.name                   overlapping.genes      adj.p</span>
+<span class="co">## 1         Myeloid lineage 1 TFEB,FBXL5,PLXNC1,GM2A,AGTPBP1,CTSB 0.05914491</span>
+<span class="co">## 2  U_metabolism/replication             SLC2A6,GM2A,CTSB,PECAM1 0.05914491</span>
+<span class="co">## 3  U_mitochondrial proteins     PIK3R1,PAQR3,UBE3A,MAP4K4,PTPRC 0.32816305</span>
+<span class="co">## 4 U_proteasome/ubiquitin cx                  PIK3R1,IREB2,PTPRC 0.39112517</span>
+<span class="co">## 5   U_Immunity/cytoskeleton                          RPS6,RPS19 0.66488512</span>
+<span class="co">## 6         Myeloid lineage 2                        RNF157,MTUS1 0.66488512</span></code></pre>
+<div class="section level3">
+<h3 id="pca-plots">PCA Plots<a class="anchor" aria-label="anchor" href="#pca-plots"></a>
+</h3>
 <p>You can easily get the PCA plots of the samples:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/pca_plot.html">pca_plot</a></span><span class="op">(</span><span class="va">results</span>, <span class="va">contrasts</span>, show.names <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></code></pre></div>
@@ -175,12 +171,12 @@
 <p>You can overlay different information onto PCA plots as well!</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Overlaid information</span>
-<span class="va">overlaid.info</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"B6-18mo"</span>, <span class="st">"B6-18mo"</span>, <span class="st">"B6-18mo"</span>, <span class="st">"B6-18mo"</span>, <span class="st">"B6-18mo"</span>, 
+<span class="va">overlaid.info</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"B6-18mo"</span>, <span class="st">"B6-18mo"</span>, <span class="st">"B6-18mo"</span>, <span class="st">"B6-18mo"</span>, <span class="st">"B6-18mo"</span>, 
                    <span class="st">"NZO-18mo"</span>, <span class="st">"NZO-18mo"</span>, <span class="st">"NZO-18mo"</span>, <span class="st">"NZO-18mo"</span>, <span class="st">"NZO-18mo"</span>, <span class="st">"NZO-18mo"</span>, 
                    <span class="st">"B6-3mo"</span>, <span class="st">"B6-3mo"</span>, <span class="st">"B6-3mo"</span>, <span class="st">"B6-3mo"</span>, <span class="st">"B6-3mo"</span>, 
                    <span class="st">"NZO-3mo"</span>, <span class="st">"NZO-3mo"</span>, <span class="st">"NZO-3mo"</span>, <span class="st">"NZO-3mo"</span>, <span class="st">"NZO-3mo"</span>, <span class="st">"NZO-3mo"</span><span class="op">)</span>
 <span class="co"># Sample IDs</span>
-<span class="va">sample.names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"S01783"</span>, <span class="st">"S01780"</span>, <span class="st">"S01781"</span>, <span class="st">"S01778"</span>, <span class="st">"S01779"</span>, 
+<span class="va">sample.names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"S01783"</span>, <span class="st">"S01780"</span>, <span class="st">"S01781"</span>, <span class="st">"S01778"</span>, <span class="st">"S01779"</span>, 
 <span class="st">"S03804"</span>, <span class="st">"S03805"</span>, <span class="st">"S03806"</span>, <span class="st">"S03807"</span>, <span class="st">"S03808"</span>, 
 <span class="st">"S03809"</span>, <span class="st">"S04678"</span>, <span class="st">"S04679"</span>, <span class="st">"S04680"</span>, <span class="st">"S04681"</span>, 
 <span class="st">"S04682"</span>, <span class="st">"S10918"</span>, <span class="st">"S10916"</span>, <span class="st">"S10919"</span>, <span class="st">"S10921"</span>, 
@@ -189,16 +185,16 @@
 <code class="sourceCode R"><span class="fu"><a href="../reference/pca_plot.html">pca_plot</a></span><span class="op">(</span><span class="va">results</span>, <span class="va">overlaid.info</span>, <span class="va">sample.names</span><span class="op">)</span></code></pre></div>
 <p><img src="cinaR_files/figure-html/unnamed-chunk-13-1.png" width="700"></p>
 </div>
-<div id="heatmaps" class="section level3">
-<h3 class="hasAnchor">
-<a href="#heatmaps" class="anchor"></a>Heatmaps</h3>
-<div id="differential-peaks" class="section level4">
-<h4 class="hasAnchor">
-<a href="#differential-peaks" class="anchor"></a>Differential peaks</h4>
+<div class="section level3">
+<h3 id="heatmaps">Heatmaps<a class="anchor" aria-label="anchor" href="#heatmaps"></a>
+</h3>
+<div class="section level4">
+<h4 id="differential-peaks">Differential peaks<a class="anchor" aria-label="anchor" href="#differential-peaks"></a>
+</h4>
 <p>You can see the available comparisons using:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/show_comparisons.html">show_comparisons</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "B6_NZO"</code></pre>
+<pre><code><span class="co">## [1] "B6_NZO"</span></code></pre>
 <p>Then, plot the differential peaks for a selected contrast using:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/heatmap_differential.html">heatmap_differential</a></span><span class="op">(</span><span class="va">results</span>, comparison <span class="op">=</span> <span class="st">"B6_NZO"</span><span class="op">)</span></code></pre></div>
@@ -208,9 +204,9 @@
 <code class="sourceCode R"><span class="fu"><a href="../reference/heatmap_differential.html">heatmap_differential</a></span><span class="op">(</span><span class="va">results</span>, comparison <span class="op">=</span> <span class="st">"B6_NZO"</span>, show_colnames <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
 <p><img src="cinaR_files/figure-html/unnamed-chunk-16-1.png" width="700"></p>
 </div>
-<div id="most-variable-peaks" class="section level4">
-<h4 class="hasAnchor">
-<a href="#most-variable-peaks" class="anchor"></a>Most variable peaks</h4>
+<div class="section level4">
+<h4 id="most-variable-peaks">Most variable peaks<a class="anchor" aria-label="anchor" href="#most-variable-peaks"></a>
+</h4>
 <p>You can also plot most variable 100 peaks for all samples:</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/heatmap_var_peaks.html">heatmap_var_peaks</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></code></pre></div>
@@ -221,13 +217,13 @@
 <p><img src="cinaR_files/figure-html/unnamed-chunk-18-1.png" width="700"></p>
 </div>
 </div>
-<div id="enrichment-plots" class="section level3">
-<h3 class="hasAnchor">
-<a href="#enrichment-plots" class="anchor"></a>Enrichment Plots</h3>
+<div class="section level3">
+<h3 id="enrichment-plots">Enrichment Plots<a class="anchor" aria-label="anchor" href="#enrichment-plots"></a>
+</h3>
 <p>You can plot your enrichment results using:</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/dot_plot.html">dot_plot</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span></code></pre></div>
-<pre><code>## Warning: Removed 54 rows containing missing values (geom_point).</code></pre>
+<pre><code><span class="co">## Warning: Removed 54 rows containing missing values (geom_point).</span></code></pre>
 <p><img src="cinaR_files/figure-html/unnamed-chunk-19-1.png" width="700"></p>
 <p>if it gets too crowded, you can get rid of the irrelevant pathways as well:</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
@@ -235,31 +231,31 @@
 <p><img src="cinaR_files/figure-html/unnamed-chunk-20-1.png" width="700"></p>
 </div>
 </div>
-<div id="creating-different-contrasts" class="section level2">
-<h2 class="hasAnchor">
-<a href="#creating-different-contrasts" class="anchor"></a>Creating different contrasts</h2>
+<div class="section level2">
+<h2 id="creating-different-contrasts">Creating different contrasts<a class="anchor" aria-label="anchor" href="#creating-different-contrasts"></a>
+</h2>
 <p>Note that you can further divide the resolution of contrasts, for instance this is also a valid vector</p>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">contrasts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strsplit.html">strsplit</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">bed</span><span class="op">)</span>, split <span class="op">=</span> <span class="st">"-"</span>, fixed <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>, 
-                    <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>, collapse <span class="op">=</span> <span class="st">"."</span><span class="op">)</span><span class="op">}</span><span class="op">)</span><span class="op">[</span><span class="fl">4</span><span class="op">:</span><span class="fl">25</span><span class="op">]</span>
-<span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">contrasts</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "B6.18mo.M.BM"  "B6.18mo.F.BM"  "NZO.18mo.F.BM" "NZO.18mo.M.BM"
-## [5] "B6.3mo.F.BM"   "B6.3mo.M.BM"   "NZO.3mo.F.BM"  "NZO.3mo.M.BM"</code></pre>
+<code class="sourceCode R"><span class="va">contrasts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/strsplit.html" class="external-link">strsplit</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">bed</span><span class="op">)</span>, split <span class="op">=</span> <span class="st">"-"</span>, fixed <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>, 
+                    <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>, collapse <span class="op">=</span> <span class="st">"."</span><span class="op">)</span><span class="op">}</span><span class="op">)</span><span class="op">[</span><span class="fl">4</span><span class="op">:</span><span class="fl">25</span><span class="op">]</span>
+<span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">contrasts</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] "B6.18mo.M.BM"  "B6.18mo.F.BM"  "NZO.18mo.F.BM" "NZO.18mo.M.BM"</span>
+<span class="co">## [5] "B6.3mo.F.BM"   "B6.3mo.M.BM"   "NZO.3mo.F.BM"  "NZO.3mo.M.BM"</span></code></pre>
 <p>in this case, each of them will be compared to each other which will result in 28 different comparisons.</p>
 </div>
-<div id="comparison-scheme" class="section level2">
-<h2 class="hasAnchor">
-<a href="#comparison-scheme" class="anchor"></a>Comparison scheme</h2>
+<div class="section level2">
+<h2 id="comparison-scheme">Comparison scheme<a class="anchor" aria-label="anchor" href="#comparison-scheme"></a>
+</h2>
 <p>As default, <code>cinaR</code> will use one vs one (OVA) scheme, comparing each contrast to others one by one. However, this can be changed to one vs all (OVA) which will compare each contrast to rest:</p>
-<pre eval="FALSE"><code># one-vs-one (results in n choose k comparisons, default)
-cinaR(..., comparison.scheme = "OVO")
+<pre eval="FALSE"><code><span class="co"># one-vs-one (results in n choose k comparisons, default)</span>
+<span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, comparison.scheme <span class="op">=</span> <span class="st">"OVO"</span><span class="op">)</span>
 
-# one-vs-all (results in n comparisons)
-cinaR(..., comparison.scheme = "OVA")</code></pre>
+<span class="co"># one-vs-all (results in n comparisons)</span>
+<span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, comparison.scheme <span class="op">=</span> <span class="st">"OVA"</span><span class="op">)</span></code></pre>
 </div>
-<div id="running-for-bulk-rna-seq-data" class="section level2">
-<h2 class="hasAnchor">
-<a href="#running-for-bulk-rna-seq-data" class="anchor"></a>Running for bulk RNA-seq data</h2>
+<div class="section level2">
+<h2 id="running-for-bulk-rna-seq-data">Running for bulk RNA-seq data<a class="anchor" aria-label="anchor" href="#running-for-bulk-rna-seq-data"></a>
+</h2>
 <p>To run <code>cinaR</code> with RNA-seq experiments, just provide the count matrix, and specify the experiment type:</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span>matrix <span class="op">=</span> <span class="va">count.matrix</span>, <span class="va">...</span>, experiment.type <span class="op">=</span> <span class="st">"RNA-Seq"</span><span class="op">)</span></code></pre></div>
@@ -268,42 +264,42 @@ cinaR(..., comparison.scheme = "OVA")</code></pre>
 <p>Note that currently <code>cinaR</code> can only handle gene symbols (e.g. FOSL2, FOXA) and ensembl stable IDs (e.g. ENSG00000010404) for both human and mice!</p>
 </blockquote>
 </div>
-<div id="running-enrichment-with-different-dataset" class="section level2">
-<h2 class="hasAnchor">
-<a href="#running-enrichment-with-different-dataset" class="anchor"></a>Running enrichment with different dataset</h2>
+<div class="section level2">
+<h2 id="running-enrichment-with-different-dataset">Running enrichment with different dataset<a class="anchor" aria-label="anchor" href="#running-enrichment-with-different-dataset"></a>
+</h2>
 <p>You can run the enrichment analyses with a custom gene set:</p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, geneset <span class="op">=</span> <span class="va">new_geneset</span><span class="op">)</span></code></pre></div>
-<div id="cinargenesets" class="section level4">
-<h4 class="hasAnchor">
-<a href="#cinargenesets" class="anchor"></a><code>cinaRgenesets</code>
+<div class="section level4">
+<h4 id="cinargenesets">
+<code>cinaRgenesets</code><a class="anchor" aria-label="anchor" href="#cinargenesets"></a>
 </h4>
-<p>Easiest way to do this is to use <a href="https://github.com/eonurk/cinaR-genesets">cinaRgenesets</a> package. You can select your gene set of interest and just plug it into your pipeline.</p>
+<p>Easiest way to do this is to use <a href="https://github.com/eonurk/cinaR-genesets" class="external-link">cinaRgenesets</a> package. You can select your gene set of interest and just plug it into your pipeline.</p>
 </div>
-<div id="msigdb" class="section level4">
-<h4 class="hasAnchor">
-<a href="#msigdb" class="anchor"></a>MSigDB</h4>
-<p>You can also download different gene sets from <a href="https://www.gsea-msigdb.org/gsea/downloads.jsp">MSigDB site</a>. Note that you should use the human gene symbol versions.</p>
+<div class="section level4">
+<h4 id="msigdb">MSigDB<a class="anchor" aria-label="anchor" href="#msigdb"></a>
+</h4>
+<p>You can also download different gene sets from <a href="https://www.gsea-msigdb.org/gsea/downloads.jsp" class="external-link">MSigDB site</a>. Note that you should use the human gene symbol versions.</p>
 <blockquote>
 <p>You can use <code>read.gmt</code> function from <code>qusage</code> package to read these genesets into your current environment.</p>
 </blockquote>
 </div>
-<div id="custom-gene-sets" class="section level4">
-<h4 class="hasAnchor">
-<a href="#custom-gene-sets" class="anchor"></a>Custom gene sets</h4>
+<div class="section level4">
+<h4 id="custom-gene-sets">Custom gene sets<a class="anchor" aria-label="anchor" href="#custom-gene-sets"></a>
+</h4>
 <p>A <code>geneset</code> must be a <code>.gmt</code> formatted symbol file.<br>
 You can familiarize yourself with the format by checking out :</p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># default geneset to be used</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"VP2008"</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"VP2008"</span><span class="op">)</span></code></pre></div>
 <blockquote>
 <p>If you have gene and pathway names in a <code>data.frame</code>, you can use <code>split</code> function to create your own <code>.gmt</code> formatted gene sets e.g. <code>split(df$genes, df$pathways)</code>.</p>
 </blockquote>
 </div>
 </div>
-<div id="selecting-different-reference-genomes" class="section level2">
-<h2 class="hasAnchor">
-<a href="#selecting-different-reference-genomes" class="anchor"></a>Selecting different reference genomes</h2>
+<div class="section level2">
+<h2 id="selecting-different-reference-genomes">Selecting different reference genomes<a class="anchor" aria-label="anchor" href="#selecting-different-reference-genomes"></a>
+</h2>
 <p>For now, <code>cinaR</code> supports 3 genomes for human and mice models:</p>
 <ul>
 <li><code>hg38</code></li>
@@ -312,13 +308,13 @@ You can familiarize yourself with the format by checking out :</p>
 </ul>
 <p>You can set your it using <code>reference.genome</code> argument.</p>
 </div>
-<div id="batch-effect-correction" class="section level2">
-<h2 class="hasAnchor">
-<a href="#batch-effect-correction" class="anchor"></a>Batch Effect Correction</h2>
+<div class="section level2">
+<h2 id="batch-effect-correction">Batch Effect Correction<a class="anchor" aria-label="anchor" href="#batch-effect-correction"></a>
+</h2>
 <p>If you suspect your data have unknown batch effects, you can use:</p>
 <div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, batch.correction <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></code></pre></div>
-<p>This option will run <a href="http://bioconductor.org/packages/release/bioc/html/sva.html">Surrogate Variable Analysis</a> (SVA) and try to adjust your data for unknown batch effects. If however, you already know the batches of the samples, you can simply set the <code>batch.information</code> argument as well. This will not run the SVA but just add the batches to design matrix.</p>
+<p>This option will run <a href="http://bioconductor.org/packages/release/bioc/html/sva.html" class="external-link">Surrogate Variable Analysis</a> (SVA) and try to adjust your data for unknown batch effects. If however, you already know the batches of the samples, you can simply set the <code>batch.information</code> argument as well. This will not run the SVA but just add the batches to design matrix.</p>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># runs SVA</span>
 <span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, batch.correction <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>
@@ -329,14 +325,14 @@ You can familiarize yourself with the format by checking out :</p>
 <span class="co"># adds only batch information to the design matrix! (does not run SVA)</span>
 <span class="co"># batch.information should be number a vector where</span>
 <span class="co"># the length of it equals to the number of samples.</span>
-<span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, batch.correction <span class="op">=</span> <span class="cn">T</span>, batch.information <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">11</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">11</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, batch.correction <span class="op">=</span> <span class="cn">T</span>, batch.information <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">11</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">11</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <blockquote>
 <p>Reminder - In our example data we have 22 samples</p>
 </blockquote>
 </div>
-<div id="adding-extra-covariates" class="section level2">
-<h2 class="hasAnchor">
-<a href="#adding-extra-covariates" class="anchor"></a>Adding extra covariates</h2>
+<div class="section level2">
+<h2 id="adding-extra-covariates">Adding extra covariates<a class="anchor" aria-label="anchor" href="#adding-extra-covariates"></a>
+</h2>
 <p>Sometimes, one might want to add additional covariates to adjust the design matrix further, which affects the down-stream analyses. For instance, ages or sexes of the samples could be additional covariates. To account for those:</p>
 <div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1"></a><span class="co"># Ages of the samples could be not in biological interests but should be accounted for!</span></span>
 <span id="cb39-2"><a href="#cb39-2"></a><span class="kw">cinaR</span>(..., <span class="dt">additional.covariates =</span> <span class="kw">c</span>((<span class="dv">18</span>, <span class="dv">11</span>), (<span class="dv">3</span>, <span class="dv">11</span>)))</span>
@@ -350,18 +346,18 @@ You can familiarize yourself with the format by checking out :</p>
 <span id="cb39-10"><a href="#cb39-10"></a></span>
 <span id="cb39-11"><a href="#cb39-11"></a><span class="kw">cinaR</span>(..., <span class="dt">additional.covariates =</span> covs)</span></code></pre></div>
 </div>
-<div id="saving-da-peaks-to-excel" class="section level2">
-<h2 class="hasAnchor">
-<a href="#saving-da-peaks-to-excel" class="anchor"></a>Saving DA peaks to excel</h2>
+<div class="section level2">
+<h2 id="saving-da-peaks-to-excel">Saving DA peaks to excel<a class="anchor" aria-label="anchor" href="#saving-da-peaks-to-excel"></a>
+</h2>
 <p>Setting <code>save.DA.peaks = TRUE</code> in <code>cinaR</code> function will create a <code>DApeaks.xlsx</code> file in the current directory. This file includes all the comparisons in different tabs. Additionally, you can set the path/name of the file using <code>DA.peaks.path</code> argument after setting <code>save.DA.peaks = TRUE</code>.</p>
 <p>For instance,</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, save.DA.peaks <span class="op">=</span> <span class="cn">T</span>, DA.peaks.path <span class="op">=</span> <span class="st">"./Peaks_mice.xlsx"</span><span class="op">)</span></code></pre></div>
 <p>will create an excel file with name <code>Peaks_mice.xlsx</code> in the current directory.</p>
 </div>
-<div id="using-different-glm-algorithms" class="section level2">
-<h2 class="hasAnchor">
-<a href="#using-different-glm-algorithms" class="anchor"></a>Using different GLM algorithms</h2>
+<div class="section level2">
+<h2 id="using-different-glm-algorithms">Using different GLM algorithms<a class="anchor" aria-label="anchor" href="#using-different-glm-algorithms"></a>
+</h2>
 <p>Currently, <code>cinaR</code> supports 4 different algorithms, namely;</p>
 <ul>
 <li>edgeR</li>
@@ -371,9 +367,9 @@ You can familiarize yourself with the format by checking out :</p>
 </ul>
 <p>If not set, it uses <code>edgeR</code> for differential analyses. You can change the used algorithm by simply setting <code>DA.choice</code> argument. For more information, <code><a href="../reference/cinaR.html">?cinaR</a></code></p>
 </div>
-<div id="some-useful-arguments" class="section level2">
-<h2 class="hasAnchor">
-<a href="#some-useful-arguments" class="anchor"></a>Some useful arguments</h2>
+<div class="section level2">
+<h2 id="some-useful-arguments">Some useful arguments<a class="anchor" aria-label="anchor" href="#some-useful-arguments"></a>
+</h2>
 <div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># new FDR threshold for DA peaks</span>
 <span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, DA.fdr.threshold <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span>
@@ -390,191 +386,193 @@ You can familiarize yourself with the format by checking out :</p>
 <span class="co"># change cut-off value for dot plots</span>
 <span class="fu"><a href="../reference/dot_plot.html">dot_plot</a></span><span class="op">(</span><span class="va">...</span>, fdr.cutoff <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="references" class="section level2">
-<h2 class="hasAnchor">
-<a href="#references" class="anchor"></a>References</h2>
+<div class="section level2">
+<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
 <ul>
 <li><p>Robinson MD, McCarthy DJ, Smyth GK (2010). “edgeR: a Bioconductor package for differential expression analysis of digital gene expression data.” Bioinformatics, 26(1), 139-140. doi: 10.1093/bioinformatics/btp616.</p></li>
 <li><p>Ritchie ME, Phipson B, Wu D, Hu Y, Law CW, Shi W, Smyth GK (2015). “limma powers differential expression analyses for RNA-sequencing and microarray studies.” Nucleic Acids Research, 43(7), e47.</p></li>
 <li><p>Love, M.I., Huber, W., Anders, S. (2014) Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2. Genome Biology, 15:550. 10.1186/s13059-014-0550-8</p></li>
 </ul>
 </div>
-<div id="session-info" class="section level2">
-<h2 class="hasAnchor">
-<a href="#session-info" class="anchor"></a>Session Info</h2>
+<div class="section level2">
+<h2 id="session-info">Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
+</h2>
 <div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<pre><code>## R version 4.1.2 (2021-11-01)
-## Platform: x86_64-apple-darwin17.0 (64-bit)
-## Running under: macOS Catalina 10.15.7
-## 
-## Matrix products: default
-## BLAS:   /Library/Frameworks/R.framework/Versions/4.1/Resources/lib/libRblas.0.dylib
-## LAPACK: /Library/Frameworks/R.framework/Versions/4.1/Resources/lib/libRlapack.dylib
-## 
-## locale:
-## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
-## 
-## attached base packages:
-## [1] stats     graphics  grDevices utils     datasets  methods   base     
-## 
-## other attached packages:
-## [1] cinaR_0.2.3
-## 
-## loaded via a namespace (and not attached):
-##   [1] shadowtext_0.0.9                         
-##   [2] ChIPseeker_1.28.3                        
-##   [3] fastmatch_1.1-3                          
-##   [4] BiocFileCache_2.0.0                      
-##   [5] systemfonts_1.0.2                        
-##   [6] plyr_1.8.6                               
-##   [7] igraph_1.2.8                             
-##   [8] lazyeval_0.2.2                           
-##   [9] splines_4.1.2                            
-##  [10] BiocParallel_1.26.2                      
-##  [11] GenomeInfoDb_1.28.4                      
-##  [12] ggplot2_3.3.5                            
-##  [13] digest_0.6.28                            
-##  [14] yulab.utils_0.0.4                        
-##  [15] htmltools_0.5.2                          
-##  [16] GOSemSim_2.18.1                          
-##  [17] viridis_0.6.2                            
-##  [18] GO.db_3.13.0                             
-##  [19] fansi_0.5.0                              
-##  [20] magrittr_2.0.1                           
-##  [21] memoise_2.0.0                            
-##  [22] limma_3.48.3                             
-##  [23] Biostrings_2.60.2                        
-##  [24] graphlayouts_0.7.1                       
-##  [25] matrixStats_0.61.0                       
-##  [26] pkgdown_1.6.1                            
-##  [27] enrichplot_1.12.3                        
-##  [28] prettyunits_1.1.1                        
-##  [29] colorspace_2.0-2                         
-##  [30] blob_1.2.2                               
-##  [31] rappdirs_0.3.3                           
-##  [32] ggrepel_0.9.1                            
-##  [33] textshaping_0.3.6                        
-##  [34] xfun_0.28                                
-##  [35] dplyr_1.0.7                              
-##  [36] jsonlite_1.7.2                           
-##  [37] crayon_1.4.2                             
-##  [38] RCurl_1.98-1.5                           
-##  [39] scatterpie_0.1.7                         
-##  [40] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2  
-##  [41] ape_5.5                                  
-##  [42] glue_1.5.0                               
-##  [43] polyclip_1.10-0                          
-##  [44] gtable_0.3.0                             
-##  [45] zlibbioc_1.38.0                          
-##  [46] XVector_0.32.0                           
-##  [47] DelayedArray_0.18.0                      
-##  [48] BiocGenerics_0.38.0                      
-##  [49] scales_1.1.1                             
-##  [50] DOSE_3.18.3                              
-##  [51] pheatmap_1.0.12                          
-##  [52] DBI_1.1.1                                
-##  [53] edgeR_3.34.1                             
-##  [54] Rcpp_1.0.7                               
-##  [55] plotrix_3.8-2                            
-##  [56] viridisLite_0.4.0                        
-##  [57] progress_1.2.2                           
-##  [58] tidytree_0.3.6                           
-##  [59] gridGraphics_0.5-1                       
-##  [60] bit_4.0.4                                
-##  [61] stats4_4.1.2                             
-##  [62] httr_1.4.2                               
-##  [63] fgsea_1.18.0                             
-##  [64] gplots_3.1.1                             
-##  [65] RColorBrewer_1.1-2                       
-##  [66] ellipsis_0.3.2                           
-##  [67] pkgconfig_2.0.3                          
-##  [68] XML_3.99-0.8                             
-##  [69] farver_2.1.0                             
-##  [70] dbplyr_2.1.1                             
-##  [71] locfit_1.5-9.4                           
-##  [72] utf8_1.2.2                               
-##  [73] labeling_0.4.2                           
-##  [74] ggplotify_0.1.0                          
-##  [75] tidyselect_1.1.1                         
-##  [76] rlang_0.4.12                             
-##  [77] reshape2_1.4.4                           
-##  [78] AnnotationDbi_1.54.1                     
-##  [79] munsell_0.5.0                            
-##  [80] tools_4.1.2                              
-##  [81] cachem_1.0.6                             
-##  [82] generics_0.1.1                           
-##  [83] RSQLite_2.2.8                            
-##  [84] evaluate_0.14                            
-##  [85] stringr_1.4.0                            
-##  [86] fastmap_1.1.0                            
-##  [87] yaml_2.2.1                               
-##  [88] ragg_1.1.3                               
-##  [89] ggtree_3.0.4                             
-##  [90] knitr_1.36                               
-##  [91] bit64_4.0.5                              
-##  [92] fs_1.5.0                                 
-##  [93] tidygraph_1.2.0                          
-##  [94] caTools_1.18.2                           
-##  [95] purrr_0.3.4                              
-##  [96] KEGGREST_1.32.0                          
-##  [97] ggraph_2.0.5                             
-##  [98] nlme_3.1-153                             
-##  [99] aplot_0.1.1                              
-## [100] DO.db_2.9                                
-## [101] xml2_1.3.2                               
-## [102] biomaRt_2.48.3                           
-## [103] compiler_4.1.2                           
-## [104] filelock_1.0.2                           
-## [105] curl_4.3.2                               
-## [106] png_0.1-7                                
-## [107] treeio_1.16.2                            
-## [108] tibble_3.1.6                             
-## [109] tweenr_1.0.2                             
-## [110] stringi_1.7.5                            
-## [111] highr_0.9                                
-## [112] GenomicFeatures_1.44.2                   
-## [113] desc_1.4.0                               
-## [114] lattice_0.20-45                          
-## [115] Matrix_1.3-4                             
-## [116] vctrs_0.3.8                              
-## [117] pillar_1.6.4                             
-## [118] lifecycle_1.0.1                          
-## [119] jquerylib_0.1.4                          
-## [120] data.table_1.14.2                        
-## [121] cowplot_1.1.1                            
-## [122] bitops_1.0-7                             
-## [123] TxDb.Mmusculus.UCSC.mm10.knownGene_3.10.0
-## [124] patchwork_1.1.1                          
-## [125] rtracklayer_1.52.1                       
-## [126] GenomicRanges_1.44.0                     
-## [127] qvalue_2.24.0                            
-## [128] R6_2.5.1                                 
-## [129] BiocIO_1.2.0                             
-## [130] KernSmooth_2.23-20                       
-## [131] gridExtra_2.3                            
-## [132] IRanges_2.26.0                           
-## [133] gtools_3.9.2                             
-## [134] boot_1.3-28                              
-## [135] MASS_7.3-54                              
-## [136] assertthat_0.2.1                         
-## [137] SummarizedExperiment_1.22.0              
-## [138] rprojroot_2.0.2                          
-## [139] rjson_0.2.20                             
-## [140] GenomicAlignments_1.28.0                 
-## [141] Rsamtools_2.8.0                          
-## [142] S4Vectors_0.30.2                         
-## [143] GenomeInfoDbData_1.2.6                   
-## [144] parallel_4.1.2                           
-## [145] hms_1.1.1                                
-## [146] grid_4.1.2                               
-## [147] ggfun_0.0.4                              
-## [148] tidyr_1.1.4                              
-## [149] rmarkdown_2.11                           
-## [150] MatrixGenerics_1.4.3                     
-## [151] ggforce_0.3.3                            
-## [152] Biobase_2.52.0                           
-## [153] restfulr_0.0.13</code></pre>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## R version 4.2.0 (2022-04-22)</span>
+<span class="co">## Platform: x86_64-apple-darwin17.0 (64-bit)</span>
+<span class="co">## Running under: macOS Big Sur/Monterey 10.16</span>
+<span class="co">## </span>
+<span class="co">## Matrix products: default</span>
+<span class="co">## BLAS:   /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRblas.0.dylib</span>
+<span class="co">## LAPACK: /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRlapack.dylib</span>
+<span class="co">## </span>
+<span class="co">## locale:</span>
+<span class="co">## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8</span>
+<span class="co">## </span>
+<span class="co">## attached base packages:</span>
+<span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span>
+<span class="co">## </span>
+<span class="co">## other attached packages:</span>
+<span class="co">## [1] cinaR_0.2.3</span>
+<span class="co">## </span>
+<span class="co">## loaded via a namespace (and not attached):</span>
+<span class="co">##   [1] shadowtext_0.1.2                         </span>
+<span class="co">##   [2] ChIPseeker_1.32.0                        </span>
+<span class="co">##   [3] fastmatch_1.1-3                          </span>
+<span class="co">##   [4] BiocFileCache_2.4.0                      </span>
+<span class="co">##   [5] systemfonts_1.0.4                        </span>
+<span class="co">##   [6] plyr_1.8.7                               </span>
+<span class="co">##   [7] igraph_1.3.1                             </span>
+<span class="co">##   [8] lazyeval_0.2.2                           </span>
+<span class="co">##   [9] splines_4.2.0                            </span>
+<span class="co">##  [10] BiocParallel_1.30.2                      </span>
+<span class="co">##  [11] GenomeInfoDb_1.32.2                      </span>
+<span class="co">##  [12] ggplot2_3.3.6                            </span>
+<span class="co">##  [13] digest_0.6.29                            </span>
+<span class="co">##  [14] yulab.utils_0.0.4                        </span>
+<span class="co">##  [15] htmltools_0.5.2                          </span>
+<span class="co">##  [16] GOSemSim_2.22.0                          </span>
+<span class="co">##  [17] viridis_0.6.2                            </span>
+<span class="co">##  [18] GO.db_3.15.0                             </span>
+<span class="co">##  [19] fansi_1.0.3                              </span>
+<span class="co">##  [20] magrittr_2.0.3                           </span>
+<span class="co">##  [21] memoise_2.0.1                            </span>
+<span class="co">##  [22] limma_3.52.1                             </span>
+<span class="co">##  [23] Biostrings_2.64.0                        </span>
+<span class="co">##  [24] graphlayouts_0.8.0                       </span>
+<span class="co">##  [25] matrixStats_0.62.0                       </span>
+<span class="co">##  [26] pkgdown_2.0.3                            </span>
+<span class="co">##  [27] enrichplot_1.16.1                        </span>
+<span class="co">##  [28] prettyunits_1.1.1                        </span>
+<span class="co">##  [29] colorspace_2.0-3                         </span>
+<span class="co">##  [30] blob_1.2.3                               </span>
+<span class="co">##  [31] rappdirs_0.3.3                           </span>
+<span class="co">##  [32] ggrepel_0.9.1                            </span>
+<span class="co">##  [33] textshaping_0.3.6                        </span>
+<span class="co">##  [34] xfun_0.31                                </span>
+<span class="co">##  [35] dplyr_1.0.9                              </span>
+<span class="co">##  [36] crayon_1.5.1                             </span>
+<span class="co">##  [37] RCurl_1.98-1.6                           </span>
+<span class="co">##  [38] jsonlite_1.8.0                           </span>
+<span class="co">##  [39] scatterpie_0.1.7                         </span>
+<span class="co">##  [40] TxDb.Hsapiens.UCSC.hg19.knownGene_3.2.2  </span>
+<span class="co">##  [41] ape_5.6-2                                </span>
+<span class="co">##  [42] glue_1.6.2                               </span>
+<span class="co">##  [43] polyclip_1.10-0                          </span>
+<span class="co">##  [44] gtable_0.3.0                             </span>
+<span class="co">##  [45] zlibbioc_1.42.0                          </span>
+<span class="co">##  [46] XVector_0.36.0                           </span>
+<span class="co">##  [47] DelayedArray_0.22.0                      </span>
+<span class="co">##  [48] BiocGenerics_0.42.0                      </span>
+<span class="co">##  [49] scales_1.2.0                             </span>
+<span class="co">##  [50] DOSE_3.22.0                              </span>
+<span class="co">##  [51] pheatmap_1.0.12                          </span>
+<span class="co">##  [52] DBI_1.1.2                                </span>
+<span class="co">##  [53] edgeR_3.38.1                             </span>
+<span class="co">##  [54] Rcpp_1.0.8.3                             </span>
+<span class="co">##  [55] plotrix_3.8-2                            </span>
+<span class="co">##  [56] viridisLite_0.4.0                        </span>
+<span class="co">##  [57] progress_1.2.2                           </span>
+<span class="co">##  [58] tidytree_0.3.9                           </span>
+<span class="co">##  [59] gridGraphics_0.5-1                       </span>
+<span class="co">##  [60] bit_4.0.4                                </span>
+<span class="co">##  [61] stats4_4.2.0                             </span>
+<span class="co">##  [62] httr_1.4.3                               </span>
+<span class="co">##  [63] fgsea_1.22.0                             </span>
+<span class="co">##  [64] gplots_3.1.3                             </span>
+<span class="co">##  [65] RColorBrewer_1.1-3                       </span>
+<span class="co">##  [66] ellipsis_0.3.2                           </span>
+<span class="co">##  [67] pkgconfig_2.0.3                          </span>
+<span class="co">##  [68] XML_3.99-0.9                             </span>
+<span class="co">##  [69] farver_2.1.0                             </span>
+<span class="co">##  [70] sass_0.4.1                               </span>
+<span class="co">##  [71] dbplyr_2.1.1                             </span>
+<span class="co">##  [72] locfit_1.5-9.5                           </span>
+<span class="co">##  [73] utf8_1.2.2                               </span>
+<span class="co">##  [74] labeling_0.4.2                           </span>
+<span class="co">##  [75] ggplotify_0.1.0                          </span>
+<span class="co">##  [76] tidyselect_1.1.2                         </span>
+<span class="co">##  [77] rlang_1.0.2                              </span>
+<span class="co">##  [78] reshape2_1.4.4                           </span>
+<span class="co">##  [79] AnnotationDbi_1.58.0                     </span>
+<span class="co">##  [80] munsell_0.5.0                            </span>
+<span class="co">##  [81] tools_4.2.0                              </span>
+<span class="co">##  [82] cachem_1.0.6                             </span>
+<span class="co">##  [83] cli_3.3.0                                </span>
+<span class="co">##  [84] generics_0.1.2                           </span>
+<span class="co">##  [85] RSQLite_2.2.14                           </span>
+<span class="co">##  [86] evaluate_0.15                            </span>
+<span class="co">##  [87] stringr_1.4.0                            </span>
+<span class="co">##  [88] fastmap_1.1.0                            </span>
+<span class="co">##  [89] yaml_2.3.5                               </span>
+<span class="co">##  [90] ragg_1.2.2                               </span>
+<span class="co">##  [91] ggtree_3.4.0                             </span>
+<span class="co">##  [92] knitr_1.39                               </span>
+<span class="co">##  [93] bit64_4.0.5                              </span>
+<span class="co">##  [94] fs_1.5.2                                 </span>
+<span class="co">##  [95] tidygraph_1.2.1                          </span>
+<span class="co">##  [96] caTools_1.18.2                           </span>
+<span class="co">##  [97] purrr_0.3.4                              </span>
+<span class="co">##  [98] KEGGREST_1.36.0                          </span>
+<span class="co">##  [99] ggraph_2.0.5                             </span>
+<span class="co">## [100] nlme_3.1-157                             </span>
+<span class="co">## [101] aplot_0.1.4                              </span>
+<span class="co">## [102] DO.db_2.9                                </span>
+<span class="co">## [103] xml2_1.3.3                               </span>
+<span class="co">## [104] biomaRt_2.52.0                           </span>
+<span class="co">## [105] compiler_4.2.0                           </span>
+<span class="co">## [106] filelock_1.0.2                           </span>
+<span class="co">## [107] curl_4.3.2                               </span>
+<span class="co">## [108] png_0.1-7                                </span>
+<span class="co">## [109] treeio_1.20.0                            </span>
+<span class="co">## [110] tibble_3.1.7                             </span>
+<span class="co">## [111] tweenr_1.0.2                             </span>
+<span class="co">## [112] bslib_0.3.1                              </span>
+<span class="co">## [113] stringi_1.7.6                            </span>
+<span class="co">## [114] highr_0.9                                </span>
+<span class="co">## [115] GenomicFeatures_1.48.1                   </span>
+<span class="co">## [116] desc_1.4.1                               </span>
+<span class="co">## [117] lattice_0.20-45                          </span>
+<span class="co">## [118] Matrix_1.4-1                             </span>
+<span class="co">## [119] vctrs_0.4.1                              </span>
+<span class="co">## [120] pillar_1.7.0                             </span>
+<span class="co">## [121] lifecycle_1.0.1                          </span>
+<span class="co">## [122] jquerylib_0.1.4                          </span>
+<span class="co">## [123] data.table_1.14.2                        </span>
+<span class="co">## [124] bitops_1.0-7                             </span>
+<span class="co">## [125] TxDb.Mmusculus.UCSC.mm10.knownGene_3.10.0</span>
+<span class="co">## [126] patchwork_1.1.1                          </span>
+<span class="co">## [127] rtracklayer_1.56.0                       </span>
+<span class="co">## [128] GenomicRanges_1.48.0                     </span>
+<span class="co">## [129] qvalue_2.28.0                            </span>
+<span class="co">## [130] R6_2.5.1                                 </span>
+<span class="co">## [131] BiocIO_1.6.0                             </span>
+<span class="co">## [132] KernSmooth_2.23-20                       </span>
+<span class="co">## [133] gridExtra_2.3                            </span>
+<span class="co">## [134] IRanges_2.30.0                           </span>
+<span class="co">## [135] gtools_3.9.2                             </span>
+<span class="co">## [136] boot_1.3-28                              </span>
+<span class="co">## [137] MASS_7.3-56                              </span>
+<span class="co">## [138] assertthat_0.2.1                         </span>
+<span class="co">## [139] SummarizedExperiment_1.26.1              </span>
+<span class="co">## [140] rprojroot_2.0.3                          </span>
+<span class="co">## [141] rjson_0.2.21                             </span>
+<span class="co">## [142] GenomicAlignments_1.32.0                 </span>
+<span class="co">## [143] Rsamtools_2.12.0                         </span>
+<span class="co">## [144] S4Vectors_0.34.0                         </span>
+<span class="co">## [145] GenomeInfoDbData_1.2.8                   </span>
+<span class="co">## [146] parallel_4.2.0                           </span>
+<span class="co">## [147] hms_1.1.1                                </span>
+<span class="co">## [148] grid_4.2.0                               </span>
+<span class="co">## [149] ggfun_0.0.6                              </span>
+<span class="co">## [150] tidyr_1.2.0                              </span>
+<span class="co">## [151] rmarkdown_2.14                           </span>
+<span class="co">## [152] MatrixGenerics_1.8.0                     </span>
+<span class="co">## [153] ggforce_0.3.3                            </span>
+<span class="co">## [154] Biobase_2.56.0                           </span>
+<span class="co">## [155] restfulr_0.0.13</span></code></pre>
 </div>
   </div>
 
@@ -589,11 +587,13 @@ You can familiarize yourself with the format by checking out :</p>
 
 
       <footer><div class="copyright">
-  <p>Developed by <a href="http://eonurk.github.io">Onur Karakaslar</a>, Duygu Ucar.</p>
+  <p></p>
+<p>Developed by <a href="http://eonurk.github.io" class="external-link">Onur Karakaslar</a>, Duygu Ucar.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer>
@@ -601,6 +601,8 @@ You can familiarize yourself with the format by checking out :</p>
 
   
 
+
+  
 
   </body>
 </html>
