@@ -47,4 +47,4 @@ Suggests:
     knitr,
     rmarkdown,
     markdown
-VignetteBuilder: knitr, rmarkdown
+VignetteBuilder: knitr, rmarkdown, markdown
