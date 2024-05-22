@@ -1,9 +1,8 @@
-destination: docs
+url: ~
 template:
-  params:
-    bootswatch: sandstone
-    ganalytics: UA-116646865-1
-
+  bootstrap: 5
+  bslib:
+    base_font: {google: "Open Sans"}
 authors:
   Onur Karakaslar:
     href: http://eonurk.github.io

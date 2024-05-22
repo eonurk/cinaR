@@ -1,6 +1,6 @@
 ---
 title: "Introduction to cinaR"
-author: "[E Onur Karakaslar](https://eonurk.github.io)"
+author: "[E Onur Karakaslar](https://eonurk.com)"
 date: "`r format(Sys.Date(), '%m/%d/%Y')`"
 output:
   rmarkdown::html_document:

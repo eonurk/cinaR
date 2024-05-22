@@ -4,14 +4,18 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="Differential analyses and Enrichment pipeline for bulk ATAC-seq data
+  analyses. This package combines different packages to have an ultimate package
+  for both data analyses and visualization of ATAC-seq data. Methods are described in 
+  Karakaslar et al. (2021) &lt;doi:10.1101/2021.03.05.434143&gt;.">
 <title>A Computational Pipeline for Bulk ATAC-Seq Profiles • cinaR</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/sandstone/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
-<script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><link href="deps/Open_Sans-0.4.5/font.css" rel="stylesheet">
+<!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="A Computational Pipeline for Bulk ATAC-Seq Profiles">
+<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="A Computational Pipeline for Bulk ATAC-Seq Profiles">
 <meta property="og:description" content="Differential analyses and Enrichment pipeline for bulk ATAC-seq data
   analyses. This package combines different packages to have an ultimate package
   for both data analyses and visualization of ATAC-seq data. Methods are described in 
@@ -19,69 +23,59 @@
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]--><!-- Global site tag (gtag.js) - Google Analytics --><script async src="https://www.googletagmanager.com/gtag/js?id=UA-116646865-1"></script><script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-116646865-1');
-</script>
+<![endif]-->
 </head>
-<body data-spy="scroll" data-target="#toc">
+<body>
+    <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <div class="container template-home">
-      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">cinaR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.3</span>
-      </span>
-    </div>
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    
+    <a class="navbar-brand me-2" href="index.html">cinaR</a>
 
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-<li>
-  <a href="articles/cinaR.html">Get started</a>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.4</small>
+
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navbar" class="collapse navbar-collapse ms-3">
+      <ul class="navbar-nav me-auto">
+<li class="nav-item">
+  <a class="nav-link" href="articles/cinaR.html">Get started</a>
 </li>
-<li>
-  <a href="reference/index.html">Reference</a>
+<li class="nav-item">
+  <a class="nav-link" href="reference/index.html">Reference</a>
 </li>
-<li>
-  <a href="news/index.html">Changelog</a>
+<li class="nav-item">
+  <a class="nav-link" href="news/index.html">Changelog</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="https://github.com/eonurk/cinaR/" class="external-link">
-    <span class="fab fa-github fa-lg"></span>
+<form class="form-inline my-2 my-lg-0" role="search">
+        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="search.json" id="search-input" placeholder="Search for" autocomplete="off">
+</form>
+
+      <ul class="navbar-nav">
+<li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/eonurk/cinaR/" aria-label="github">
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
       </ul>
 </div>
-<!--/.nav-collapse -->
+
+    
   </div>
-<!--/.container -->
-</div>
-<!--/.navbar -->
-
-      
-
-      </header><div class="row">
-  <div class="contents col-md-9">
-<div class="section level1">
+</nav><div class="container template-home">
+<div class="row">
+  <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="cinar-">cinaR <a href="https://eonurk.github.io/cinaR/" class="external-link"><img src="reference/figures/cinaR.png" align="right" alt="" width="139"></a>
 <a class="anchor" aria-label="anchor" href="#cinar-"></a>
 </h1></div>
 <!-- badges: start -->
+
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
@@ -92,29 +86,77 @@
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># CRAN mirror</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"cinaR"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># CRAN mirror</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"cinaR"</span><span class="op">)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="development-version">Development version<a class="anchor" aria-label="anchor" href="#development-version"></a>
 </h3>
 <p>To get bug fix and use a feature from the development version:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"eonurk/cinaR"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"eonurk/cinaR"</span><span class="op">)</span></span></code></pre></div>
 </div>
-</div>
-<div class="section level2">
-<h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
-</h2>
-<p>For more details please go to our site from <a href="https://eonurk.github.io/cinaR/articles/cinaR.html" class="external-link">here!</a></p>
 <div class="section level3">
 <h3 id="known-installation-issues">Known Installation Issues<a class="anchor" aria-label="anchor" href="#known-installation-issues"></a>
 </h3>
 <p>Sometimes bioconductor related packages may not be installed automatically.<br>
 Therefore, you may need to install them manually:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html" class="external-link">install</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ChIPseeker"</span>, <span class="st">"DESeq2"</span>, <span class="st">"edgeR"</span>, <span class="st">"fgsea"</span>,<span class="st">"GenomicRanges"</span>, <span class="st">"limma"</span>, <span class="st">"preprocessCore"</span>, <span class="st">"sva"</span>, <span class="st">"TxDb.Hsapiens.UCSC.hg38.knownGene"</span>, <span class="st">"TxDb.Hsapiens.UCSC.hg19.knownGene"</span>, <span class="st">"TxDb.Mmusculus.UCSC.mm10.knownGene"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html" class="external-link">install</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ChIPseeker"</span>, <span class="st">"DESeq2"</span>, <span class="st">"edgeR"</span>, <span class="st">"fgsea"</span>,<span class="st">"GenomicRanges"</span>, <span class="st">"limma"</span>, <span class="st">"preprocessCore"</span>, <span class="st">"sva"</span>, <span class="st">"TxDb.Hsapiens.UCSC.hg38.knownGene"</span>, <span class="st">"TxDb.Hsapiens.UCSC.hg19.knownGene"</span>, <span class="st">"TxDb.Mmusculus.UCSC.mm10.knownGene"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
+</div>
+<div class="section level2">
+<h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
+</h2>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/eonurk/cinaR/" class="external-link">cinaR</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; Checking for required Bioconductor packages...</span></span>
+<span><span class="co">#&gt; All required Bioconductor packages are already installed.</span></span>
+<span></span>
+<span><span class="co"># create contrast vector which will be compared.</span></span>
+<span><span class="va">contrasts</span><span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, </span>
+<span>              <span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"B6"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span>, <span class="st">"NZO"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># If reference genome is not set hg38 will be used!</span></span>
+<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">bed</span>, <span class="va">contrasts</span>, reference.genome <span class="op">=</span> <span class="st">"mm10"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; &gt;&gt; Experiment type: ATAC-Seq</span></span>
+<span><span class="co">#&gt; &gt;&gt; Matrix is filtered!</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; &gt;&gt; preparing features information...      2024-05-22 09:51:42 </span></span>
+<span><span class="co">#&gt; &gt;&gt; identifying nearest features...        2024-05-22 09:51:42 </span></span>
+<span><span class="co">#&gt; &gt;&gt; calculating distance from peak to TSS...   2024-05-22 09:51:43 </span></span>
+<span><span class="co">#&gt; &gt;&gt; assigning genomic annotation...        2024-05-22 09:51:43 </span></span>
+<span><span class="co">#&gt; &gt;&gt; assigning chromosome lengths           2024-05-22 09:51:52 </span></span>
+<span><span class="co">#&gt; &gt;&gt; done...                    2024-05-22 09:51:52</span></span>
+<span><span class="co">#&gt; &gt;&gt; Method: edgeR</span></span>
+<span><span class="co">#&gt;  FDR:0.05&amp; abs(logFC)&lt;0</span></span>
+<span><span class="co">#&gt; &gt;&gt; Estimating dispersion...</span></span>
+<span><span class="co">#&gt; &gt;&gt; Fitting GLM...</span></span>
+<span><span class="co">#&gt; &gt;&gt; DA peaks are found!</span></span>
+<span><span class="co">#&gt; &gt;&gt; No `geneset` is specified so immune modules (Chaussabel, 2008) will be used!</span></span>
+<span><span class="co">#&gt; &gt;&gt; enrichment.method` is not selected. Hyper-geometric p-value (HPEA) will be used!</span></span>
+<span><span class="co">#&gt; &gt;&gt; Mice gene symbols are converted to human symbols!</span></span>
+<span><span class="co">#&gt; &gt;&gt; Enrichment results are ready...</span></span>
+<span><span class="co">#&gt; &gt;&gt; Done!</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/pca_plot.html">pca_plot</a></span><span class="op">(</span><span class="va">results</span>, <span class="va">contrasts</span>, show.names <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/unnamed-chunk-5-1.png" width="100%"></p>
+<blockquote>
+<p>For more details please go to our site from <a href="https://eonurk.github.io/cinaR/articles/cinaR.html" class="external-link">here!</a></p>
+</blockquote>
+</div>
+<div class="section level2">
+<h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
+</h2>
+<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="sc">@</span>article {Karakaslar2021.<span class="dv">03</span>.<span class="fl">05.434143</span>,</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>    author <span class="ot">=</span> {Karakaslar, E Onur and Ucar, Duygu},</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>    title <span class="ot">=</span> {cinaR<span class="sc">:</span> A comprehensive R package <span class="cf">for</span> the differential analyses and functional interpretation of ATAC<span class="sc">-</span>seq data},</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>    year <span class="ot">=</span> {<span class="dv">2021</span>},</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>    doi <span class="ot">=</span> {<span class="fl">10.1101</span><span class="sc">/</span><span class="dv">2021</span>.<span class="dv">03</span>.<span class="fl">05.434143</span>},</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>    publisher <span class="ot">=</span> {Cold Spring Harbor Laboratory},</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>    URL <span class="ot">=</span> {https<span class="sc">:</span><span class="er">//</span>www.biorxiv.org<span class="sc">/</span>content<span class="sc">/</span>early<span class="sc">/</span><span class="dv">2021</span><span class="sc">/</span><span class="dv">03</span><span class="sc">/</span><span class="dv">08</span><span class="sc">/</span><span class="dv">2021</span>.<span class="dv">03</span>.<span class="dv">05</span>.<span class="fl">434143.1</span>},</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>    journal <span class="ot">=</span> {bioRxiv}</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="contribution">Contribution<a class="anchor" aria-label="anchor" href="#contribution"></a>
@@ -122,20 +164,14 @@ Therefore, you may need to install them manually:</p>
 <p>You can send pull requests to make your contributions.</p>
 </div>
 <div class="section level2">
-<h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a>
-</h2>
-<ul><li><a href="https://eonurk.github.io/" class="external-link">E Onur Karakaslar</a></li></ul>
-</div>
-<div class="section level2">
 <h2 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>
 </h2>
-<ul><li>GNU General Public License v3.0</li></ul>
+<ul>
+<li>GNU General Public License v3.0</li>
+</ul>
 </div>
 </div>
-  </div>
-
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <div class="links">
+  </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
 <li><a href="https://cloud.r-project.org/package=cinaR" class="external-link">View on CRAN</a></li>
@@ -163,7 +199,7 @@ Therefore, you may need to install them manually:</p>
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>
-<a href="http://eonurk.github.io" class="external-link">Onur Karakaslar</a> <br><small class="roles"> Author, maintainer </small>  </li>
+<a href="http://eonurk.github.io" class="external-link">Onur Karakaslar</a> <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-9182-910X" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 <li>Duygu Ucar <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-9772-3066" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 </ul>
 </div>
@@ -176,25 +212,24 @@ Therefore, you may need to install them manually:</p>
 </ul>
 </div>
 
-  </div>
+  </aside>
 </div>
 
 
-      <footer><div class="copyright">
+    <footer><div class="pkgdown-footer-left">
   <p></p>
 <p>Developed by <a href="http://eonurk.github.io" class="external-link">Onur Karakaslar</a>, Duygu Ucar.</p>
 </div>
 
-<div class="pkgdown">
+<div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
-      </footer>
+    </footer>
 </div>
 
   
-
 
   
 

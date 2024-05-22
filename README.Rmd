@@ -41,9 +41,6 @@ To get bug fix and use a feature from the development version:
 # install.packages("devtools")
 devtools::install_github("eonurk/cinaR")
 ```
-## Usage
-
-For more details please go to our site from [here!](https://eonurk.github.io/cinaR/articles/cinaR.html)
 
 ### Known Installation Issues
 
@@ -54,14 +51,45 @@ Therefore, you may need to install them manually:
 BiocManager::install(c("ChIPseeker", "DESeq2", "edgeR", "fgsea","GenomicRanges", "limma", "preprocessCore", "sva", "TxDb.Hsapiens.UCSC.hg38.knownGene", "TxDb.Hsapiens.UCSC.hg19.knownGene", "TxDb.Mmusculus.UCSC.mm10.knownGene"))
 ```
 
+## Usage
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(dpi=300,fig.width=6)
+```
+
+```{r}
+library(cinaR)
+
+# create contrast vector which will be compared.
+contrasts<- c("B6", "B6", "B6", "B6", "B6", "NZO", "NZO", "NZO", "NZO", "NZO", "NZO", 
+              "B6", "B6", "B6", "B6", "B6", "NZO", "NZO", "NZO", "NZO", "NZO", "NZO")
+
+# If reference genome is not set hg38 will be used!
+results <- cinaR(bed, contrasts, reference.genome = "mm10")
+
+pca_plot(results, contrasts, show.names = F)
+```
+
+> For more details please go to our site from [here!](https://eonurk.github.io/cinaR/articles/cinaR.html)
+
+
+## Citation
+```
+@article {Karakaslar2021.03.05.434143,
+	author = {Karakaslar, E Onur and Ucar, Duygu},
+	title = {cinaR: A comprehensive R package for the differential analyses and 
+	functional interpretation of ATAC-seq data},
+	year = {2021},
+	doi = {10.1101/2021.03.05.434143},
+	publisher = {Cold Spring Harbor Laboratory},
+	URL = {https://www.biorxiv.org/content/early/2021/03/08/2021.03.05.434143.1},
+	journal = {bioRxiv}
+}
+```
 
 ## Contribution
 
 You can send pull requests to make your contributions.
-
-## Author
-
-- [E Onur Karakaslar](https://eonurk.github.io/)
 
 ## License
 

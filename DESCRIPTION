@@ -1,12 +1,13 @@
 Package: cinaR
 Type: Package
 Title: A Computational Pipeline for Bulk 'ATAC-Seq' Profiles
-Version: 0.2.3
+Version: 0.2.4
 Authors@R: 
     c(person(given = "Onur",
              family = "Karakaslar",
              role = c("aut", "cre"),
-             email = "eonurkara@gmail.com"),
+             email = "eonurkara@gmail.com",
+             comment = c(ORCID = "0000-0002-9182-910X")),
       person(given = "Duygu",
              family = "Ucar",
              role = "aut",
@@ -23,15 +24,12 @@ URL: https://github.com/eonurk/cinaR/
 BugReports: https://github.com/eonurk/cinaR/issues/
 biocViews:
 Depends: R (>= 4.0.0)
-Imports: ChIPseeker, 
+Imports: BiocManager,
          DESeq2, 
          dplyr,
          edgeR, 
          fgsea,
          GenomicRanges, 
-         TxDb.Hsapiens.UCSC.hg38.knownGene, 
-         TxDb.Hsapiens.UCSC.hg19.knownGene, 
-         TxDb.Mmusculus.UCSC.mm10.knownGene,
          ggplot2,
          ggrepel,
          grDevices,
@@ -42,9 +40,12 @@ Imports: ChIPseeker,
          RColorBrewer,
          sva,
          writexl 
-RoxygenNote: 7.1.2
-Suggests: 
-    knitr,
-    rmarkdown,
-    markdown
+RoxygenNote: 7.2.3
+Suggests: ChIPseeker, 
+          knitr,
+          rmarkdown,
+          markdown,
+          TxDb.Hsapiens.UCSC.hg38.knownGene, 
+          TxDb.Hsapiens.UCSC.hg19.knownGene, 
+          TxDb.Mmusculus.UCSC.mm10.knownGene
 VignetteBuilder: knitr, rmarkdown, markdown

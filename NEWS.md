@@ -1,3 +1,11 @@
+# cinaR 0.2.4
+- Bug fix and changes:
+    - Bioconductor related packages are suggested
+    - Added .on_attach() for smooth CRAN checks 
+
+# cinaR 0.2.3
+- Minor improvements
+
 # cinaR 0.2.2
 * Added:
   - `comparison.scheme` either set to `OVO` (default) which will compare each contrasts to each other. If it's set to `OVA` each contrast will be compared to rest. 
