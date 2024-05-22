@@ -3,7 +3,7 @@ pkgdown: 2.0.9
 pkgdown_sha: ~
 articles:
   cinaR: cinaR.html
-last_built: 2024-05-22T10:15Z
+last_built: 2024-05-22T10:26Z
 urls:
   reference: https://eonurk.github.io/cinaR/reference
   article: https://eonurk.github.io/cinaR/articles
