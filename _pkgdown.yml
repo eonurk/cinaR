@@ -1,8 +1,4 @@
-url: ~
+url: https://eonurk.github.io/cinaR/
 template:
   bootstrap: 5
-  bslib:
-    base_font: {google: "Open Sans"}
-authors:
-  Onur Karakaslar:
-    href: http://eonurk.github.io
+

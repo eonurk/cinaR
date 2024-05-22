@@ -20,7 +20,8 @@ Description: Differential analyses and Enrichment pipeline for bulk 'ATAC-seq' d
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-URL: https://github.com/eonurk/cinaR/
+URL: https://github.com/eonurk/cinaR/,
+    https://eonurk.github.io/cinaR/
 BugReports: https://github.com/eonurk/cinaR/issues/
 biocViews:
 Depends: R (>= 4.0.0)
