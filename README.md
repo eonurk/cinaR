@@ -5,6 +5,8 @@
 
 <!-- badges: start -->
 
+![RMD
+check](https://github.com/eonurk/cinaR/actions/workflows/R-CMD-check.yaml/badge.svg)
 [![CRAN
 version](https://www.r-pkg.org/badges/version/cinaR)](https://cran.r-project.org/package=cinaR)
 [![CRAN
@@ -64,12 +66,12 @@ results <- cinaR(bed, contrasts, reference.genome = "mm10")
 #> >> Experiment type: ATAC-Seq
 #> >> Matrix is filtered!
 #> 
-#> >> preparing features information...      2024-05-22 09:51:42 
-#> >> identifying nearest features...        2024-05-22 09:51:42 
-#> >> calculating distance from peak to TSS...   2024-05-22 09:51:43 
-#> >> assigning genomic annotation...        2024-05-22 09:51:43 
-#> >> assigning chromosome lengths           2024-05-22 09:51:52 
-#> >> done...                    2024-05-22 09:51:52
+#> >> preparing features information...      2024-05-22 12:38:01 
+#> >> identifying nearest features...        2024-05-22 12:38:02 
+#> >> calculating distance from peak to TSS...   2024-05-22 12:38:02 
+#> >> assigning genomic annotation...        2024-05-22 12:38:02 
+#> >> assigning chromosome lengths           2024-05-22 12:38:11 
+#> >> done...                    2024-05-22 12:38:11
 #> >> Method: edgeR
 #>  FDR:0.05& abs(logFC)<0
 #> >> Estimating dispersion...
@@ -93,7 +95,8 @@ pca_plot(results, contrasts, show.names = F)
 
     @article {Karakaslar2021.03.05.434143,
         author = {Karakaslar, E Onur and Ucar, Duygu},
-        title = {cinaR: A comprehensive R package for the differential analyses and functional interpretation of ATAC-seq data},
+        title = {cinaR: A comprehensive R package for the differential analyses and 
+        functional interpretation of ATAC-seq data},
         year = {2021},
         doi = {10.1101/2021.03.05.434143},
         publisher = {Cold Spring Harbor Laboratory},
