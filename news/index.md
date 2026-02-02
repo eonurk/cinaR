@@ -7,6 +7,9 @@
 - Made
   [`run_enrichment()`](https://eonurk.github.io/cinaR/reference/run_enrichment.md)
   more robust to input shape and empty contrasts
+- Added
+  [`prep_scATAC_seurat()`](https://eonurk.github.io/cinaR/reference/prep_scATAC_seurat.md)
+  helper for Seurat/Signac objects
 
 ## cinaR 0.2.5
 
@@ -27,6 +30,8 @@
 
 ## cinaR 0.2.3
 
+CRAN release: 2022-05-18
+
 - Minor improvements
 
 ## cinaR 0.2.2
@@ -37,6 +42,8 @@
     will be compared to rest.
 
 ## cinaR 0.2.1
+
+CRAN release: 2021-04-02
 
 - Added:
   - An extra argument `sv.number` is added if user wants to set the
@@ -49,6 +56,8 @@
     vignette.
 
 ## cinaR 0.2.0
+
+CRAN release: 2021-01-05
 
 - Added:
   - `heatmap_differential` function to be able to plot the heatmaps of a
@@ -69,5 +78,7 @@ This version is even cooler, lol:
 - Small bug fixes and improvements
 
 ## cinaR 0.1.0
+
+CRAN release: 2020-11-14
 
 - `cinaR` is published in CRAN repository!

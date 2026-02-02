@@ -94,15 +94,15 @@ accessible peaks.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># If reference genome is not set hg38 will be used!</span></span>
 <span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">bed</span>, <span class="va">contrasts</span>, reference.genome <span class="op">=</span> <span class="st">"mm10"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## &gt;&gt; preparing features information...      2026-02-02 12:20:04 </span></span>
+<pre><code><span><span class="co">## &gt;&gt; preparing features information...      2026-02-02 12:28:24 </span></span>
 <span><span class="co">## &gt;&gt; Using Genome: mm10 ...</span></span>
-<span><span class="co">## &gt;&gt; identifying nearest features...        2026-02-02 12:20:05 </span></span>
-<span><span class="co">## &gt;&gt; calculating distance from peak to TSS...   2026-02-02 12:20:05 </span></span>
-<span><span class="co">## &gt;&gt; assigning genomic annotation...        2026-02-02 12:20:05 </span></span>
+<span><span class="co">## &gt;&gt; identifying nearest features...        2026-02-02 12:28:25 </span></span>
+<span><span class="co">## &gt;&gt; calculating distance from peak to TSS...   2026-02-02 12:28:25 </span></span>
+<span><span class="co">## &gt;&gt; assigning genomic annotation...        2026-02-02 12:28:25 </span></span>
 <span><span class="co">## &gt;&gt; Using Genome: mm10 ...</span></span>
 <span><span class="co">## &gt;&gt; Using Genome: mm10 ...</span></span>
-<span><span class="co">## &gt;&gt; assigning chromosome lengths           2026-02-02 12:20:20 </span></span>
-<span><span class="co">## &gt;&gt; done...                    2026-02-02 12:20:20</span></span></code></pre>
+<span><span class="co">## &gt;&gt; assigning chromosome lengths           2026-02-02 12:28:39 </span></span>
+<span><span class="co">## &gt;&gt; done...                    2026-02-02 12:28:39</span></span></code></pre>
 <p>Now, you can access differential accessibility (DA) and enrichment
 results.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
@@ -309,12 +309,19 @@ matrix.</p>
 <span><span class="co">## "A" "A" "B" "B"</span></span></code></pre>
 <p>You can then pass <code>prep$bed</code> and
 <code>prep$contrasts</code> to <code><a href="../reference/cinaR.html">cinaR()</a></code> as usual.</p>
+<p>If you use a Seurat/Signac object, you can prepare the data
+directly:</p>
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">prep</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prep_scATAC_seurat.html">prep_scATAC_seurat</a></span><span class="op">(</span><span class="va">seurat_obj</span>,</span>
+<span>                           sample.col <span class="op">=</span> <span class="st">"sample"</span>,</span>
+<span>                           group.col <span class="op">=</span> <span class="st">"group"</span>,</span>
+<span>                           assay <span class="op">=</span> <span class="st">"peaks"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="running-enrichment-with-different-dataset">Running enrichment with different dataset<a class="anchor" aria-label="anchor" href="#running-enrichment-with-different-dataset"></a>
 </h2>
 <p>You can run the enrichment analyses with a custom gene set:</p>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, geneset <span class="op">=</span> <span class="va">new_geneset</span><span class="op">)</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="cinargenesets">
@@ -340,7 +347,7 @@ package to read these genesets into your current environment.</p>
 <p>A <code>geneset</code> must be a <code>.gmt</code> formatted symbol
 file.<br>
 You can familiarize yourself with the format by checking out :</p>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># default geneset to be used</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"VP2008"</span><span class="op">)</span></span></code></pre></div>
 <blockquote>
@@ -366,14 +373,14 @@ models:</p>
 <h2 id="batch-effect-correction">Batch Effect Correction<a class="anchor" aria-label="anchor" href="#batch-effect-correction"></a>
 </h2>
 <p>If you suspect your data have unknown batch effects, you can use:</p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, batch.correction <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code></pre></div>
 <p>This option will run <a href="https://bioconductor.org/packages/release/bioc/html/sva.html" class="external-link">Surrogate
 Variable Analysis</a> (SVA) and try to adjust your data for unknown
 batch effects. If however, you already know the batches of the samples,
 you can simply set the <code>batch.information</code> argument as well.
 This will not run the SVA but just add the batches to design matrix.</p>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># runs SVA</span></span>
 <span><span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, batch.correction <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
 <span></span>
@@ -395,17 +402,17 @@ This will not run the SVA but just add the batches to design matrix.</p>
 design matrix further, which affects the down-stream analyses. For
 instance, ages or sexes of the samples could be additional covariates.
 To account for those:</p>
-<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" tabindex="-1"></a><span class="co"># Ages of the samples could be not in biological interests but should be accounted for!</span></span>
-<span id="cb44-2"><a href="#cb44-2" tabindex="-1"></a><span class="fu">cinaR</span>(..., <span class="at">additional.covariates =</span> <span class="fu">c</span>((<span class="dv">18</span>, <span class="dv">11</span>), (<span class="dv">3</span>, <span class="dv">11</span>)))</span>
-<span id="cb44-3"><a href="#cb44-3" tabindex="-1"></a></span>
-<span id="cb44-4"><a href="#cb44-4" tabindex="-1"></a><span class="co"># More than one covariate for instance, sex and age</span></span>
-<span id="cb44-5"><a href="#cb44-5" tabindex="-1"></a>sex.info <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, </span>
-<span id="cb44-6"><a href="#cb44-6" tabindex="-1"></a>              <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>)</span>
-<span id="cb44-7"><a href="#cb44-7" tabindex="-1"></a></span>
-<span id="cb44-8"><a href="#cb44-8" tabindex="-1"></a>age.info <span class="ot">&lt;-</span> <span class="fu">c</span>((<span class="dv">18</span>, <span class="dv">11</span>), (<span class="dv">3</span>, <span class="dv">11</span>)</span>
-<span id="cb44-9"><a href="#cb44-9" tabindex="-1"></a>covs <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Sex =</span> sex.info, <span class="at">Age =</span> age.info)</span>
-<span id="cb44-10"><a href="#cb44-10" tabindex="-1"></a></span>
-<span id="cb44-11"><a href="#cb44-11" tabindex="-1"></a><span class="fu">cinaR</span>(..., <span class="at">additional.covariates =</span> covs)</span></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" tabindex="-1"></a><span class="co"># Ages of the samples could be not in biological interests but should be accounted for!</span></span>
+<span id="cb45-2"><a href="#cb45-2" tabindex="-1"></a><span class="fu">cinaR</span>(..., <span class="at">additional.covariates =</span> <span class="fu">c</span>((<span class="dv">18</span>, <span class="dv">11</span>), (<span class="dv">3</span>, <span class="dv">11</span>)))</span>
+<span id="cb45-3"><a href="#cb45-3" tabindex="-1"></a></span>
+<span id="cb45-4"><a href="#cb45-4" tabindex="-1"></a><span class="co"># More than one covariate for instance, sex and age</span></span>
+<span id="cb45-5"><a href="#cb45-5" tabindex="-1"></a>sex.info <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, </span>
+<span id="cb45-6"><a href="#cb45-6" tabindex="-1"></a>              <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>)</span>
+<span id="cb45-7"><a href="#cb45-7" tabindex="-1"></a></span>
+<span id="cb45-8"><a href="#cb45-8" tabindex="-1"></a>age.info <span class="ot">&lt;-</span> <span class="fu">c</span>((<span class="dv">18</span>, <span class="dv">11</span>), (<span class="dv">3</span>, <span class="dv">11</span>)</span>
+<span id="cb45-9"><a href="#cb45-9" tabindex="-1"></a>covs <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Sex =</span> sex.info, <span class="at">Age =</span> age.info)</span>
+<span id="cb45-10"><a href="#cb45-10" tabindex="-1"></a></span>
+<span id="cb45-11"><a href="#cb45-11" tabindex="-1"></a><span class="fu">cinaR</span>(..., <span class="at">additional.covariates =</span> covs)</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="saving-da-peaks-to-excel">Saving DA peaks to excel<a class="anchor" aria-label="anchor" href="#saving-da-peaks-to-excel"></a>
@@ -417,7 +424,7 @@ Additionally, you can set the path/name of the file using
 <code>DA.peaks.path</code> argument after setting
 <code>save.DA.peaks = TRUE</code>.</p>
 <p>For instance,</p>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, save.DA.peaks <span class="op">=</span> <span class="cn">T</span>, DA.peaks.path <span class="op">=</span> <span class="st">"./Peaks_mice.xlsx"</span><span class="op">)</span></span></code></pre></div>
 <p>will create an excel file with name <code>Peaks_mice.xlsx</code> in
 the current directory.</p>
@@ -440,7 +447,7 @@ argument. For more information, <code><a href="../reference/cinaR.html">?cinaR</
 <div class="section level2">
 <h2 id="some-useful-arguments">Some useful arguments<a class="anchor" aria-label="anchor" href="#some-useful-arguments"></a>
 </h2>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># new FDR threshold for DA peaks</span></span>
 <span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, DA.fdr.threshold <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span>
 <span></span>
@@ -476,7 +483,7 @@ fold change and dispersion for RNA-seq data with DESeq2. Genome Biology,
 <div class="section level2">
 <h2 id="session-info">Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## R version 4.5.2 (2025-10-31)</span></span>
 <span><span class="co">## Platform: x86_64-pc-linux-gnu</span></span>
@@ -556,8 +563,8 @@ fold change and dispersion for RNA-seq data with DESeq2. Genome Biology,
 <span><span class="co">##  [52] abind_1.4-8                              </span></span>
 <span><span class="co">##  [53] compiler_4.5.2                           </span></span>
 <span><span class="co">##  [54] withr_3.0.2                              </span></span>
-<span><span class="co">##  [55] bit64_4.6.0-1                            </span></span>
-<span><span class="co">##  [56] fontquiver_0.2.1                         </span></span>
+<span><span class="co">##  [55] fontquiver_0.2.1                         </span></span>
+<span><span class="co">##  [56] bit64_4.6.0-1                            </span></span>
 <span><span class="co">##  [57] S7_0.2.1                                 </span></span>
 <span><span class="co">##  [58] BiocParallel_1.44.0                      </span></span>
 <span><span class="co">##  [59] DBI_1.2.3                                </span></span>
@@ -572,90 +579,91 @@ fold change and dispersion for RNA-seq data with DESeq2. Genome Biology,
 <span><span class="co">##  [68] caTools_1.18.3                           </span></span>
 <span><span class="co">##  [69] gtools_3.9.5                             </span></span>
 <span><span class="co">##  [70] tools_4.5.2                              </span></span>
-<span><span class="co">##  [71] scatterpie_0.2.6                         </span></span>
-<span><span class="co">##  [72] ape_5.8-1                                </span></span>
-<span><span class="co">##  [73] R.oo_1.27.1                              </span></span>
-<span><span class="co">##  [74] glue_1.8.0                               </span></span>
-<span><span class="co">##  [75] restfulr_0.0.16                          </span></span>
-<span><span class="co">##  [76] nlme_3.1-168                             </span></span>
-<span><span class="co">##  [77] GOSemSim_2.36.0                          </span></span>
-<span><span class="co">##  [78] grid_4.5.2                               </span></span>
-<span><span class="co">##  [79] cluster_2.1.8.1                          </span></span>
-<span><span class="co">##  [80] reshape2_1.4.5                           </span></span>
-<span><span class="co">##  [81] fgsea_1.36.2                             </span></span>
-<span><span class="co">##  [82] generics_0.1.4                           </span></span>
-<span><span class="co">##  [83] gtable_0.3.6                             </span></span>
-<span><span class="co">##  [84] R.methodsS3_1.8.2                        </span></span>
-<span><span class="co">##  [85] tidyr_1.3.2                              </span></span>
-<span><span class="co">##  [86] data.table_1.18.2.1                      </span></span>
-<span><span class="co">##  [87] XVector_0.50.0                           </span></span>
-<span><span class="co">##  [88] BiocGenerics_0.56.0                      </span></span>
-<span><span class="co">##  [89] ggrepel_0.9.6                            </span></span>
-<span><span class="co">##  [90] pillar_1.11.1                            </span></span>
-<span><span class="co">##  [91] stringr_1.6.0                            </span></span>
-<span><span class="co">##  [92] limma_3.66.0                             </span></span>
-<span><span class="co">##  [93] yulab.utils_0.2.3                        </span></span>
-<span><span class="co">##  [94] splines_4.5.2                            </span></span>
-<span><span class="co">##  [95] tweenr_2.0.3                             </span></span>
-<span><span class="co">##  [96] dplyr_1.1.4                              </span></span>
-<span><span class="co">##  [97] treeio_1.34.0                            </span></span>
-<span><span class="co">##  [98] lattice_0.22-7                           </span></span>
-<span><span class="co">##  [99] rtracklayer_1.70.1                       </span></span>
-<span><span class="co">## [100] bit_4.6.0                                </span></span>
-<span><span class="co">## [101] tidyselect_1.2.1                         </span></span>
-<span><span class="co">## [102] locfit_1.5-9.12                          </span></span>
-<span><span class="co">## [103] fontLiberation_0.1.0                     </span></span>
-<span><span class="co">## [104] GO.db_3.22.0                             </span></span>
-<span><span class="co">## [105] Biostrings_2.78.0                        </span></span>
-<span><span class="co">## [106] knitr_1.51                               </span></span>
-<span><span class="co">## [107] TxDb.Mmusculus.UCSC.mm10.knownGene_3.10.0</span></span>
-<span><span class="co">## [108] fontBitstreamVera_0.1.1                  </span></span>
-<span><span class="co">## [109] IRanges_2.44.0                           </span></span>
-<span><span class="co">## [110] Seqinfo_1.0.0                            </span></span>
-<span><span class="co">## [111] edgeR_4.8.2                              </span></span>
-<span><span class="co">## [112] SummarizedExperiment_1.40.0              </span></span>
-<span><span class="co">## [113] stats4_4.5.2                             </span></span>
-<span><span class="co">## [114] xfun_0.56                                </span></span>
-<span><span class="co">## [115] Biobase_2.70.0                           </span></span>
-<span><span class="co">## [116] statmod_1.5.1                            </span></span>
-<span><span class="co">## [117] matrixStats_1.5.0                        </span></span>
-<span><span class="co">## [118] pheatmap_1.0.13                          </span></span>
-<span><span class="co">## [119] stringi_1.8.7                            </span></span>
-<span><span class="co">## [120] UCSC.utils_1.6.1                         </span></span>
-<span><span class="co">## [121] lazyeval_0.2.2                           </span></span>
-<span><span class="co">## [122] ggfun_0.2.0                              </span></span>
-<span><span class="co">## [123] yaml_2.3.12                              </span></span>
-<span><span class="co">## [124] boot_1.3-32                              </span></span>
-<span><span class="co">## [125] evaluate_1.0.5                           </span></span>
-<span><span class="co">## [126] codetools_0.2-20                         </span></span>
-<span><span class="co">## [127] cigarillo_1.0.0                          </span></span>
-<span><span class="co">## [128] gdtools_0.4.4                            </span></span>
-<span><span class="co">## [129] tibble_3.3.1                             </span></span>
-<span><span class="co">## [130] qvalue_2.42.0                            </span></span>
-<span><span class="co">## [131] BiocManager_1.30.27                      </span></span>
-<span><span class="co">## [132] ggplotify_0.1.3                          </span></span>
-<span><span class="co">## [133] cli_3.6.5                                </span></span>
-<span><span class="co">## [134] systemfonts_1.3.1                        </span></span>
-<span><span class="co">## [135] jquerylib_0.1.4                          </span></span>
-<span><span class="co">## [136] Rcpp_1.1.1                               </span></span>
-<span><span class="co">## [137] GenomeInfoDb_1.46.2                      </span></span>
-<span><span class="co">## [138] png_0.1-8                                </span></span>
-<span><span class="co">## [139] XML_3.99-0.20                            </span></span>
-<span><span class="co">## [140] parallel_4.5.2                           </span></span>
-<span><span class="co">## [141] pkgdown_2.2.0                            </span></span>
-<span><span class="co">## [142] ggplot2_4.0.1                            </span></span>
-<span><span class="co">## [143] blob_1.3.0                               </span></span>
-<span><span class="co">## [144] DOSE_4.4.0                               </span></span>
-<span><span class="co">## [145] bitops_1.0-9                             </span></span>
-<span><span class="co">## [146] tidytree_0.4.7                           </span></span>
-<span><span class="co">## [147] ggiraph_0.9.3                            </span></span>
-<span><span class="co">## [148] scales_1.4.0                             </span></span>
-<span><span class="co">## [149] purrr_1.2.1                              </span></span>
-<span><span class="co">## [150] crayon_1.5.3                             </span></span>
-<span><span class="co">## [151] rlang_1.1.7                              </span></span>
-<span><span class="co">## [152] cowplot_1.2.0                            </span></span>
-<span><span class="co">## [153] fastmatch_1.1-8                          </span></span>
-<span><span class="co">## [154] KEGGREST_1.50.0</span></span></code></pre>
+<span><span class="co">##  [71] otel_0.2.0                               </span></span>
+<span><span class="co">##  [72] scatterpie_0.2.6                         </span></span>
+<span><span class="co">##  [73] ape_5.8-1                                </span></span>
+<span><span class="co">##  [74] R.oo_1.27.1                              </span></span>
+<span><span class="co">##  [75] glue_1.8.0                               </span></span>
+<span><span class="co">##  [76] restfulr_0.0.16                          </span></span>
+<span><span class="co">##  [77] nlme_3.1-168                             </span></span>
+<span><span class="co">##  [78] GOSemSim_2.36.0                          </span></span>
+<span><span class="co">##  [79] grid_4.5.2                               </span></span>
+<span><span class="co">##  [80] cluster_2.1.8.1                          </span></span>
+<span><span class="co">##  [81] reshape2_1.4.5                           </span></span>
+<span><span class="co">##  [82] fgsea_1.36.2                             </span></span>
+<span><span class="co">##  [83] generics_0.1.4                           </span></span>
+<span><span class="co">##  [84] gtable_0.3.6                             </span></span>
+<span><span class="co">##  [85] R.methodsS3_1.8.2                        </span></span>
+<span><span class="co">##  [86] tidyr_1.3.2                              </span></span>
+<span><span class="co">##  [87] data.table_1.18.2.1                      </span></span>
+<span><span class="co">##  [88] XVector_0.50.0                           </span></span>
+<span><span class="co">##  [89] BiocGenerics_0.56.0                      </span></span>
+<span><span class="co">##  [90] ggrepel_0.9.6                            </span></span>
+<span><span class="co">##  [91] pillar_1.11.1                            </span></span>
+<span><span class="co">##  [92] stringr_1.6.0                            </span></span>
+<span><span class="co">##  [93] limma_3.66.0                             </span></span>
+<span><span class="co">##  [94] yulab.utils_0.2.3                        </span></span>
+<span><span class="co">##  [95] splines_4.5.2                            </span></span>
+<span><span class="co">##  [96] tweenr_2.0.3                             </span></span>
+<span><span class="co">##  [97] dplyr_1.1.4                              </span></span>
+<span><span class="co">##  [98] treeio_1.34.0                            </span></span>
+<span><span class="co">##  [99] lattice_0.22-7                           </span></span>
+<span><span class="co">## [100] rtracklayer_1.70.1                       </span></span>
+<span><span class="co">## [101] bit_4.6.0                                </span></span>
+<span><span class="co">## [102] tidyselect_1.2.1                         </span></span>
+<span><span class="co">## [103] locfit_1.5-9.12                          </span></span>
+<span><span class="co">## [104] fontLiberation_0.1.0                     </span></span>
+<span><span class="co">## [105] GO.db_3.22.0                             </span></span>
+<span><span class="co">## [106] Biostrings_2.78.0                        </span></span>
+<span><span class="co">## [107] knitr_1.51                               </span></span>
+<span><span class="co">## [108] TxDb.Mmusculus.UCSC.mm10.knownGene_3.10.0</span></span>
+<span><span class="co">## [109] fontBitstreamVera_0.1.1                  </span></span>
+<span><span class="co">## [110] IRanges_2.44.0                           </span></span>
+<span><span class="co">## [111] Seqinfo_1.0.0                            </span></span>
+<span><span class="co">## [112] edgeR_4.8.2                              </span></span>
+<span><span class="co">## [113] SummarizedExperiment_1.40.0              </span></span>
+<span><span class="co">## [114] stats4_4.5.2                             </span></span>
+<span><span class="co">## [115] xfun_0.56                                </span></span>
+<span><span class="co">## [116] Biobase_2.70.0                           </span></span>
+<span><span class="co">## [117] statmod_1.5.1                            </span></span>
+<span><span class="co">## [118] matrixStats_1.5.0                        </span></span>
+<span><span class="co">## [119] pheatmap_1.0.13                          </span></span>
+<span><span class="co">## [120] stringi_1.8.7                            </span></span>
+<span><span class="co">## [121] UCSC.utils_1.6.1                         </span></span>
+<span><span class="co">## [122] lazyeval_0.2.2                           </span></span>
+<span><span class="co">## [123] ggfun_0.2.0                              </span></span>
+<span><span class="co">## [124] yaml_2.3.12                              </span></span>
+<span><span class="co">## [125] boot_1.3-32                              </span></span>
+<span><span class="co">## [126] evaluate_1.0.5                           </span></span>
+<span><span class="co">## [127] codetools_0.2-20                         </span></span>
+<span><span class="co">## [128] cigarillo_1.0.0                          </span></span>
+<span><span class="co">## [129] gdtools_0.4.4                            </span></span>
+<span><span class="co">## [130] tibble_3.3.1                             </span></span>
+<span><span class="co">## [131] qvalue_2.42.0                            </span></span>
+<span><span class="co">## [132] BiocManager_1.30.27                      </span></span>
+<span><span class="co">## [133] ggplotify_0.1.3                          </span></span>
+<span><span class="co">## [134] cli_3.6.5                                </span></span>
+<span><span class="co">## [135] systemfonts_1.3.1                        </span></span>
+<span><span class="co">## [136] jquerylib_0.1.4                          </span></span>
+<span><span class="co">## [137] Rcpp_1.1.1                               </span></span>
+<span><span class="co">## [138] GenomeInfoDb_1.46.2                      </span></span>
+<span><span class="co">## [139] png_0.1-8                                </span></span>
+<span><span class="co">## [140] XML_3.99-0.20                            </span></span>
+<span><span class="co">## [141] parallel_4.5.2                           </span></span>
+<span><span class="co">## [142] pkgdown_2.2.0                            </span></span>
+<span><span class="co">## [143] ggplot2_4.0.1                            </span></span>
+<span><span class="co">## [144] blob_1.3.0                               </span></span>
+<span><span class="co">## [145] DOSE_4.4.0                               </span></span>
+<span><span class="co">## [146] bitops_1.0-9                             </span></span>
+<span><span class="co">## [147] tidytree_0.4.7                           </span></span>
+<span><span class="co">## [148] ggiraph_0.9.3                            </span></span>
+<span><span class="co">## [149] scales_1.4.0                             </span></span>
+<span><span class="co">## [150] purrr_1.2.1                              </span></span>
+<span><span class="co">## [151] crayon_1.5.3                             </span></span>
+<span><span class="co">## [152] rlang_1.1.7                              </span></span>
+<span><span class="co">## [153] cowplot_1.2.0                            </span></span>
+<span><span class="co">## [154] fastmatch_1.1-8                          </span></span>
+<span><span class="co">## [155] KEGGREST_1.50.0</span></span></code></pre>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

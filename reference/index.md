@@ -33,6 +33,8 @@
   pca_plot
 - [`prep_scATAC_cinaR()`](https://eonurk.github.io/cinaR/reference/prep_scATAC_cinaR.md)
   : prep_scATAC_cinaR
+- [`prep_scATAC_seurat()`](https://eonurk.github.io/cinaR/reference/prep_scATAC_seurat.md)
+  : prep_scATAC_seurat
 - [`run_enrichment()`](https://eonurk.github.io/cinaR/reference/run_enrichment.md)
   : run_enrichment
 - [`scale_rows()`](https://eonurk.github.io/cinaR/reference/scale_rows.md)

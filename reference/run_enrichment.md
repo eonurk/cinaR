@@ -78,15 +78,15 @@ contrasts <- sapply(strsplit(colnames(bed), split = "-", fixed = TRUE),
 results <- cinaR(bed, contrasts, reference.genome = "mm10", run.enrichment = FALSE)
 #> >> Experiment type: ATAC-Seq
 #> >> Matrix is filtered!
-#> >> preparing features information...        2026-02-02 12:19:48 
+#> >> preparing features information...        2026-02-02 12:28:11 
 #> >> Using Genome: mm10 ...
-#> >> identifying nearest features...      2026-02-02 12:19:48 
-#> >> calculating distance from peak to TSS...     2026-02-02 12:19:49 
-#> >> assigning genomic annotation...      2026-02-02 12:19:49 
+#> >> identifying nearest features...      2026-02-02 12:28:11 
+#> >> calculating distance from peak to TSS...     2026-02-02 12:28:11 
+#> >> assigning genomic annotation...      2026-02-02 12:28:11 
 #> >> Using Genome: mm10 ...
 #> >> Using Genome: mm10 ...
-#> >> assigning chromosome lengths             2026-02-02 12:19:52 
-#> >> done...                  2026-02-02 12:19:52 
+#> >> assigning chromosome lengths             2026-02-02 12:28:13 
+#> >> done...                  2026-02-02 12:28:13 
 #> >> Method: edgeR
 #>  FDR:0.05& abs(logFC)<0
 #> >> Estimating dispersion...

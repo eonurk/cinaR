@@ -46,15 +46,15 @@ contrasts<- c("B6", "B6", "B6", "B6", "B6", "NZO", "NZO", "NZO", "NZO", "NZO", "
 results <- cinaR(bed, contrasts, reference.genome = "mm10")
 ```
 
-    ## >> preparing features information...      2026-02-02 12:20:04 
+    ## >> preparing features information...      2026-02-02 12:28:24 
     ## >> Using Genome: mm10 ...
-    ## >> identifying nearest features...        2026-02-02 12:20:05 
-    ## >> calculating distance from peak to TSS...   2026-02-02 12:20:05 
-    ## >> assigning genomic annotation...        2026-02-02 12:20:05 
+    ## >> identifying nearest features...        2026-02-02 12:28:25 
+    ## >> calculating distance from peak to TSS...   2026-02-02 12:28:25 
+    ## >> assigning genomic annotation...        2026-02-02 12:28:25 
     ## >> Using Genome: mm10 ...
     ## >> Using Genome: mm10 ...
-    ## >> assigning chromosome lengths           2026-02-02 12:20:20 
-    ## >> done...                    2026-02-02 12:20:20
+    ## >> assigning chromosome lengths           2026-02-02 12:28:39 
+    ## >> done...                    2026-02-02 12:28:39
 
 Now, you can access differential accessibility (DA) and enrichment
 results.
@@ -315,6 +315,15 @@ prep$contrasts
 You can then pass `prep$bed` and `prep$contrasts` to
 [`cinaR()`](https://eonurk.github.io/cinaR/reference/cinaR.md) as usual.
 
+If you use a Seurat/Signac object, you can prepare the data directly:
+
+``` r
+prep <- prep_scATAC_seurat(seurat_obj,
+                           sample.col = "sample",
+                           group.col = "group",
+                           assay = "peaks")
+```
+
 ## Running enrichment with different dataset
 
 You can run the enrichment analyses with a custom gene set:
@@ -563,8 +572,8 @@ sessionInfo()
     ##  [52] abind_1.4-8                              
     ##  [53] compiler_4.5.2                           
     ##  [54] withr_3.0.2                              
-    ##  [55] bit64_4.6.0-1                            
-    ##  [56] fontquiver_0.2.1                         
+    ##  [55] fontquiver_0.2.1                         
+    ##  [56] bit64_4.6.0-1                            
     ##  [57] S7_0.2.1                                 
     ##  [58] BiocParallel_1.44.0                      
     ##  [59] DBI_1.2.3                                
@@ -579,87 +588,88 @@ sessionInfo()
     ##  [68] caTools_1.18.3                           
     ##  [69] gtools_3.9.5                             
     ##  [70] tools_4.5.2                              
-    ##  [71] scatterpie_0.2.6                         
-    ##  [72] ape_5.8-1                                
-    ##  [73] R.oo_1.27.1                              
-    ##  [74] glue_1.8.0                               
-    ##  [75] restfulr_0.0.16                          
-    ##  [76] nlme_3.1-168                             
-    ##  [77] GOSemSim_2.36.0                          
-    ##  [78] grid_4.5.2                               
-    ##  [79] cluster_2.1.8.1                          
-    ##  [80] reshape2_1.4.5                           
-    ##  [81] fgsea_1.36.2                             
-    ##  [82] generics_0.1.4                           
-    ##  [83] gtable_0.3.6                             
-    ##  [84] R.methodsS3_1.8.2                        
-    ##  [85] tidyr_1.3.2                              
-    ##  [86] data.table_1.18.2.1                      
-    ##  [87] XVector_0.50.0                           
-    ##  [88] BiocGenerics_0.56.0                      
-    ##  [89] ggrepel_0.9.6                            
-    ##  [90] pillar_1.11.1                            
-    ##  [91] stringr_1.6.0                            
-    ##  [92] limma_3.66.0                             
-    ##  [93] yulab.utils_0.2.3                        
-    ##  [94] splines_4.5.2                            
-    ##  [95] tweenr_2.0.3                             
-    ##  [96] dplyr_1.1.4                              
-    ##  [97] treeio_1.34.0                            
-    ##  [98] lattice_0.22-7                           
-    ##  [99] rtracklayer_1.70.1                       
-    ## [100] bit_4.6.0                                
-    ## [101] tidyselect_1.2.1                         
-    ## [102] locfit_1.5-9.12                          
-    ## [103] fontLiberation_0.1.0                     
-    ## [104] GO.db_3.22.0                             
-    ## [105] Biostrings_2.78.0                        
-    ## [106] knitr_1.51                               
-    ## [107] TxDb.Mmusculus.UCSC.mm10.knownGene_3.10.0
-    ## [108] fontBitstreamVera_0.1.1                  
-    ## [109] IRanges_2.44.0                           
-    ## [110] Seqinfo_1.0.0                            
-    ## [111] edgeR_4.8.2                              
-    ## [112] SummarizedExperiment_1.40.0              
-    ## [113] stats4_4.5.2                             
-    ## [114] xfun_0.56                                
-    ## [115] Biobase_2.70.0                           
-    ## [116] statmod_1.5.1                            
-    ## [117] matrixStats_1.5.0                        
-    ## [118] pheatmap_1.0.13                          
-    ## [119] stringi_1.8.7                            
-    ## [120] UCSC.utils_1.6.1                         
-    ## [121] lazyeval_0.2.2                           
-    ## [122] ggfun_0.2.0                              
-    ## [123] yaml_2.3.12                              
-    ## [124] boot_1.3-32                              
-    ## [125] evaluate_1.0.5                           
-    ## [126] codetools_0.2-20                         
-    ## [127] cigarillo_1.0.0                          
-    ## [128] gdtools_0.4.4                            
-    ## [129] tibble_3.3.1                             
-    ## [130] qvalue_2.42.0                            
-    ## [131] BiocManager_1.30.27                      
-    ## [132] ggplotify_0.1.3                          
-    ## [133] cli_3.6.5                                
-    ## [134] systemfonts_1.3.1                        
-    ## [135] jquerylib_0.1.4                          
-    ## [136] Rcpp_1.1.1                               
-    ## [137] GenomeInfoDb_1.46.2                      
-    ## [138] png_0.1-8                                
-    ## [139] XML_3.99-0.20                            
-    ## [140] parallel_4.5.2                           
-    ## [141] pkgdown_2.2.0                            
-    ## [142] ggplot2_4.0.1                            
-    ## [143] blob_1.3.0                               
-    ## [144] DOSE_4.4.0                               
-    ## [145] bitops_1.0-9                             
-    ## [146] tidytree_0.4.7                           
-    ## [147] ggiraph_0.9.3                            
-    ## [148] scales_1.4.0                             
-    ## [149] purrr_1.2.1                              
-    ## [150] crayon_1.5.3                             
-    ## [151] rlang_1.1.7                              
-    ## [152] cowplot_1.2.0                            
-    ## [153] fastmatch_1.1-8                          
-    ## [154] KEGGREST_1.50.0
+    ##  [71] otel_0.2.0                               
+    ##  [72] scatterpie_0.2.6                         
+    ##  [73] ape_5.8-1                                
+    ##  [74] R.oo_1.27.1                              
+    ##  [75] glue_1.8.0                               
+    ##  [76] restfulr_0.0.16                          
+    ##  [77] nlme_3.1-168                             
+    ##  [78] GOSemSim_2.36.0                          
+    ##  [79] grid_4.5.2                               
+    ##  [80] cluster_2.1.8.1                          
+    ##  [81] reshape2_1.4.5                           
+    ##  [82] fgsea_1.36.2                             
+    ##  [83] generics_0.1.4                           
+    ##  [84] gtable_0.3.6                             
+    ##  [85] R.methodsS3_1.8.2                        
+    ##  [86] tidyr_1.3.2                              
+    ##  [87] data.table_1.18.2.1                      
+    ##  [88] XVector_0.50.0                           
+    ##  [89] BiocGenerics_0.56.0                      
+    ##  [90] ggrepel_0.9.6                            
+    ##  [91] pillar_1.11.1                            
+    ##  [92] stringr_1.6.0                            
+    ##  [93] limma_3.66.0                             
+    ##  [94] yulab.utils_0.2.3                        
+    ##  [95] splines_4.5.2                            
+    ##  [96] tweenr_2.0.3                             
+    ##  [97] dplyr_1.1.4                              
+    ##  [98] treeio_1.34.0                            
+    ##  [99] lattice_0.22-7                           
+    ## [100] rtracklayer_1.70.1                       
+    ## [101] bit_4.6.0                                
+    ## [102] tidyselect_1.2.1                         
+    ## [103] locfit_1.5-9.12                          
+    ## [104] fontLiberation_0.1.0                     
+    ## [105] GO.db_3.22.0                             
+    ## [106] Biostrings_2.78.0                        
+    ## [107] knitr_1.51                               
+    ## [108] TxDb.Mmusculus.UCSC.mm10.knownGene_3.10.0
+    ## [109] fontBitstreamVera_0.1.1                  
+    ## [110] IRanges_2.44.0                           
+    ## [111] Seqinfo_1.0.0                            
+    ## [112] edgeR_4.8.2                              
+    ## [113] SummarizedExperiment_1.40.0              
+    ## [114] stats4_4.5.2                             
+    ## [115] xfun_0.56                                
+    ## [116] Biobase_2.70.0                           
+    ## [117] statmod_1.5.1                            
+    ## [118] matrixStats_1.5.0                        
+    ## [119] pheatmap_1.0.13                          
+    ## [120] stringi_1.8.7                            
+    ## [121] UCSC.utils_1.6.1                         
+    ## [122] lazyeval_0.2.2                           
+    ## [123] ggfun_0.2.0                              
+    ## [124] yaml_2.3.12                              
+    ## [125] boot_1.3-32                              
+    ## [126] evaluate_1.0.5                           
+    ## [127] codetools_0.2-20                         
+    ## [128] cigarillo_1.0.0                          
+    ## [129] gdtools_0.4.4                            
+    ## [130] tibble_3.3.1                             
+    ## [131] qvalue_2.42.0                            
+    ## [132] BiocManager_1.30.27                      
+    ## [133] ggplotify_0.1.3                          
+    ## [134] cli_3.6.5                                
+    ## [135] systemfonts_1.3.1                        
+    ## [136] jquerylib_0.1.4                          
+    ## [137] Rcpp_1.1.1                               
+    ## [138] GenomeInfoDb_1.46.2                      
+    ## [139] png_0.1-8                                
+    ## [140] XML_3.99-0.20                            
+    ## [141] parallel_4.5.2                           
+    ## [142] pkgdown_2.2.0                            
+    ## [143] ggplot2_4.0.1                            
+    ## [144] blob_1.3.0                               
+    ## [145] DOSE_4.4.0                               
+    ## [146] bitops_1.0-9                             
+    ## [147] tidytree_0.4.7                           
+    ## [148] ggiraph_0.9.3                            
+    ## [149] scales_1.4.0                             
+    ## [150] purrr_1.2.1                              
+    ## [151] crayon_1.5.3                             
+    ## [152] rlang_1.1.7                              
+    ## [153] cowplot_1.2.0                            
+    ## [154] fastmatch_1.1-8                          
+    ## [155] KEGGREST_1.50.0
