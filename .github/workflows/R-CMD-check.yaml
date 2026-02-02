@@ -27,7 +27,7 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck, local::.
-          dependencies: "hard"
+          dependencies: c("Depends", "Imports", "LinkingTo")
 
       - name: Check
         run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
