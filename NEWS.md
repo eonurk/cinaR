@@ -3,6 +3,7 @@
 - Fixed plotting helpers (pheatmap `...`, dot-plot scale, PCA palette)
 - Wired `norm.method`/`filter.method` into the pipeline
 - Made `run_enrichment()` more robust to input shape and empty contrasts
+- Added `prep_scATAC_seurat()` helper for Seurat/Signac objects
 
 # cinaR 0.2.5
 

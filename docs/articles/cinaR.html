@@ -111,12 +111,12 @@ accessible peaks.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># If reference genome is not set hg38 will be used!</span></span>
 <span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">bed</span>, <span class="va">contrasts</span>, reference.genome <span class="op">=</span> <span class="st">"mm10"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## &gt;&gt; preparing features information...      2026-02-02 13:16:04 </span></span>
-<span><span class="co">## &gt;&gt; identifying nearest features...        2026-02-02 13:16:04 </span></span>
-<span><span class="co">## &gt;&gt; calculating distance from peak to TSS...   2026-02-02 13:16:04 </span></span>
-<span><span class="co">## &gt;&gt; assigning genomic annotation...        2026-02-02 13:16:04 </span></span>
-<span><span class="co">## &gt;&gt; assigning chromosome lengths           2026-02-02 13:16:15 </span></span>
-<span><span class="co">## &gt;&gt; done...                    2026-02-02 13:16:15</span></span></code></pre>
+<pre><code><span><span class="co">## &gt;&gt; preparing features information...      2026-02-02 13:23:53 </span></span>
+<span><span class="co">## &gt;&gt; identifying nearest features...        2026-02-02 13:23:53 </span></span>
+<span><span class="co">## &gt;&gt; calculating distance from peak to TSS...   2026-02-02 13:23:54 </span></span>
+<span><span class="co">## &gt;&gt; assigning genomic annotation...        2026-02-02 13:23:54 </span></span>
+<span><span class="co">## &gt;&gt; assigning chromosome lengths           2026-02-02 13:24:04 </span></span>
+<span><span class="co">## &gt;&gt; done...                    2026-02-02 13:24:04</span></span></code></pre>
 <p>Now, you can access differential accessibility (DA) and enrichment
 results.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
@@ -318,12 +318,19 @@ matrix.</p>
 <span><span class="co">## "A" "A" "B" "B"</span></span></code></pre>
 <p>You can then pass <code>prep$bed</code> and
 <code>prep$contrasts</code> to <code><a href="../reference/cinaR.html">cinaR()</a></code> as usual.</p>
+<p>If you use a Seurat/Signac object, you can prepare the data
+directly:</p>
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">prep</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/prep_scATAC_seurat.html">prep_scATAC_seurat</a></span><span class="op">(</span><span class="va">seurat_obj</span>,</span>
+<span>                           sample.col <span class="op">=</span> <span class="st">"sample"</span>,</span>
+<span>                           group.col <span class="op">=</span> <span class="st">"group"</span>,</span>
+<span>                           assay <span class="op">=</span> <span class="st">"peaks"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="running-enrichment-with-different-dataset">Running enrichment with different dataset<a class="anchor" aria-label="anchor" href="#running-enrichment-with-different-dataset"></a>
 </h2>
 <p>You can run the enrichment analyses with a custom gene set:</p>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, geneset <span class="op">=</span> <span class="va">new_geneset</span><span class="op">)</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="cinargenesets">
@@ -349,7 +356,7 @@ package to read these genesets into your current environment.</p>
 <p>A <code>geneset</code> must be a <code>.gmt</code> formatted symbol
 file.<br>
 You can familiarize yourself with the format by checking out :</p>
-<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># default geneset to be used</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"VP2008"</span><span class="op">)</span></span></code></pre></div>
 <blockquote>
@@ -375,14 +382,14 @@ models:</p>
 <h2 id="batch-effect-correction">Batch Effect Correction<a class="anchor" aria-label="anchor" href="#batch-effect-correction"></a>
 </h2>
 <p>If you suspect your data have unknown batch effects, you can use:</p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, batch.correction <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code></pre></div>
 <p>This option will run <a href="https://bioconductor.org/packages/release/bioc/html/sva.html" class="external-link">Surrogate
 Variable Analysis</a> (SVA) and try to adjust your data for unknown
 batch effects. If however, you already know the batches of the samples,
 you can simply set the <code>batch.information</code> argument as well.
 This will not run the SVA but just add the batches to design matrix.</p>
-<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># runs SVA</span></span>
 <span><span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, batch.correction <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
 <span></span>
@@ -404,17 +411,17 @@ This will not run the SVA but just add the batches to design matrix.</p>
 design matrix further, which affects the down-stream analyses. For
 instance, ages or sexes of the samples could be additional covariates.
 To account for those:</p>
-<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" tabindex="-1"></a><span class="co"># Ages of the samples could be not in biological interests but should be accounted for!</span></span>
-<span id="cb44-2"><a href="#cb44-2" tabindex="-1"></a><span class="fu">cinaR</span>(..., <span class="at">additional.covariates =</span> <span class="fu">c</span>((<span class="dv">18</span>, <span class="dv">11</span>), (<span class="dv">3</span>, <span class="dv">11</span>)))</span>
-<span id="cb44-3"><a href="#cb44-3" tabindex="-1"></a></span>
-<span id="cb44-4"><a href="#cb44-4" tabindex="-1"></a><span class="co"># More than one covariate for instance, sex and age</span></span>
-<span id="cb44-5"><a href="#cb44-5" tabindex="-1"></a>sex.info <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, </span>
-<span id="cb44-6"><a href="#cb44-6" tabindex="-1"></a>              <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>)</span>
-<span id="cb44-7"><a href="#cb44-7" tabindex="-1"></a></span>
-<span id="cb44-8"><a href="#cb44-8" tabindex="-1"></a>age.info <span class="ot">&lt;-</span> <span class="fu">c</span>((<span class="dv">18</span>, <span class="dv">11</span>), (<span class="dv">3</span>, <span class="dv">11</span>)</span>
-<span id="cb44-9"><a href="#cb44-9" tabindex="-1"></a>covs <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Sex =</span> sex.info, <span class="at">Age =</span> age.info)</span>
-<span id="cb44-10"><a href="#cb44-10" tabindex="-1"></a></span>
-<span id="cb44-11"><a href="#cb44-11" tabindex="-1"></a><span class="fu">cinaR</span>(..., <span class="at">additional.covariates =</span> covs)</span></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" tabindex="-1"></a><span class="co"># Ages of the samples could be not in biological interests but should be accounted for!</span></span>
+<span id="cb45-2"><a href="#cb45-2" tabindex="-1"></a><span class="fu">cinaR</span>(..., <span class="at">additional.covariates =</span> <span class="fu">c</span>((<span class="dv">18</span>, <span class="dv">11</span>), (<span class="dv">3</span>, <span class="dv">11</span>)))</span>
+<span id="cb45-3"><a href="#cb45-3" tabindex="-1"></a></span>
+<span id="cb45-4"><a href="#cb45-4" tabindex="-1"></a><span class="co"># More than one covariate for instance, sex and age</span></span>
+<span id="cb45-5"><a href="#cb45-5" tabindex="-1"></a>sex.info <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, </span>
+<span id="cb45-6"><a href="#cb45-6" tabindex="-1"></a>              <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>, <span class="st">"M"</span>, <span class="st">"F"</span>, <span class="st">"M"</span>)</span>
+<span id="cb45-7"><a href="#cb45-7" tabindex="-1"></a></span>
+<span id="cb45-8"><a href="#cb45-8" tabindex="-1"></a>age.info <span class="ot">&lt;-</span> <span class="fu">c</span>((<span class="dv">18</span>, <span class="dv">11</span>), (<span class="dv">3</span>, <span class="dv">11</span>)</span>
+<span id="cb45-9"><a href="#cb45-9" tabindex="-1"></a>covs <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Sex =</span> sex.info, <span class="at">Age =</span> age.info)</span>
+<span id="cb45-10"><a href="#cb45-10" tabindex="-1"></a></span>
+<span id="cb45-11"><a href="#cb45-11" tabindex="-1"></a><span class="fu">cinaR</span>(..., <span class="at">additional.covariates =</span> covs)</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="saving-da-peaks-to-excel">Saving DA peaks to excel<a class="anchor" aria-label="anchor" href="#saving-da-peaks-to-excel"></a>
@@ -426,7 +433,7 @@ Additionally, you can set the path/name of the file using
 <code>DA.peaks.path</code> argument after setting
 <code>save.DA.peaks = TRUE</code>.</p>
 <p>For instance,</p>
-<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, save.DA.peaks <span class="op">=</span> <span class="cn">T</span>, DA.peaks.path <span class="op">=</span> <span class="st">"./Peaks_mice.xlsx"</span><span class="op">)</span></span></code></pre></div>
 <p>will create an excel file with name <code>Peaks_mice.xlsx</code> in
 the current directory.</p>
@@ -449,7 +456,7 @@ argument. For more information, <code><a href="../reference/cinaR.html">?cinaR</
 <div class="section level2">
 <h2 id="some-useful-arguments">Some useful arguments<a class="anchor" aria-label="anchor" href="#some-useful-arguments"></a>
 </h2>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># new FDR threshold for DA peaks</span></span>
 <span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">...</span>, DA.fdr.threshold <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span>
 <span></span>
@@ -485,7 +492,7 @@ fold change and dispersion for RNA-seq data with DESeq2. Genome Biology,
 <div class="section level2">
 <h2 id="session-info">Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## R version 4.2.2 (2022-10-31)</span></span>
 <span><span class="co">## Platform: aarch64-apple-darwin20 (64-bit)</span></span>

@@ -218,8 +218,17 @@ prep_scATAC_cinaR <- function(counts,
     chr <- vapply(parts, `[`, character(1), 1)
     start <- vapply(parts, `[`, character(1), 2)
     end <- vapply(parts, `[`, character(1), 3)
+  } else if (grepl("-", example, fixed = TRUE)) {
+    parts <- strsplit(peak_ids, "-", fixed = TRUE)
+    lens <- vapply(parts, length, integer(1))
+    if (any(lens < 3)) {
+      stop("Peak IDs must be in 'chr:start-end', 'chr_start_end', or 'chr-start-end' format.")
+    }
+    chr <- vapply(parts, `[`, character(1), 1)
+    start <- vapply(parts, `[`, character(1), 2)
+    end <- vapply(parts, `[`, character(1), 3)
   } else {
-    stop("Peak IDs must be in 'chr:start-end' or 'chr_start_end' format.")
+    stop("Peak IDs must be in 'chr:start-end', 'chr_start_end', or 'chr-start-end' format.")
   }
 
   peak_df <- data.frame(

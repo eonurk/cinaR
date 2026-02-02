@@ -118,7 +118,18 @@ results_list <- lapply(prep_list, function(x) {
 })
 ```
 
-If your peak IDs are not in `chr:start-end` or `chr_start_end` format, pass a `peak.bed`
+Seurat/Signac object:
+
+``` r
+prep <- prep_scATAC_seurat(seurat_obj,
+                           sample.col = "sample",
+                           group.col = "group",
+                           assay = "peaks")
+
+results <- cinaR(prep$bed, prep$contrasts, reference.genome = "hg38")
+```
+
+If your peak IDs are not in `chr:start-end`, `chr_start_end`, or `chr-start-end` format, pass a `peak.bed`
 data.frame with `CHR`, `START`, and `STOP` columns via `peak.bed = ...`.
 
 > For more details please go to our site from

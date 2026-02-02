@@ -48,6 +48,7 @@ RoxygenNote: 7.2.3
 Suggests: ChIPseeker, 
           knitr,
           Matrix,
+          Seurat,
           rmarkdown,
           markdown,
           TxDb.Hsapiens.UCSC.hg38.knownGene, 

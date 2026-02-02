@@ -219,6 +219,15 @@ prep$contrasts
 
 You can then pass `prep$bed` and `prep$contrasts` to `cinaR()` as usual.
 
+If you use a Seurat/Signac object, you can prepare the data directly:
+
+```{r eval=FALSE}
+prep <- prep_scATAC_seurat(seurat_obj,
+                           sample.col = "sample",
+                           group.col = "group",
+                           assay = "peaks")
+```
+
 
 ## Running enrichment with different dataset
 You can run the enrichment analyses with a custom gene set:
