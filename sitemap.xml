@@ -1,87 +1,32 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://eonurk.github.io/cinaR/404.html</loc>
-  </url>
-  <url>
-    <loc>https://eonurk.github.io/cinaR/articles/cinaR.html</loc>
-  </url>
-  <url>
-    <loc>https://eonurk.github.io/cinaR/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://eonurk.github.io/cinaR/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://eonurk.github.io/cinaR/index.html</loc>
-  </url>
-  <url>
-    <loc>https://eonurk.github.io/cinaR/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://eonurk.github.io/cinaR/reference/GSEA.html</loc>
-  </url>
-  <url>
-    <loc>https://eonurk.github.io/cinaR/reference/HPEA.html</loc>
-  </url>
-  <url>
-    <loc>https://eonurk.github.io/cinaR/reference/annotatePeaks.html</loc>
-  </url>
-  <url>
-    <loc>https://eonurk.github.io/cinaR/reference/bed.html</loc>
-  </url>
-  <url>
-    <loc>https://eonurk.github.io/cinaR/reference/cinaR.html</loc>
-  </url>
-  <url>
-    <loc>https://eonurk.github.io/cinaR/reference/color_values.html</loc>
-  </url>
-  <url>
-    <loc>https://eonurk.github.io/cinaR/reference/differentialAnalyses.html</loc>
-  </url>
-  <url>
-    <loc>https://eonurk.github.io/cinaR/reference/dot_plot.html</loc>
-  </url>
-  <url>
-    <loc>https://eonurk.github.io/cinaR/reference/filterConsensus.html</loc>
-  </url>
-  <url>
-    <loc>https://eonurk.github.io/cinaR/reference/grch37.html</loc>
-  </url>
-  <url>
-    <loc>https://eonurk.github.io/cinaR/reference/grch38.html</loc>
-  </url>
-  <url>
-    <loc>https://eonurk.github.io/cinaR/reference/grcm38.html</loc>
-  </url>
-  <url>
-    <loc>https://eonurk.github.io/cinaR/reference/heatmap_differential.html</loc>
-  </url>
-  <url>
-    <loc>https://eonurk.github.io/cinaR/reference/heatmap_var_peaks.html</loc>
-  </url>
-  <url>
-    <loc>https://eonurk.github.io/cinaR/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://eonurk.github.io/cinaR/reference/normalizeConsensus.html</loc>
-  </url>
-  <url>
-    <loc>https://eonurk.github.io/cinaR/reference/pca_plot.html</loc>
-  </url>
-  <url>
-    <loc>https://eonurk.github.io/cinaR/reference/run_enrichment.html</loc>
-  </url>
-  <url>
-    <loc>https://eonurk.github.io/cinaR/reference/scale_rows.html</loc>
-  </url>
-  <url>
-    <loc>https://eonurk.github.io/cinaR/reference/show_comparisons.html</loc>
-  </url>
-  <url>
-    <loc>https://eonurk.github.io/cinaR/reference/verboseFn.html</loc>
-  </url>
-  <url>
-    <loc>https://eonurk.github.io/cinaR/reference/vp2008.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://eonurk.github.io/cinaR/404.html</loc></url>
+<url><loc>https://eonurk.github.io/cinaR/articles/cinaR.html</loc></url>
+<url><loc>https://eonurk.github.io/cinaR/articles/index.html</loc></url>
+<url><loc>https://eonurk.github.io/cinaR/authors.html</loc></url>
+<url><loc>https://eonurk.github.io/cinaR/index.html</loc></url>
+<url><loc>https://eonurk.github.io/cinaR/news/index.html</loc></url>
+<url><loc>https://eonurk.github.io/cinaR/reference/GSEA.html</loc></url>
+<url><loc>https://eonurk.github.io/cinaR/reference/HPEA.html</loc></url>
+<url><loc>https://eonurk.github.io/cinaR/reference/annotatePeaks.html</loc></url>
+<url><loc>https://eonurk.github.io/cinaR/reference/bed.html</loc></url>
+<url><loc>https://eonurk.github.io/cinaR/reference/cinaR.html</loc></url>
+<url><loc>https://eonurk.github.io/cinaR/reference/color_values.html</loc></url>
+<url><loc>https://eonurk.github.io/cinaR/reference/differentialAnalyses.html</loc></url>
+<url><loc>https://eonurk.github.io/cinaR/reference/dot_plot.html</loc></url>
+<url><loc>https://eonurk.github.io/cinaR/reference/filterConsensus.html</loc></url>
+<url><loc>https://eonurk.github.io/cinaR/reference/grch37.html</loc></url>
+<url><loc>https://eonurk.github.io/cinaR/reference/grch38.html</loc></url>
+<url><loc>https://eonurk.github.io/cinaR/reference/grcm38.html</loc></url>
+<url><loc>https://eonurk.github.io/cinaR/reference/heatmap_differential.html</loc></url>
+<url><loc>https://eonurk.github.io/cinaR/reference/heatmap_var_peaks.html</loc></url>
+<url><loc>https://eonurk.github.io/cinaR/reference/index.html</loc></url>
+<url><loc>https://eonurk.github.io/cinaR/reference/normalizeConsensus.html</loc></url>
+<url><loc>https://eonurk.github.io/cinaR/reference/pca_plot.html</loc></url>
+<url><loc>https://eonurk.github.io/cinaR/reference/prep_scATAC_cinaR.html</loc></url>
+<url><loc>https://eonurk.github.io/cinaR/reference/run_enrichment.html</loc></url>
+<url><loc>https://eonurk.github.io/cinaR/reference/scale_rows.html</loc></url>
+<url><loc>https://eonurk.github.io/cinaR/reference/show_comparisons.html</loc></url>
+<url><loc>https://eonurk.github.io/cinaR/reference/verboseFn.html</loc></url>
+<url><loc>https://eonurk.github.io/cinaR/reference/vp2008.html</loc></url>
 </urlset>
+

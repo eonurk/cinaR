@@ -1,0 +1,201 @@
+# cinaR
+
+Runs differential analyses and enrichment pipelines
+
+## Usage
+
+``` r
+cinaR(
+  matrix,
+  contrasts,
+  experiment.type = "ATAC-Seq",
+  DA.choice = 1,
+  DA.fdr.threshold = 0.05,
+  DA.lfc.threshold = 0,
+  comparison.scheme = "OVO",
+  save.DA.peaks = FALSE,
+  DA.peaks.path = NULL,
+  norm.method = "cpm",
+  filter.method = "custom",
+  library.threshold = 2,
+  cpm.threshold = 1,
+  TSS.threshold = 50000,
+  show.annotation.pie = FALSE,
+  reference.genome = NULL,
+  batch.correction = FALSE,
+  batch.information = NULL,
+  additional.covariates = NULL,
+  sv.number = NULL,
+  run.enrichment = TRUE,
+  enrichment.method = NULL,
+  enrichment.FDR.cutoff = 1,
+  background.genes.size = 20000,
+  geneset = NULL,
+  verbose = TRUE
+)
+```
+
+## Arguments
+
+- matrix:
+
+  either bed formatted consensus peak matrix (peaks by 3+samples) CHR,
+  START, STOP and raw peak counts OR count matrix (genes by 1+samples).
+
+- contrasts:
+
+  user-defined contrasts for comparing samples
+
+- experiment.type:
+
+  The type of experiment either set to "ATAC-Seq" or "RNA-Seq"
+
+- DA.choice:
+
+  determines which pipeline to run: (1) edgeR, (2) limma-voom, (3)
+  limma-trend, (4) DEseq2. Note: Use limma-trend if consensus peaks are
+  already normalized, otherwise use other methods.
+
+- DA.fdr.threshold:
+
+  fdr cut-off for differential analyses
+
+- DA.lfc.threshold:
+
+  log-fold change cutoff for differential analyses
+
+- comparison.scheme:
+
+  either one-vs-one (OVO) or one-vs-all (OVA) comparisons.
+
+- save.DA.peaks:
+
+  saves differentially accessible peaks to an excel file
+
+- DA.peaks.path:
+
+  the path which the excel file of the DA peaks will be saved, if not
+  set it will be saved to current directory.
+
+- norm.method:
+
+  normalization method for consensus peaks
+
+- filter.method:
+
+  filtering method for low expressed peaks
+
+- library.threshold:
+
+  number of libraries a peak occurs so that it is not filtered default
+  set to 2
+
+- cpm.threshold:
+
+  count per million threshold for not to filter a peak
+
+- TSS.threshold:
+
+  Distance to transcription start site in base-pairs. Default set to
+  50,000.
+
+- show.annotation.pie:
+
+  shows the annotation pie chart produced with ChipSeeker
+
+- reference.genome:
+
+  genome of interested species. It should be 'hg38', 'hg19' or 'mm10'.
+
+- batch.correction:
+
+  logical, if set will run unsupervised batch correction via sva
+  (default) or if the batch information is known \`batch.information\`
+  argument should be provided by user.
+
+- batch.information:
+
+  character vector, given by user.
+
+- additional.covariates:
+
+  vector or data.frame, this parameter will be directly added to design
+  matrix before running the differential analyses, therefore won't
+  affect the batch corrections but adjust the results in down-stream
+  analyses.
+
+- sv.number:
+
+  number of surrogate variables to be calculated using SVA, best left
+  untouched.
+
+- run.enrichment:
+
+  logical, turns off enrichment pipeline
+
+- enrichment.method:
+
+  There are two methodologies for enrichment analyses, Hyper-geometric
+  p-value (HPEA) or Geneset Enrichment Analyses (GSEA).
+
+- enrichment.FDR.cutoff:
+
+  FDR cut-off for enriched terms, p-values are corrected by
+  Benjamini-Hochberg procedure
+
+- background.genes.size:
+
+  number of background genes for hyper-geometric p-value calculations.
+  Default is 20,000.
+
+- geneset:
+
+  Pathways to be used in enrichment analyses. If not set vp2008
+  (Chaussabel, 2008) immune modules will be used. This can be set to any
+  geneset using \`read.gmt\` function from \`qusage\` package. Different
+  modules are available: https://www.gsea-msigdb.org/gsea/downloads.jsp.
+
+- verbose:
+
+  prints messages through running the pipeline
+
+## Value
+
+returns differentially accessible peaks
+
+## Examples
+
+``` r
+# \donttest{
+data(atac_seq_consensus_bm) # calls 'bed'
+
+# a vector for comparing the examples
+contrasts <- sapply(strsplit(colnames(bed), split = "-", fixed = TRUE),
+                    function(x){x[1]})[4:25]
+
+results <- cinaR(bed, contrasts, reference.genome = "mm10")
+#> >> Experiment type: ATAC-Seq
+#> >> Matrix is filtered!
+#> 
+#> >> preparing features information...        2026-02-02 11:43:08 
+#> >> Using Genome: mm10 ...
+#> >> identifying nearest features...      2026-02-02 11:43:08 
+#> >> calculating distance from peak to TSS...     2026-02-02 11:43:08 
+#> >> assigning genomic annotation...      2026-02-02 11:43:08 
+#> >> Using Genome: mm10 ...
+#> >> Using Genome: mm10 ...
+#> >> assigning chromosome lengths             2026-02-02 11:43:23 
+#> >> done...                  2026-02-02 11:43:23 
+#> >> Method: edgeR
+#>  FDR:0.05& abs(logFC)<0
+#> >> Estimating dispersion...
+#> >> Fitting GLM...
+#> >> DA peaks are found!
+#> >> No `geneset` is specified so immune modules (Chaussabel, 2008) will be used!
+#> >> enrichment.method` is not selected. Hyper-geometric p-value (HPEA) will be used!
+#> >> Mice gene symbols are converted to human symbols!
+#> >> Enrichment results are ready...
+#> >> Done!
+# }
+
+```

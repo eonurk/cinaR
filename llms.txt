@@ -1,0 +1,193 @@
+# cinaR [![](reference/figures/cinaR.png)](https://eonurk.github.io/cinaR/)
+
+## Overview
+
+`cinaR` is a single wrapper function for end-to-end computational
+analyses of bulk ATAC-seq (or RNA-seq) profiles. Starting from a
+consensus peak file, it outputs differentially accessible peaks,
+enrichment results, and provides users with various configurable
+visualization options. For more details, please see the
+[preprint](https://www.biorxiv.org/content/10.1101/2021.03.05.434143v2).
+
+![](reference/figures/overview@5x.png)
+
+## Installation
+
+``` r
+# CRAN mirror
+install.packages("cinaR")
+```
+
+### Development version
+
+To get bug fix and use a feature from the development version:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("eonurk/cinaR")
+```
+
+### Known Installation Issues
+
+Sometimes bioconductor related packages may not be installed
+automatically.  
+Therefore, you may need to install them manually:
+
+``` r
+BiocManager::install(c("ChIPseeker", "DESeq2", "edgeR", "fgsea","GenomicRanges", "limma", "preprocessCore", "sva", "TxDb.Hsapiens.UCSC.hg38.knownGene", "TxDb.Hsapiens.UCSC.hg19.knownGene", "TxDb.Mmusculus.UCSC.mm10.knownGene"))
+```
+
+## Usage
+
+``` r
+library(cinaR)
+#> Checking for required Bioconductor packages...
+#> All required Bioconductor packages are already installed.
+
+# create contrast vector which will be compared.
+contrasts<- c("B6", "B6", "B6", "B6", "B6", "NZO", "NZO", "NZO", "NZO", "NZO", "NZO", 
+              "B6", "B6", "B6", "B6", "B6", "NZO", "NZO", "NZO", "NZO", "NZO", "NZO")
+
+# If reference genome is not set hg38 will be used!
+results <- cinaR(bed, contrasts, reference.genome = "mm10")
+#> >> Experiment type: ATAC-Seq
+#> >> Matrix is filtered!
+#> 
+#> >> preparing features information...      2024-05-22 12:38:01 
+#> >> identifying nearest features...        2024-05-22 12:38:02 
+#> >> calculating distance from peak to TSS...   2024-05-22 12:38:02 
+#> >> assigning genomic annotation...        2024-05-22 12:38:02 
+#> >> assigning chromosome lengths           2024-05-22 12:38:11 
+#> >> done...                    2024-05-22 12:38:11
+#> >> Method: edgeR
+#>  FDR:0.05& abs(logFC)<0
+#> >> Estimating dispersion...
+#> >> Fitting GLM...
+#> >> DA peaks are found!
+#> >> No `geneset` is specified so immune modules (Chaussabel, 2008) will be used!
+#> >> enrichment.method` is not selected. Hyper-geometric p-value (HPEA) will be used!
+#> >> Mice gene symbols are converted to human symbols!
+#> >> Enrichment results are ready...
+#> >> Done!
+
+pca_plot(results, contrasts, show.names = F)
+```
+
+![](reference/figures/unnamed-chunk-5-1.png)
+
+## Single-cell ATAC-seq (10x scATAC) preprocessing
+
+Use
+[`prep_scATAC_cinaR()`](https://eonurk.github.io/cinaR/reference/prep_scATAC_cinaR.md)
+to pseudobulk 10x scATAC peak-by-cell matrices into a cinaR-ready
+consensus matrix.  
+This preserves biological replicates (sample-level) and avoids inflated
+significance from per-cell testing.
+
+``` r
+# counts: peak-by-cell matrix (dense or dgCMatrix)
+# meta: data.frame with rownames = cell barcodes
+# meta must include biological replicate and condition columns
+
+prep <- prep_scATAC_cinaR(counts, meta,
+                          sample.col = "sample",
+                          group.col = "group")
+
+results <- cinaR(prep$bed, prep$contrasts, reference.genome = "hg38")
+```
+
+Per-cell-type (sample × cluster) pseudobulk:
+
+``` r
+prep_list <- prep_scATAC_cinaR(counts, meta,
+                               sample.col = "sample",
+                               group.col = "group",
+                               cluster.col = "celltype")
+
+results_list <- lapply(prep_list, function(x) {
+  cinaR(x$bed, x$contrasts, reference.genome = "hg38")
+})
+```
+
+If your peak IDs are not in `chr:start-end` or `chr_start_end` format,
+pass a `peak.bed` data.frame with `CHR`, `START`, and `STOP` columns via
+`peak.bed = ...`.
+
+> For more details please go to our site from
+> [here!](https://eonurk.github.io/cinaR/articles/cinaR.html)
+
+## Citation
+
+``` R
+@article {Karakaslar2021.03.05.434143,
+    author = {Karakaslar, E Onur and Ucar, Duygu},
+    title = {cinaR: A comprehensive R package for the differential analyses and 
+    functional interpretation of ATAC-seq data},
+    year = {2021},
+    doi = {10.1101/2021.03.05.434143},
+    publisher = {Cold Spring Harbor Laboratory},
+    URL = {https://www.biorxiv.org/content/10.1101/2021.03.05.434143v2},
+    journal = {bioRxiv}
+}
+```
+
+## Contribution
+
+You can send pull requests to make your contributions.
+
+## License
+
+- GNU General Public License v3.0
+
+# Package index
+
+## All functions
+
+- [`GSEA()`](https://eonurk.github.io/cinaR/reference/GSEA.md) : GSEA
+- [`HPEA()`](https://eonurk.github.io/cinaR/reference/HPEA.md) : HPEA
+- [`annotatePeaks()`](https://eonurk.github.io/cinaR/reference/annotatePeaks.md)
+  : annotatePeaks
+- [`atac_seq_consensus_bm`](https://eonurk.github.io/cinaR/reference/bed.md)
+  : Example peaks from bone marrow of B6 mice
+- [`cinaR()`](https://eonurk.github.io/cinaR/reference/cinaR.md) : cinaR
+- [`color_values`](https://eonurk.github.io/cinaR/reference/color_values.md)
+  : color values
+- [`differentialAnalyses()`](https://eonurk.github.io/cinaR/reference/differentialAnalyses.md)
+  : Differential Analyses
+- [`dot_plot()`](https://eonurk.github.io/cinaR/reference/dot_plot.md) :
+  dot_plot
+- [`filterConsensus()`](https://eonurk.github.io/cinaR/reference/filterConsensus.md)
+  : filterConsensus
+- [`grch37`](https://eonurk.github.io/cinaR/reference/grch37.md) :
+  Grch37
+- [`grch38`](https://eonurk.github.io/cinaR/reference/grch38.md) :
+  Grch38
+- [`grcm38`](https://eonurk.github.io/cinaR/reference/grcm38.md) :
+  Grcm38
+- [`heatmap_differential()`](https://eonurk.github.io/cinaR/reference/heatmap_differential.md)
+  : heatmap_differential
+- [`heatmap_var_peaks()`](https://eonurk.github.io/cinaR/reference/heatmap_var_peaks.md)
+  : heatmap_var_peaks
+- [`normalizeConsensus()`](https://eonurk.github.io/cinaR/reference/normalizeConsensus.md)
+  : normalizeConsensus
+- [`pca_plot()`](https://eonurk.github.io/cinaR/reference/pca_plot.md) :
+  pca_plot
+- [`prep_scATAC_cinaR()`](https://eonurk.github.io/cinaR/reference/prep_scATAC_cinaR.md)
+  : prep_scATAC_cinaR
+- [`run_enrichment()`](https://eonurk.github.io/cinaR/reference/run_enrichment.md)
+  : run_enrichment
+- [`scale_rows()`](https://eonurk.github.io/cinaR/reference/scale_rows.md)
+  : scale_rows
+- [`show_comparisons()`](https://eonurk.github.io/cinaR/reference/show_comparisons.md)
+  : show_comparisons
+- [`verboseFn()`](https://eonurk.github.io/cinaR/reference/verboseFn.md)
+  : verboseFn
+- [`VP2008`](https://eonurk.github.io/cinaR/reference/vp2008.md) :
+  Immune modules
+
+# Articles
+
+### All vignettes
+
+- [Introduction to
+  cinaR](https://eonurk.github.io/cinaR/articles/cinaR.md):
