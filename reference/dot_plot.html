@@ -79,30 +79,11 @@ with fdr values less than `fdr.cutoff`.</p></dd>
 <span class="r-in"><span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="cinaR.html">cinaR</a></span><span class="op">(</span><span class="va">bed</span>, <span class="va">contrasts</span>, reference.genome <span class="op">=</span> <span class="st">"mm10"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> &gt;&gt; Experiment type: ATAC-Seq</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> &gt;&gt; Matrix is filtered!</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &gt;&gt; preparing features information...		 2026-02-02 12:28:01 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &gt;&gt; Using Genome: mm10 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &gt;&gt; identifying nearest features...		 2026-02-02 12:28:01 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &gt;&gt; calculating distance from peak to TSS...	 2026-02-02 12:28:01 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &gt;&gt; assigning genomic annotation...		 2026-02-02 12:28:01 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &gt;&gt; Using Genome: mm10 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &gt;&gt; Using Genome: mm10 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &gt;&gt; assigning chromosome lengths			 2026-02-02 12:28:03 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &gt;&gt; done...					 2026-02-02 12:28:03 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> &gt;&gt; Method: edgeR</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> 	FDR:0.05&amp; abs(logFC)&lt;0</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> &gt;&gt; Estimating dispersion...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> &gt;&gt; Fitting GLM...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> &gt;&gt; DA peaks are found!</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> &gt;&gt; No `geneset` is specified so immune modules (Chaussabel, 2008) will be used!</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> &gt;&gt; enrichment.method` is not selected. Hyper-geometric p-value (HPEA) will be used!</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> &gt;&gt; Mice gene symbols are converted to human symbols!</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> &gt;&gt; Enrichment results are ready...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> &gt;&gt; Done!</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Package "ChIPseeker" needed for this function to work. Please install it.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in abs(cp.filtered.annotated$distanceToTSS):</span> non-numeric argument to mathematical function</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">dot_plot</span><span class="op">(</span><span class="va">results</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 54 rows containing missing values or values outside the scale range</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> (`geom_point()`).</span>
-<span class="r-plt img"><img src="dot_plot-1.png" alt="" width="700" height="433"></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'results' not found</span>
 <span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

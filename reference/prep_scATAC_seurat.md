@@ -71,6 +71,5 @@ if (requireNamespace("Seurat", quietly = TRUE)) {
                              group.col = "group",
                              assay = "peaks")
 }
-#> Error: object 'seurat_obj' not found
 # }
 ```

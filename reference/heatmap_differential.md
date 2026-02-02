@@ -41,28 +41,10 @@ contrasts <- sapply(strsplit(colnames(bed), split = "-", fixed = TRUE),
 results <- cinaR(bed, contrasts, reference.genome = "mm10")
 #> >> Experiment type: ATAC-Seq
 #> >> Matrix is filtered!
-#> >> preparing features information...        2026-02-02 12:28:04 
-#> >> Using Genome: mm10 ...
-#> >> identifying nearest features...      2026-02-02 12:28:04 
-#> >> calculating distance from peak to TSS...     2026-02-02 12:28:04 
-#> >> assigning genomic annotation...      2026-02-02 12:28:04 
-#> >> Using Genome: mm10 ...
-#> >> Using Genome: mm10 ...
-#> >> assigning chromosome lengths             2026-02-02 12:28:07 
-#> >> done...                  2026-02-02 12:28:07 
-#> >> Method: edgeR
-#>  FDR:0.05& abs(logFC)<0
-#> >> Estimating dispersion...
-#> >> Fitting GLM...
-#> >> DA peaks are found!
-#> >> No `geneset` is specified so immune modules (Chaussabel, 2008) will be used!
-#> >> enrichment.method` is not selected. Hyper-geometric p-value (HPEA) will be used!
-#> >> Mice gene symbols are converted to human symbols!
-#> >> Enrichment results are ready...
-#> >> Done!
+#> Package "ChIPseeker" needed for this function to work. Please install it.
+#> Error in abs(cp.filtered.annotated$distanceToTSS): non-numeric argument to mathematical function
 
 heatmap_differential(results)
-#> Warning: 'comparison' is not set so 'B6_NZO' will be used!
-
+#> Error: object 'results' not found
 # }
 ```
