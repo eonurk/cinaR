@@ -158,8 +158,35 @@ run_enrichment <- function (
   # Printing function
   verbosePrint <- verboseFn(verbose)
 
-  # adjustment due to change in pipeline
-  results <- results[["DA.peaks"]]
+  # Accept full cinaR output, DA.results, or a DA.peaks list
+  if (!is.list(results)) {
+    stop("`results` must be a list produced by cinaR or a DA.peaks list.")
+  }
+  if ("DA.results" %in% names(results)) {
+    results <- results[["DA.results"]][["DA.peaks"]]
+  } else if ("DA.peaks" %in% names(results)) {
+    results <- results[["DA.peaks"]]
+  }
+  if (!is.list(results)) {
+    stop("`results` must contain a list of DA peaks.")
+  }
+
+  sample_df <- NULL
+  for (x in results) {
+    if ((is.data.frame(x) || is.matrix(x)) && nrow(x) > 0) {
+      sample_df <- x
+      break
+    }
+  }
+  if (is.null(sample_df)) {
+    warning(">> There are no DA peaks for any of the comparisons.")
+    return(list())
+  }
+  if ("gene_name" %in% colnames(sample_df)) {
+    sample_gene <- as.character(sample_df[1, "gene_name"])
+  } else {
+    sample_gene <- as.character(sample_df[1, 1])
+  }
 
   # If no geneset is specified use VP2008
   if (is.null(geneset)) {
@@ -178,7 +205,7 @@ run_enrichment <- function (
     mice2humanMap <- cinaR::grcm38
 
     # If it's an RNA-seq experiment and ensembl ids are used!
-    if(experiment.type == "RNA-Seq" & grepl("ENSMUS", results[[1]][1,1], fixed = TRUE) ){
+    if(experiment.type == "RNA-Seq" && grepl("ENSMUS", sample_gene, fixed = TRUE) ){
 
       results <- lapply(results, function(x) {
         m <- match(x[, "gene_name"], mice2humanMap[, "ensgene"])
@@ -213,7 +240,7 @@ run_enrichment <- function (
 
     ens2gene <- cinaR::grch38
 
-    if(grepl("ENSG", results[[1]][1,1], fixed = TRUE)){
+    if(grepl("ENSG", sample_gene, fixed = TRUE)){
       results <- lapply(results, function(x) {
         m <- match(x[, "gene_name"], ens2gene[, "ensgene", drop = TRUE])
         mapped.genes <- ens2gene[, "symbol", drop = TRUE][m]
@@ -228,7 +255,7 @@ run_enrichment <- function (
     }
   } else if (reference.genome == "hg19" & experiment.type == "RNA-Seq"){
     ens2gene <- cinaR::grch37
-    if(grepl("ENSG", results[[1]][1,1], fixed = TRUE)){
+    if(grepl("ENSG", sample_gene, fixed = TRUE)){
       results <- lapply(results, function(x) {
         m <- match(x[, "gene_name"], ens2gene[, "ensgene", drop = TRUE])
         mapped.genes <- ens2gene[, "symbol", drop = TRUE][m]

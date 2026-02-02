@@ -261,7 +261,7 @@ If you suspect your data have unknown batch effects, you can use:
 ```{r eval=FALSE}
 cinaR(..., batch.correction = T)
 ```
-This option will run [Surrogate Variable Analysis](http://bioconductor.org/packages/release/bioc/html/sva.html) (SVA) and try to
+This option will run [Surrogate Variable Analysis](https://bioconductor.org/packages/release/bioc/html/sva.html) (SVA) and try to
 adjust your data for unknown batch effects. If however, you already know the batches of the samples, you can simply set the `batch.information` argument as well. This will not run the SVA but just add the batches to design matrix.
 
 ```{r eval=FALSE}

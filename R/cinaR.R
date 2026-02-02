@@ -112,7 +112,10 @@ cinaR <-
 
       # filter low expressed peaks
       cp.filtered <-
-        filterConsensus(cp, library.threshold = library.threshold, cpm.threshold = cpm.threshold)
+        filterConsensus(cp,
+                        filter.method = filter.method,
+                        library.threshold = library.threshold,
+                        cpm.threshold = cpm.threshold)
 
       verbosePrint(">> Matrix is filtered!")
 
@@ -159,7 +162,10 @@ cinaR <-
 
       # filter low expressed peaks
       final.matrix <-
-        filterConsensus(matrix, library.threshold = library.threshold, cpm.threshold = cpm.threshold)
+        filterConsensus(matrix,
+                        filter.method = filter.method,
+                        library.threshold = library.threshold,
+                        cpm.threshold = cpm.threshold)
 
       verbosePrint(">> Matrix is filtered!")
 
@@ -192,6 +198,7 @@ cinaR <-
         comparison.scheme = comparison.scheme,
         save.DA.peaks = save.DA.peaks,
         DA.peaks.path = DA.peaks.path,
+        norm.method = norm.method,
         batch.correction = batch.correction,
         batch.information = batch.information,
         additional.covariates = additional.covariates,
@@ -410,6 +417,7 @@ annotatePeaks <-
 #' @param save.DA.peaks logical, saves differentially accessible peaks to an excel file
 #' @param DA.peaks.path the path which the excel file of the DA peaks will be saved,
 #' if not set it will be saved to current directory.
+#' @param norm.method normalization method for consensus peaks
 #' @param batch.correction logical, if set will run unsupervised batch correction
 #' via sva (default) or if the batch information is known `batch.information`
 #' argument should be provided by user.
@@ -429,6 +437,7 @@ differentialAnalyses <- function(final.matrix,
                                  comparison.scheme,
                                  save.DA.peaks,
                                  DA.peaks.path,
+                                 norm.method,
                                  batch.correction,
                                  batch.information,
                                  additional.covariates,
@@ -461,7 +470,9 @@ differentialAnalyses <- function(final.matrix,
       ## in this thread:
       verbosePrint(">> Running SVA for batch correction...")
 
-      cp.metaless.normalized <- normalizeConsensus(cp.metaless, log.option = TRUE)
+      cp.metaless.normalized <- normalizeConsensus(cp.metaless,
+                                                   norm.method = norm.method,
+                                                   log.option = TRUE)
       mod  <- stats::model.matrix(~ 0 + contrasts)
       mod0 <- cbind(rep(1, length(contrasts)))
 
@@ -495,7 +506,9 @@ differentialAnalyses <- function(final.matrix,
         stop("Number of samples and `batch.information` should be same length!")
       }
 
-      cp.metaless.normalized <- normalizeConsensus(cp.metaless, log.option = TRUE)
+      cp.metaless.normalized <- normalizeConsensus(cp.metaless,
+                                                   norm.method = norm.method,
+                                                   log.option = TRUE)
 
       design <- cbind(design, BatchInfo = batch.information)
 
@@ -808,5 +821,8 @@ differentialAnalyses <- function(final.matrix,
   if (batch.correction){
     return(list (cp = cp.batch.corrected, DA.peaks = DA.peaks))
   }
-  return(list (cp = normalizeConsensus(cp.metaless, log.option = T), DA.peaks = DA.peaks))
+  return(list (cp = normalizeConsensus(cp.metaless,
+                                       norm.method = norm.method,
+                                       log.option = T),
+               DA.peaks = DA.peaks))
 }

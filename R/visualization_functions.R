@@ -76,7 +76,7 @@ dot_plot <- function(results, fdr.cutoff = 0.1, filter.pathways = FALSE){
   plot.dot <- ggplot2::ggplot(df.plot,
                               ggplot2::aes(x = column_label,
                                            y = module.name,
-                                           size = ifelse(adj.p < fdr.cutoff, -log(adj.p), NA),
+                                           size = ifelse(adj.p < fdr.cutoff, -log10(adj.p), NA),
                                            color = status))
 
   plot.dot <- plot.dot + ggplot2::geom_point()
@@ -169,7 +169,7 @@ pca_plot <- function(results, overlaid.info, sample.names = NULL, show.names = T
     ggplot2::coord_fixed(ratio = 1) +
     ggplot2::theme_light()
 
-  if (typeof(overlaid.info) %in% c("character", "factor")){
+  if (is.character(overlaid.info) || is.factor(overlaid.info)){
     plot.pca <- plot.pca +
       ggplot2::scale_color_manual(values = RColorBrewer::brewer.pal(n = 9, name = "Set1"))
   }
@@ -226,7 +226,7 @@ heatmap_var_peaks <- function(results, heatmap.peak.count = 100, ...){
   plot.pheatmap <- pheatmap::pheatmap(mat.heatmap, scale = "none",
                      color = grDevices::colorRampPalette(rev(RColorBrewer::brewer.pal(n=7,"RdBu")))(length(breaksList)),
                      show_rownames = FALSE,
-                     ... = ...)
+                     ...)
   return(plot.pheatmap)
 }
 
@@ -290,8 +290,7 @@ heatmap_differential <- function(results, comparison = NULL, ...){
   plot.pheatmap <- pheatmap::pheatmap(mat.heatmap, scale = "none",
                                       color = grDevices::colorRampPalette(rev(RColorBrewer::brewer.pal(n=7,"RdBu")))(length(breaksList)),
                                       show_rownames = FALSE,
-                                      ... = ...)
+                                      ...)
   return(plot.pheatmap)
 }
-
 

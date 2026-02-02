@@ -14,6 +14,7 @@ differentialAnalyses(
   comparison.scheme,
   save.DA.peaks,
   DA.peaks.path,
+  norm.method,
   batch.correction,
   batch.information,
   additional.covariates,
@@ -41,6 +42,8 @@ differentialAnalyses(
 
 \item{DA.peaks.path}{the path which the excel file of the DA peaks will be saved,
 if not set it will be saved to current directory.}
+
+\item{norm.method}{normalization method for consensus peaks}
 
 \item{batch.correction}{logical, if set will run unsupervised batch correction
 via sva (default) or if the batch information is known `batch.information`

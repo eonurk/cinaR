@@ -1,3 +1,9 @@
+# cinaR 0.2.6
+
+- Fixed plotting helpers (pheatmap `...`, dot-plot scale, PCA palette)
+- Wired `norm.method`/`filter.method` into the pipeline
+- Made `run_enrichment()` more robust to input shape and empty contrasts
+
 # cinaR 0.2.5
 
 - Added scATAC preprocessing helper `prep_scATAC_cinaR()` and vignette example
