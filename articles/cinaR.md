@@ -46,15 +46,15 @@ contrasts<- c("B6", "B6", "B6", "B6", "B6", "NZO", "NZO", "NZO", "NZO", "NZO", "
 results <- cinaR(bed, contrasts, reference.genome = "mm10")
 ```
 
-    ## >> preparing features information...      2026-02-02 11:43:46 
+    ## >> preparing features information...      2026-02-02 12:20:04 
     ## >> Using Genome: mm10 ...
-    ## >> identifying nearest features...        2026-02-02 11:43:48 
-    ## >> calculating distance from peak to TSS...   2026-02-02 11:43:48 
-    ## >> assigning genomic annotation...        2026-02-02 11:43:48 
+    ## >> identifying nearest features...        2026-02-02 12:20:05 
+    ## >> calculating distance from peak to TSS...   2026-02-02 12:20:05 
+    ## >> assigning genomic annotation...        2026-02-02 12:20:05 
     ## >> Using Genome: mm10 ...
     ## >> Using Genome: mm10 ...
-    ## >> assigning chromosome lengths           2026-02-02 11:44:02 
-    ## >> done...                    2026-02-02 11:44:02
+    ## >> assigning chromosome lengths           2026-02-02 12:20:20 
+    ## >> done...                    2026-02-02 12:20:20
 
 Now, you can access differential accessibility (DA) and enrichment
 results.
@@ -372,7 +372,7 @@ cinaR(..., batch.correction = T)
 ```
 
 This option will run [Surrogate Variable
-Analysis](http://bioconductor.org/packages/release/bioc/html/sva.md)
+Analysis](https://bioconductor.org/packages/release/bioc/html/sva.html)
 (SVA) and try to adjust your data for unknown batch effects. If however,
 you already know the batches of the samples, you can simply set the
 `batch.information` argument as well. This will not run the SVA but just
@@ -506,7 +506,7 @@ sessionInfo()
     ## [1] stats     graphics  grDevices utils     datasets  methods   base     
     ## 
     ## other attached packages:
-    ## [1] cinaR_0.2.5
+    ## [1] cinaR_0.2.6
     ## 
     ## loaded via a namespace (and not attached):
     ##   [1] RColorBrewer_1.1-3                       

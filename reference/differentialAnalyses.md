@@ -15,6 +15,7 @@ differentialAnalyses(
   comparison.scheme,
   save.DA.peaks,
   DA.peaks.path,
+  norm.method,
   batch.correction,
   batch.information,
   additional.covariates,
@@ -62,6 +63,10 @@ differentialAnalyses(
 
   the path which the excel file of the DA peaks will be saved, if not
   set it will be saved to current directory.
+
+- norm.method:
+
+  normalization method for consensus peaks
 
 - batch.correction:
 

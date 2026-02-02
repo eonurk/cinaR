@@ -177,15 +177,15 @@ results <- cinaR(bed, contrasts, reference.genome = "mm10")
 #> >> Experiment type: ATAC-Seq
 #> >> Matrix is filtered!
 #> 
-#> >> preparing features information...        2026-02-02 11:43:08 
+#> >> preparing features information...        2026-02-02 12:19:22 
 #> >> Using Genome: mm10 ...
-#> >> identifying nearest features...      2026-02-02 11:43:08 
-#> >> calculating distance from peak to TSS...     2026-02-02 11:43:08 
-#> >> assigning genomic annotation...      2026-02-02 11:43:08 
+#> >> identifying nearest features...      2026-02-02 12:19:22 
+#> >> calculating distance from peak to TSS...     2026-02-02 12:19:23 
+#> >> assigning genomic annotation...      2026-02-02 12:19:23 
 #> >> Using Genome: mm10 ...
 #> >> Using Genome: mm10 ...
-#> >> assigning chromosome lengths             2026-02-02 11:43:23 
-#> >> done...                  2026-02-02 11:43:23 
+#> >> assigning chromosome lengths             2026-02-02 12:19:38 
+#> >> done...                  2026-02-02 12:19:38 
 #> >> Method: edgeR
 #>  FDR:0.05& abs(logFC)<0
 #> >> Estimating dispersion...

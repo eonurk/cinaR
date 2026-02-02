@@ -1,5 +1,13 @@
 # Changelog
 
+## cinaR 0.2.6
+
+- Fixed plotting helpers (pheatmap `...`, dot-plot scale, PCA palette)
+- Wired `norm.method`/`filter.method` into the pipeline
+- Made
+  [`run_enrichment()`](https://eonurk.github.io/cinaR/reference/run_enrichment.md)
+  more robust to input shape and empty contrasts
+
 ## cinaR 0.2.5
 
 - Added scATAC preprocessing helper
@@ -19,8 +27,6 @@
 
 ## cinaR 0.2.3
 
-CRAN release: 2022-05-18
-
 - Minor improvements
 
 ## cinaR 0.2.2
@@ -31,8 +37,6 @@ CRAN release: 2022-05-18
     will be compared to rest.
 
 ## cinaR 0.2.1
-
-CRAN release: 2021-04-02
 
 - Added:
   - An extra argument `sv.number` is added if user wants to set the
@@ -45,8 +49,6 @@ CRAN release: 2021-04-02
     vignette.
 
 ## cinaR 0.2.0
-
-CRAN release: 2021-01-05
 
 - Added:
   - `heatmap_differential` function to be able to plot the heatmaps of a
@@ -67,7 +69,5 @@ This version is even cooler, lol:
 - Small bug fixes and improvements
 
 ## cinaR 0.1.0
-
-CRAN release: 2020-11-14
 
 - `cinaR` is published in CRAN repository!
