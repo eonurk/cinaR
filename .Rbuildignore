@@ -1,5 +1,12 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^\.DS_Store$
+^\.Rhistory$
+^\.RData$
+^\.git$
+^\.gitignore$
+^\.gitattributes$
+^\.{2}Rcheck$
 ^_pkgdown\.yml$
 ^docs$
 ^doc$
@@ -8,3 +15,5 @@
 ^\.travis\.yml$
 ^README.Rmd
 /vignettes/cinaR_cache
+^vignettes/\.gitignore$
+^man/\.DS_Store$

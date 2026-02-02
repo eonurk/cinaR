@@ -1,0 +1,14 @@
+citHeader("To cite cinaR in publications use:")
+
+bibentry(
+  bibtype = "article",
+  title = "cinaR: A comprehensive R package for the differential analyses and functional interpretation of ATAC-seq data",
+  author = c(
+    person("E Onur", "Karakaslar"),
+    person("Duygu", "Ucar")
+  ),
+  year = 2021,
+  journal = "bioRxiv",
+  doi = "10.1101/2021.03.05.434143",
+  url = "https://www.biorxiv.org/content/10.1101/2021.03.05.434143v2"
+)

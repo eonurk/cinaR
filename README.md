@@ -88,6 +88,39 @@ pca_plot(results, contrasts, show.names = F)
 
 <img src="man/figures/unnamed-chunk-5-1.png" width="100%" />
 
+## Single-cell ATAC-seq (10x scATAC) preprocessing
+
+Use `prep_scATAC_cinaR()` to pseudobulk 10x scATAC peak-by-cell matrices into a cinaR-ready consensus matrix.  
+This preserves biological replicates (sample-level) and avoids inflated significance from per-cell testing.
+
+``` r
+# counts: peak-by-cell matrix (dense or dgCMatrix)
+# meta: data.frame with rownames = cell barcodes
+# meta must include biological replicate and condition columns
+
+prep <- prep_scATAC_cinaR(counts, meta,
+                          sample.col = "sample",
+                          group.col = "group")
+
+results <- cinaR(prep$bed, prep$contrasts, reference.genome = "hg38")
+```
+
+Per-cell-type (sample × cluster) pseudobulk:
+
+``` r
+prep_list <- prep_scATAC_cinaR(counts, meta,
+                               sample.col = "sample",
+                               group.col = "group",
+                               cluster.col = "celltype")
+
+results_list <- lapply(prep_list, function(x) {
+  cinaR(x$bed, x$contrasts, reference.genome = "hg38")
+})
+```
+
+If your peak IDs are not in `chr:start-end` or `chr_start_end` format, pass a `peak.bed`
+data.frame with `CHR`, `START`, and `STOP` columns via `peak.bed = ...`.
+
 > For more details please go to our site from
 > [here!](https://eonurk.github.io/cinaR/articles/cinaR.html)
 
@@ -100,7 +133,7 @@ pca_plot(results, contrasts, show.names = F)
         year = {2021},
         doi = {10.1101/2021.03.05.434143},
         publisher = {Cold Spring Harbor Laboratory},
-        URL = {https://www.biorxiv.org/content/early/2021/03/08/2021.03.05.434143.1},
+        URL = {https://www.biorxiv.org/content/10.1101/2021.03.05.434143v2},
         journal = {bioRxiv}
     }
 

@@ -316,6 +316,12 @@ annotatePeaks <-
            show.annotation.pie = FALSE,
            verbose) {
     
+    if (!requireNamespace("ChIPseeker", quietly = TRUE)) {
+      message(
+        "Package \"ChIPseeker\" needed for this function to work. Please install it."
+      )
+      return(NULL)
+    }
 
     bed <-
       as.data.frame(do.call(rbind, strsplit(rownames(cp), "_", fixed = TRUE)))

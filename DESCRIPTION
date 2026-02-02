@@ -1,7 +1,7 @@
 Package: cinaR
 Type: Package
 Title: A Computational Pipeline for Bulk 'ATAC-Seq' Profiles
-Version: 0.2.4
+Version: 0.2.5
 Authors@R: 
     c(person(given = "Onur",
              family = "Karakaslar",
@@ -13,6 +13,9 @@ Authors@R:
              role = "aut",
              comment = c(ORCID = "0000-0002-9772-3066"))
       )
+Author: Onur Karakaslar [aut, cre] (<https://orcid.org/0000-0002-9182-910X>),
+    Duygu Ucar [aut] (<https://orcid.org/0000-0002-9772-3066>)
+Maintainer: Onur Karakaslar <eonurkara@gmail.com>
 Description: Differential analyses and Enrichment pipeline for bulk 'ATAC-seq' data
   analyses. This package combines different packages to have an ultimate package
   for both data analyses and visualization of 'ATAC-seq' data. Methods are described in 
@@ -44,6 +47,7 @@ Imports: BiocManager,
 RoxygenNote: 7.2.3
 Suggests: ChIPseeker, 
           knitr,
+          Matrix,
           rmarkdown,
           markdown,
           TxDb.Hsapiens.UCSC.hg38.knownGene, 

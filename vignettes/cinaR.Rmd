@@ -20,6 +20,9 @@ knitr::opts_chunk$set(tidy = FALSE,
                       dev = "png",
                       message = FALSE, error = FALSE, warning = TRUE,
                       fig.dpi = 96)
+
+has_bioc <- requireNamespace("ChIPseeker", quietly = TRUE) &&
+  requireNamespace("TxDb.Mmusculus.UCSC.mm10.knownGene", quietly = TRUE)
 ```
 
 ## Quick Start
@@ -49,43 +52,43 @@ contrasts<- c("B6", "B6", "B6", "B6", "B6", "NZO", "NZO", "NZO", "NZO", "NZO", "
 ```
 
 `cinaR` function directly computes the differentially accessible peaks.
-```{r}
+```{r eval=has_bioc}
 # If reference genome is not set hg38 will be used!
 results <- cinaR(bed, contrasts, reference.genome = "mm10")
 ```
 
 Now, you can access differential accessibility (DA) and enrichment results.
-```{r}
+```{r eval=has_bioc}
 names(results)
 ```
 
 Inside `DA.results`, you have the consensus peaks (cp) and differentially accessible (DA) peaks.
 If batch correction was run, then `cp` will be a batch-corrected consensus matrix, otherwise it is the filtered and normalized version of original consensus peaks you provided.
 
-```{r}
+```{r eval=has_bioc}
 names(results$DA.results)
 ```
 There are many information `cinaR` provides such as adjusted p value, 
 log fold-changes, gene names etc for each peak:
-```{r}
+```{r eval=has_bioc}
 colnames(results$DA.results$DA.peaks$B6_NZO)
 ```
 
 
 Here is an overview of those DA peaks:
-```{r }
+```{r eval=has_bioc}
 head(results$DA.results$DA.peaks$B6_NZO[,1:5])
 ```
 > Since the comparison is `B6_NZO`, if fold-changes are positive it means they are more accesible in B6 compared to NZO and vice versa for negative values!
 
 and here is a little overview for enrichment analyses results:
-```{r}
+```{r eval=has_bioc}
 head(results$Enrichment.Results$B6_NZO[,c("module.name","overlapping.genes", "adj.p")])
 ```
 
 ### PCA Plots
 You can easily get the PCA plots of the samples:
-```{r}
+```{r eval=has_bioc}
 pca_plot(results, contrasts, show.names = F)
 ```
 
@@ -104,7 +107,7 @@ sample.names <- c("S01783", "S01780", "S01781", "S01778", "S01779",
 "S10917", "S10920")
 ```
 
-```{r }
+```{r eval=has_bioc}
 pca_plot(results, overlaid.info, sample.names)
 ```
 
@@ -113,39 +116,39 @@ pca_plot(results, overlaid.info, sample.names)
 #### Differential peaks
 
 You can see the available comparisons using:
-```{r}
+```{r eval=has_bioc}
 show_comparisons(results)
 ```
 
 Then, plot the differential peaks for a selected contrast using:
-```{r}
+```{r eval=has_bioc}
 heatmap_differential(results, comparison = "B6_NZO")
 ```
   
 Also, you can configure your heatmaps using the additional arguments of `pheatmap` function. For more information check out `?pheatmap`.
-```{r}
+```{r eval=has_bioc}
 heatmap_differential(results, comparison = "B6_NZO", show_colnames = FALSE)
 ```
 
 #### Most variable peaks
 You can also plot most variable 100 peaks for all samples:
-```{r}
+```{r eval=has_bioc}
 heatmap_var_peaks(results)
 ```
 
 Plus, you can set the number of peaks to be used in these plots, and again you can change the additional arguments of `pheatmap` function. For more information check out `?pheatmap`.
-```{r}
+```{r eval=has_bioc}
 heatmap_var_peaks(results, heatmap.peak.count = 200, cluster_cols = F)
 ```
 
 ### Enrichment Plots
 You can plot your enrichment results using:
-```{r }
+```{r eval=has_bioc}
 dot_plot(results)
 ```
 
 if it gets too crowded, you can get rid of the irrelevant pathways as well:
-```{r }
+```{r eval=has_bioc}
 dot_plot(results, filter.pathways = T)
 ```
 
@@ -183,6 +186,38 @@ cinaR(matrix = count.matrix, ..., experiment.type = "RNA-Seq")
 Note that, `count.matrix` should be in the form of $g \times (1+n)$ where $g$ is the number of genes and $n$ is the number of samples, and plus one is for gene names.
 
 > Note that currently `cinaR` can only handle gene symbols (e.g. FOSL2, FOXA) and ensembl stable IDs (e.g. ENSG00000010404) for both human and mice!
+
+## Single-cell ATAC-seq (10x scATAC) preprocessing
+
+`cinaR` is designed for bulk ATAC-seq. For 10x scATAC, first pseudobulk your peak-by-cell
+matrix to preserve biological replicates, then run `cinaR` on the resulting consensus matrix.
+
+```{r}
+set.seed(1)
+counts <- matrix(rpois(4 * 8, lambda = 2), nrow = 4)
+rownames(counts) <- c("chr1:1-100", "chr1:101-200", "chr2:1-150", "chr2:151-300")
+colnames(counts) <- paste0("cell", 1:8)
+
+meta <- data.frame(
+  sample = c("S1", "S1", "S2", "S2", "S3", "S3", "S4", "S4"),
+  group = c("A", "A", "A", "A", "B", "B", "B", "B"),
+  row.names = colnames(counts),
+  stringsAsFactors = FALSE
+)
+
+prep <- prep_scATAC_cinaR(
+  counts,
+  meta,
+  sample.col = "sample",
+  group.col = "group",
+  min.cells = 2
+)
+
+dim(prep$bed)
+prep$contrasts
+```
+
+You can then pass `prep$bed` and `prep$contrasts` to `cinaR()` as usual.
 
 
 ## Running enrichment with different dataset
@@ -322,4 +357,3 @@ dot_plot(..., fdr.cutoff = 0.05)
 ```{r session Info}
 sessionInfo()
 ```
-
