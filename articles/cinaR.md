@@ -538,7 +538,7 @@ sessionInfo()
     ##  [75] generics_0.1.4                          
     ##  [76] RCurl_1.98-1.17                         
     ##  [77] S4Vectors_0.48.0                        
-    ##  [78] ggplot2_4.0.1                           
+    ##  [78] ggplot2_4.0.2                           
     ##  [79] scales_1.4.0                            
     ##  [80] glue_1.8.0                              
     ##  [81] tools_4.5.2                             
@@ -561,7 +561,7 @@ sessionInfo()
     ##  [98] rappdirs_0.3.4                          
     ##  [99] textshaping_1.0.4                       
     ## [100] S4Arrays_1.10.1                         
-    ## [101] dplyr_1.1.4                             
+    ## [101] dplyr_1.2.0                             
     ## [102] gtable_0.3.6                            
     ## [103] R.methodsS3_1.8.2                       
     ## [104] yulab.utils_0.2.3                       

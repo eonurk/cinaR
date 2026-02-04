@@ -64,12 +64,10 @@ named list of such lists when cluster.col is provided.
 ## Examples
 
 ``` r
-# \donttest{
-if (requireNamespace("Seurat", quietly = TRUE)) {
-  prep <- prep_scATAC_seurat(seurat_obj,
-                             sample.col = "sample",
-                             group.col = "group",
-                             assay = "peaks")
-}
-# }
+if (FALSE) { # \dontrun{
+prep <- prep_scATAC_seurat(seurat_obj,
+                           sample.col = "sample",
+                           group.col = "group",
+                           assay = "peaks")
+} # }
 ```
