@@ -43,12 +43,10 @@ of such lists when cluster.col is provided.
 Prepare 10x scATAC data from a Seurat/Signac object for cinaR.
 }
 \examples{
-\donttest{
-if (requireNamespace("Seurat", quietly = TRUE)) {
-  prep <- prep_scATAC_seurat(seurat_obj,
-                             sample.col = "sample",
-                             group.col = "group",
-                             assay = "peaks")
-}
+\dontrun{
+prep <- prep_scATAC_seurat(seurat_obj,
+                           sample.col = "sample",
+                           group.col = "group",
+                           assay = "peaks")
 }
 }

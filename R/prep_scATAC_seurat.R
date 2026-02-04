@@ -14,14 +14,13 @@
 #'
 #' @return list with elements `bed`, `contrasts`, and `group.info`, or a named list
 #' of such lists when cluster.col is provided.
+#' @importFrom methods slot slotNames
 #' @examples
-#' \donttest{
-#' if (requireNamespace("Seurat", quietly = TRUE)) {
-#'   prep <- prep_scATAC_seurat(seurat_obj,
-#'                              sample.col = "sample",
-#'                              group.col = "group",
-#'                              assay = "peaks")
-#' }
+#' \dontrun{
+#' prep <- prep_scATAC_seurat(seurat_obj,
+#'                            sample.col = "sample",
+#'                            group.col = "group",
+#'                            assay = "peaks")
 #' }
 #' @export
 prep_scATAC_seurat <- function(object,
