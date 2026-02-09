@@ -1,0 +1,50 @@
+# cinaR
+
+cinaR is an R package for end-to-end differential analysis and enrichment of bulk ATAC-seq (and RNA-seq) profiles, with optional TF activity and scATAC pseudobulk preprocessing.
+
+## Canonical URLs
+- Package site: https://eonurk.github.io/cinaR/
+- CRAN: https://cran.r-project.org/package=cinaR
+- Source: https://github.com/eonurk/cinaR
+- Issues: https://github.com/eonurk/cinaR/issues
+- Main vignette: https://eonurk.github.io/cinaR/articles/cinaR.html
+
+## Install
+- CRAN: `install.packages("cinaR")`
+- Dev: `devtools::install_github("eonurk/cinaR")`
+
+## Primary functions
+- `cinaR(matrix, contrasts, ...)`
+  - Input:
+    - ATAC mode: consensus peak matrix with `CHR`, `START`, `STOP`, and sample count columns.
+    - RNA mode: gene-by-sample count matrix.
+    - `contrasts`: sample condition labels aligned to sample columns.
+  - Output:
+    - Differential analysis result tables.
+    - Optional enrichment results (`run.enrichment = TRUE`).
+    - Optional TF activity results (`tf.activity = TRUE`, ATAC mode only).
+- `prep_scATAC_cinaR(counts, cell.meta, sample.col, group.col, ...)`
+  - Input:
+    - Peak-by-cell matrix and cell metadata with barcode rownames.
+  - Output:
+    - `list(bed, contrasts, group.info)` suitable for `cinaR()`.
+- `prep_scATAC_seurat(object, sample.col, group.col, ...)`
+  - Input:
+    - Seurat/Signac object with ATAC assay.
+  - Output:
+    - Same cinaR-ready structure as `prep_scATAC_cinaR()`.
+
+## Minimal workflow
+1. Load/create consensus matrix.
+2. Build contrast vector.
+3. Run `cinaR(...)`.
+4. Plot and inspect outputs (`pca_plot`, `dot_plot`, `heatmap_differential`).
+
+## MCP starter schemas
+- `inst/mcp/cinaR-mcp-tools.json` contains starter tool definitions and JSON Schemas for:
+  - `run_cinaR`
+  - `prep_scATAC_cinaR`
+  - `prep_scATAC_seurat`
+
+## Keywords
+ATAC-seq, RNA-seq, differential accessibility, enrichment, chromVAR-like TF activity, pseudobulk, Seurat, Signac.

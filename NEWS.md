@@ -4,6 +4,7 @@
 - Wired `norm.method`/`filter.method` into the pipeline
 - Made `run_enrichment()` more robust to input shape and empty contrasts
 - Added `prep_scATAC_seurat()` helper for Seurat/Signac objects
+- Added `llms.txt` and starter MCP JSON schemas for agent integration
 
 # cinaR 0.2.5
 
