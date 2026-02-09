@@ -11,6 +11,27 @@ visualization options. For more details, please see the
 
 ![](reference/figures/overview@5x.png)
 
+## LLM and agent usage
+
+For model-friendly discovery and tool integration:
+
+- `llms.txt` provides a compact machine-oriented index for `cinaR`.
+- `inst/mcp/cinaR-mcp-tools.json` provides starter MCP tool definitions
+  with JSON Schemas.
+
+Useful entry points for assistants:
+
+- [`cinaR()`](https://eonurk.github.io/cinaR/reference/cinaR.md):
+  differential analysis + enrichment (+ optional TF activity) from
+  consensus data.
+- [`prep_scATAC_cinaR()`](https://eonurk.github.io/cinaR/reference/prep_scATAC_cinaR.md):
+  pseudobulk 10x scATAC peak-by-cell matrices into cinaR-ready inputs.
+- [`prep_scATAC_seurat()`](https://eonurk.github.io/cinaR/reference/prep_scATAC_seurat.md):
+  same preprocessing directly from a Seurat/Signac object.
+
+Use the package site for detailed docs and examples:
+<https://eonurk.github.io/cinaR/>.
+
 ## Installation
 
 ``` r

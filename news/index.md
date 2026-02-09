@@ -2,6 +2,8 @@
 
 ## cinaR 0.2.6
 
+CRAN release: 2026-02-04
+
 - Fixed plotting helpers (pheatmap `...`, dot-plot scale, PCA palette)
 - Wired `norm.method`/`filter.method` into the pipeline
 - Made
@@ -10,6 +12,7 @@
 - Added
   [`prep_scATAC_seurat()`](https://eonurk.github.io/cinaR/reference/prep_scATAC_seurat.md)
   helper for Seurat/Signac objects
+- Added `llms.txt` and starter MCP JSON schemas for agent integration
 
 ## cinaR 0.2.5
 

@@ -469,7 +469,7 @@ sessionInfo()
     ##   [6] otel_0.2.0                              
     ##   [7] matrixStats_1.5.0                       
     ##   [8] compiler_4.5.2                          
-    ##   [9] RSQLite_2.4.5                           
+    ##   [9] RSQLite_2.4.6                           
     ##  [10] GenomicFeatures_1.62.0                  
     ##  [11] png_0.1-8                               
     ##  [12] systemfonts_1.3.1                       

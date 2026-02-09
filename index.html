@@ -60,6 +60,27 @@
 <p><img src="reference/figures/overview@5x.png"></p>
 </div>
 <div class="section level2">
+<h2 id="llm-and-agent-usage">LLM and agent usage<a class="anchor" aria-label="anchor" href="#llm-and-agent-usage"></a>
+</h2>
+<p>For model-friendly discovery and tool integration:</p>
+<ul>
+<li>
+<code>llms.txt</code> provides a compact machine-oriented index for <code>cinaR</code>.</li>
+<li>
+<code>inst/mcp/cinaR-mcp-tools.json</code> provides starter MCP tool definitions with JSON Schemas.</li>
+</ul>
+<p>Useful entry points for assistants:</p>
+<ul>
+<li>
+<code><a href="reference/cinaR.html">cinaR()</a></code>: differential analysis + enrichment (+ optional TF activity) from consensus data.</li>
+<li>
+<code><a href="reference/prep_scATAC_cinaR.html">prep_scATAC_cinaR()</a></code>: pseudobulk 10x scATAC peak-by-cell matrices into cinaR-ready inputs.</li>
+<li>
+<code><a href="reference/prep_scATAC_seurat.html">prep_scATAC_seurat()</a></code>: same preprocessing directly from a Seurat/Signac object.</li>
+</ul>
+<p>Use the package site for detailed docs and examples: <a href="https://eonurk.github.io/cinaR/" class="uri">https://eonurk.github.io/cinaR/</a>.</p>
+</div>
+<div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">

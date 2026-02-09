@@ -1,0 +1,392 @@
+{
+  "name": "cinaR",
+  "version": "0.2.6",
+  "description": "Starter MCP tool definitions for running cinaR workflows.",
+  "tools": [
+    {
+      "name": "run_cinaR",
+      "title": "Run cinaR pipeline",
+      "description": "Run differential analysis, optional enrichment, and optional TF activity using cinaR().",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "required": [
+          "matrix_path",
+          "contrasts",
+          "output_dir"
+        ],
+        "properties": {
+          "matrix_path": {
+            "type": "string",
+            "description": "Path to consensus/count matrix file (.csv/.tsv/.rds)."
+          },
+          "contrasts": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 2,
+            "description": "Condition labels aligned with sample columns."
+          },
+          "experiment_type": {
+            "type": "string",
+            "enum": [
+              "ATAC-Seq",
+              "RNA-Seq"
+            ],
+            "default": "ATAC-Seq"
+          },
+          "reference_genome": {
+            "type": "string",
+            "enum": [
+              "hg38",
+              "hg19",
+              "mm10"
+            ],
+            "default": "hg38"
+          },
+          "comparison_scheme": {
+            "type": "string",
+            "enum": [
+              "OVO",
+              "OVA"
+            ],
+            "default": "OVO"
+          },
+          "da_choice": {
+            "type": "integer",
+            "enum": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "default": 1,
+            "description": "1=edgeR, 2=limma-voom, 3=limma-trend, 4=DESeq2."
+          },
+          "run_enrichment": {
+            "type": "boolean",
+            "default": true
+          },
+          "enrichment_method": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "HPEA",
+              "GSEA",
+              null
+            ],
+            "default": null
+          },
+          "tf_activity": {
+            "type": "boolean",
+            "default": false
+          },
+          "motifs": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Motif source identifier or path to RDS (when tf_activity=true).",
+            "default": null
+          },
+          "output_dir": {
+            "type": "string",
+            "description": "Directory where analysis artifacts are written."
+          },
+          "save_da_peaks": {
+            "type": "boolean",
+            "default": true
+          },
+          "verbose": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "required": [
+          "status",
+          "result_rds",
+          "summary"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "error"
+            ]
+          },
+          "result_rds": {
+            "type": "string",
+            "description": "Path to serialized cinaR result object."
+          },
+          "da_tables_dir": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Directory with DA tables and optional exports."
+          },
+          "enrichment_tables_dir": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "tf_activity_dir": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "summary": {
+            "type": "object",
+            "properties": {
+              "comparisons": {
+                "type": "integer"
+              },
+              "experiment_type": {
+                "type": "string"
+              },
+              "run_enrichment": {
+                "type": "boolean"
+              },
+              "tf_activity": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "comparisons",
+              "experiment_type",
+              "run_enrichment",
+              "tf_activity"
+            ],
+            "additionalProperties": true
+          },
+          "message": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "prep_scATAC_cinaR",
+      "title": "Prepare scATAC pseudobulk for cinaR",
+      "description": "Create cinaR-ready consensus matrix and contrasts from peak-by-cell counts.",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "required": [
+          "counts_path",
+          "cell_meta_path",
+          "sample_col",
+          "group_col",
+          "output_dir"
+        ],
+        "properties": {
+          "counts_path": {
+            "type": "string",
+            "description": "Path to peak-by-cell counts (.mtx/.rds/.csv/.tsv)."
+          },
+          "cell_meta_path": {
+            "type": "string",
+            "description": "Path to cell metadata table; rownames/cell barcode column must map to counts columns."
+          },
+          "sample_col": {
+            "type": "string"
+          },
+          "group_col": {
+            "type": "string"
+          },
+          "cluster_col": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "default": null
+          },
+          "peak_bed_path": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Optional path to peak coordinates with CHR/START/STOP.",
+            "default": null
+          },
+          "min_cells": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 20
+          },
+          "output_dir": {
+            "type": "string"
+          },
+          "verbose": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "required": [
+          "status",
+          "bed_path",
+          "contrasts_path",
+          "group_info_path"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "error"
+            ]
+          },
+          "bed_path": {
+            "type": "string"
+          },
+          "contrasts_path": {
+            "type": "string"
+          },
+          "group_info_path": {
+            "type": "string"
+          },
+          "cluster_outputs_dir": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Directory containing per-cluster outputs if cluster_col is provided."
+          },
+          "message": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    {
+      "name": "prep_scATAC_seurat",
+      "title": "Prepare scATAC pseudobulk from Seurat object",
+      "description": "Create cinaR-ready inputs directly from Seurat/Signac object metadata and ATAC assay.",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "required": [
+          "seurat_rds_path",
+          "sample_col",
+          "group_col",
+          "output_dir"
+        ],
+        "properties": {
+          "seurat_rds_path": {
+            "type": "string",
+            "description": "Path to serialized Seurat object (.rds)."
+          },
+          "assay": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "default": null
+          },
+          "slot": {
+            "type": "string",
+            "default": "counts"
+          },
+          "sample_col": {
+            "type": "string"
+          },
+          "group_col": {
+            "type": "string"
+          },
+          "cluster_col": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "default": null
+          },
+          "peak_bed_path": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "default": null
+          },
+          "min_cells": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 20
+          },
+          "output_dir": {
+            "type": "string"
+          },
+          "verbose": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "required": [
+          "status",
+          "bed_path",
+          "contrasts_path",
+          "group_info_path"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "error"
+            ]
+          },
+          "bed_path": {
+            "type": "string"
+          },
+          "contrasts_path": {
+            "type": "string"
+          },
+          "group_info_path": {
+            "type": "string"
+          },
+          "cluster_outputs_dir": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "message": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  ]
+}
